@@ -1,0 +1,13 @@
+# ------------------------------
+# List
+# ------------------------------
+alias l='ls -1A --color'
+alias la='ll -A --color'
+alias lc='lt -c --color'
+alias lk='ll -Sr --color'
+alias ll='ls -lh --color'
+alias lr='ll -R --color'
+alias ls='ls --color'
+alias lt='ll -tr --color'
+alias lu='lt -u --color'
+alias lx='ll -XB --color'

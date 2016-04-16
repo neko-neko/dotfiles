@@ -21,3 +21,9 @@
     ```
     chsh -s /bin/zsh
     ```
+
+# Uninstallation
+1. run this:  
+    ```
+    cd ~/.dotfiles && zsh remove.zsh
+    ```
