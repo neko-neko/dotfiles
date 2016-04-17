@@ -14,7 +14,7 @@ zstyle ':prezto:module:editor' dot-expansion 'yes'
 zstyle ':prezto:module:git:status:ignore' submodules 'all'
 
 # Prompt
-zstyle ':prezto:module:prompt' theme 'skwp'
+zstyle ':prezto:module:prompt' theme 'steeef'
 
 # Syntax Highlighting
 # Set syntax highlighters.

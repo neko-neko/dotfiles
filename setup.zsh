@@ -66,10 +66,14 @@ function install_brew_files() {
   brew cleanup
 
   # update zsh
-  echo "update /etc/shells..."
-  sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
-  echo "switch new zsh..."
-  chsh -s /usr/local/bin/zsh
+  echo 'update using zsh path? (y/n)'
+  read confirmation
+  if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+    echo "update /etc/shells..."
+    sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
+    echo "switch new zsh..."
+    chsh -s /usr/local/bin/zsh
+  fi
 }
 
 # ------------------------------
@@ -158,7 +162,7 @@ for name in *; do
   if [ -e "$target" ] && [ ! -L "$target" ]; then
     echo "$target already exists"
   else
-  if [ "$name" != 'setup.zsh' ] && [ "$name" != 'README.md' ] && [ "$name" != 'prezto' ]; then
+  if [ "$name" != 'setup.zsh' ] && [ "$name" != 'README.md' ] && [ "$name" != 'prezto' ] && [ "$name" != 'remove.zsh' ]; then
     echo "creating $target"
     ln -sf "$PWD/$name" "$target"
   fi
@@ -170,8 +174,12 @@ echo "creating prezto link ${ZDOTDIR:-$HOME}/.zprezto"
 ln -sf "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 
 # install brew files
-echo "Install brew files..."
-install_brew_files
+echo 'install brew files? (y/n)'
+read confirmation
+if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+  echo "Install brew files..."
+  install_brew_files
+fi
 
 # install brew casks
 echo 'install brew casks? (y/n)'

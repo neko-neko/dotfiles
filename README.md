@@ -17,11 +17,6 @@
     cd ~/.dotfiles && zsh setup.zsh
     ```
 
-4. Set Zsh as default shell:  
-    ```
-    chsh -s /bin/zsh
-    ```
-
 # Uninstallation
 1. run this:  
     ```
