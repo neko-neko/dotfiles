@@ -96,6 +96,7 @@ function install_brew_casks() {
 
   # install editors
   brew cask install atom
+  apm install sync-settings
   brew cask install mou
   brew cask install evernote
 

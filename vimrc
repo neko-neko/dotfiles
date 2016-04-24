@@ -17,6 +17,7 @@ call dein#save_state()
 set fenc=utf-8
 syntax enable
 colorscheme molokai
+filetype plugin indent on
 
 " Do not create backup
 set nowritebackup
