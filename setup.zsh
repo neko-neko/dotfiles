@@ -58,6 +58,7 @@ function install_brew_files() {
   go install github.com/Masterminds/glide
   go get github.com/codegangsta/cli
   go get -u github.com/jteeuwen/go-bindata/...
+  go get github.com/mitchellh/gox
 
   # install node
   echo "install node formulas..."
