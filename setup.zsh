@@ -43,7 +43,8 @@ function install_brew_files() {
   brew install tree
   brew install watch
   brew install wget
-  nrew install nkf
+  brew install nkf
+  brew install p7zip
   brew install zsh --without-etcdir
 
   # install ruby formulas
