@@ -61,6 +61,7 @@ function install_brew_files() {
   go get github.com/codegangsta/cli
   go get -u github.com/jteeuwen/go-bindata/...
   go get github.com/mitchellh/gox
+  go get github.com/aktau/github-release
 
   # install node
   echo "install node formulas..."
