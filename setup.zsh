@@ -44,6 +44,8 @@ function install_brew_files() {
   brew install wget
   brew install nkf
   brew install p7zip
+  brew install peco
+  brew install ccat
   brew install zsh --without-etcdir
 
   # install ruby formulas
