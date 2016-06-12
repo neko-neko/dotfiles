@@ -46,6 +46,11 @@ export NODEBREW_ROOT=/usr/local/var/nodebrew
 export JAVA_HOME=$(/usr/libexec/java_home)
 
 # ------------------------------
+# Hub command Settings
+# ------------------------------
+function git(){hub "$@"}
+
+# ------------------------------
 # Load aliases
 # ------------------------------
 source "${ZDOTDIR:-$HOME}/.aliases"
