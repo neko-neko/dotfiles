@@ -40,7 +40,6 @@ function install_brew_files() {
   brew install tig
   brew install tmux
   brew install tree
-  brew install tree
   brew install watch
   brew install wget
   brew install nkf
