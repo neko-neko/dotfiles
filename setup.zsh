@@ -46,6 +46,8 @@ function install_brew_files() {
   brew install p7zip
   brew install peco
   brew install ccat
+  brew tap tcnksm/ghr
+  brew install ghr
   brew install zsh --without-etcdir
 
   # install ruby formulas
@@ -61,7 +63,6 @@ function install_brew_files() {
   go get github.com/codegangsta/cli
   go get -u github.com/jteeuwen/go-bindata/...
   go get github.com/mitchellh/gox
-  go get github.com/aktau/github-release
 
   # install node
   echo "install node formulas..."
