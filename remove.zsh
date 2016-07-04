@@ -2,17 +2,18 @@
 echo 'remove dotfiles? (y/n)'
 read confirmation
 if [[ $confirmation = "y" || confirmation = "Y" ]]; then
-  rm ${ZDOTDIR:-$HOME}/.aliases
-  rm ${ZDOTDIR:-$HOME}/.gemrc
-  rm ${ZDOTDIR:-$HOME}/.gitconfig
-  rm ${ZDOTDIR:-$HOME}/.hushlogin
-  rm ${ZDOTDIR:-$HOME}/.tmux.conf
-  rm ${ZDOTDIR:-$HOME}/.vimrc
-  rm ${ZDOTDIR:-$HOME}/.vim
-  rm ${ZDOTDIR:-$HOME}/.zlogin
-  rm ${ZDOTDIR:-$HOME}/.zlogout
-  rm ${ZDOTDIR:-$HOME}/.zpreztorc
-  rm ${ZDOTDIR:-$HOME}/.zprofile
-  rm ${ZDOTDIR:-$HOME}/.zshenv
-  rm ${ZDOTDIR:-$HOME}/.zshrc
+  unlink ${ZDOTDIR:-$HOME}/.aliases
+  unlink ${ZDOTDIR:-$HOME}/.gemrc
+  unlink ${ZDOTDIR:-$HOME}/.gitconfig
+  unlink ${ZDOTDIR:-$HOME}/.hushlogin
+  unlink ${ZDOTDIR:-$HOME}/.tmux.conf
+  unlink ${ZDOTDIR:-$HOME}/.vimrc
+  unlink ${ZDOTDIR:-$HOME}/.vim
+  unlink ${ZDOTDIR:-$HOME}/.zlogin
+  unlink ${ZDOTDIR:-$HOME}/.zlogout
+  unlink ${ZDOTDIR:-$HOME}/.zprezto
+  unlink ${ZDOTDIR:-$HOME}/.zpreztorc
+  unlink ${ZDOTDIR:-$HOME}/.zprofile
+  unlink ${ZDOTDIR:-$HOME}/.zshenv
+  unlink ${ZDOTDIR:-$HOME}/.zshrc
 fi
