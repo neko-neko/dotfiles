@@ -54,3 +54,9 @@ function git(){hub "$@"}
 # Load aliases
 # ------------------------------
 source "${ZDOTDIR:-$HOME}/.aliases"
+
+# ------------------------------
+# define zsh hooks
+# ------------------------------
+function chpwd_hook() { pwd && ls }
+add-zsh-hook chpwd chpwd_hook
