@@ -46,6 +46,8 @@ function install_brew_files() {
   brew install p7zip
   brew install peco
   brew install ccat
+  brew install git-flow
+  brew install git-extras
   brew tap tcnksm/ghr
   brew install ghr
   brew install zsh --without-etcdir
