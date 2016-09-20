@@ -126,6 +126,7 @@ install_brew_casks() {
     alfred
     atom
     caffeine
+    docker
     evernote
     firefox
     google-chrome
