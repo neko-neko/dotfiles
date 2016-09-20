@@ -16,7 +16,7 @@ MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 # ------------------------------
 # History Settings
 # ------------------------------
-HISTFILE=~/.zsh_history
+HISTFILE="${ZDOTDIR:-$HOME}/.zhistory"
 HISTSIZE=10000
 SAVEHIST=10000
 setopt hist_ignore_dups
@@ -58,5 +58,5 @@ source "${ZDOTDIR:-$HOME}/.aliases"
 # ------------------------------
 # define zsh hooks
 # ------------------------------
-function chpwd_hook() { pwd && ls }
+chpwd_hook() { pwd && ls }
 add-zsh-hook chpwd chpwd_hook
