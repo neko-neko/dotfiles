@@ -1,8 +1,18 @@
 #!/bin/zsh
-# ------------------------------
-# Install brew files function
-# ------------------------------
-function install_brew_files() {
+#
+# Install my tools
+set -eu
+
+#######################################
+# Install brew formulas
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+install_brew_files() {
   # update brew and formulas
   echo "brew updating..."
   brew outdated
@@ -11,46 +21,53 @@ function install_brew_files() {
 
   # install basic formulas
   echo "install basic formulas..."
-  brew install ag
-  brew install ansible
-  brew install autoconf
-  brew install binutils
-  brew install cmake
-  brew install coreutils
-  brew install ctags
-  brew install curl
-  brew install diffutils
-  brew install findutils --with-default-names
-  brew install gawk
-  brew install gibo
-  brew install gnu-indent --with-default-names
-  brew install gnu-sed --with-default-names
-  brew install gnu-tar --with-default-names
-  brew install gnu-which --with-default-names
-  brew install gnupg
-  brew install gnutls
-  brew install hub
-  brew install imagemagick
-  brew install jq
+  taps=(
+    homebrew/dupes
+  )
+  formulas=(
+    ag
+    ansible
+    autoconf
+    binutils
+    ccat
+    cmake
+    coreutils
+    ctags
+    curl
+    diffutils
+    findutils --with-default-names
+    gawk
+    gibo
+    git-extras
+    git-flow
+    gnupg
+    gnutls
+    gnu-indent --with-default-names
+    gnu-sed --with-default-names
+    gnu-tar --with-default-names
+    gnu-which --with-default-names
+    go --cross-compile-all
+    hub
+    imagemagick
+    jq
+    nkf
+    nodebrew
+    openssl
+    p7zip
+    peco
+    readline
+    reattach-to-user-namespace
+    tig
+    tmux
+    tree
+    watch
+    wget
+    zsh --without-etcdir
+  )
+  brew tap ${taps[@]}
+  brew install ${formulas[@]}
   brew install macvim --with-cscope --with-lua --with-override-system-vim
   brew linkapps macvim
-  brew install openssl
-  brew install readline
-  brew install reattach-to-user-namespace
-  brew install tig
-  brew install tmux
-  brew install tree
-  brew install watch
-  brew install wget
-  brew install nkf
-  brew install p7zip
-  brew install peco
-  brew install ccat
-  brew install git-flow
-  brew install git-extras
-  brew tap tcnksm/ghr
-  brew install ghr
-  brew install zsh --without-etcdir
 
   # install ruby formulas
   echo "install ruby formulas..."
@@ -59,16 +76,21 @@ function install_brew_files() {
 
   # install golang
   echo "install golang formulas..."
-  brew install go --cross-compile-all
-  go get github.com/Masterminds/glide
-  go install github.com/Masterminds/glide
-  go get github.com/codegangsta/cli
-  go get -u github.com/jteeuwen/go-bindata/...
-  go get github.com/mitchellh/gox
-
-  # install node
-  echo "install node formulas..."
-  brew install nodebrew
+  golang_installs=(
+    github.com/Masterminds/glide
+  )
+  golang_get=(
+    github.com/codegangsta/cli
+    github.com/jteeuwen/go-bindata/...
+    github.com/mitchellh/gox
+    golang.org/x/tools/cmd/stringer
+  )
+  for install_item in ${golang_installs[@]}; do
+    go install ${install_item}
+  done
+  for get_item in ${golang_get[@]}; do
+    go get -u ${get_item}
+  done
 
   # cleanup brew
   brew cleanup
@@ -76,7 +98,7 @@ function install_brew_files() {
   # update zsh
   echo 'update using zsh path? (y/n)'
   read confirmation
-  if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+  if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
     echo "update /etc/shells..."
     sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
     echo "switch new zsh..."
@@ -84,98 +106,116 @@ function install_brew_files() {
   fi
 }
 
-# ------------------------------
-# Install brew casks function
-# ------------------------------
-function install_brew_casks() {
-  # install cask
-  brew tap caskroom/cask
-  brew install brew-cask
+#######################################
+# Install brew casks
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+install_brew_casks() {
+  # brew taps
+  taps=(
+    caskroom/cask
+  )
 
-  # install terminal
-  brew cask install iterm2
+  # brew casks
+  casks=(
+    alfred
+    atom
+    caffeine
+    evernote
+    firefox
+    google-chrome
+    google-japanese-ime
+    java
+    karabiner
+    licecap
+    mou
+    mysqlworkbench
+    shiftit
+    slack
+    sourcetree
+    iterm2
+    vagrant
+    virtualbox
+  )
 
-  # install browsers
-  brew cask install firefox --caskroom=/Applications
-  brew cask install google-chrome --caskroom=/Applications
+  # cask update
+  brew cask update
 
-  # install ime
-  brew cask install google-japanese-ime
+  # install taps
+  brew tap ${taps[@]}
 
-  # install editors
-  brew cask install atom
+  # install casks
+  brew cask install ${casks[@]}
+
+  # atom package manager
   apm install sync-settings
-  brew cask install mou
-  brew cask install evernote
-
-  # install keyboard utils
-  brew cask install shiftit
-  brew cask install karabiner
-
-  # install capture utils
-  brew cask install licecap
-
-  # install screen utils
-  brew cask install caffeine
-
-  # install development tools
-  brew cask install sourcetree
-  brew cask install virtualbox
-  brew cask install vagrant
-  brew cask install dockertoolbox
-  brew cask install java
-  brew cask install mysqlworkbench
-
-  # install slack
-  brew cask install slack
-
-  # install alfred
-  brew cask install alfred
 
   # cleanup cask files
   brew cask cleanup
 }
 
-# ------------------------------
-# Install my toys function
-# ------------------------------
-function install_my_toys() {
-  # install wireshark
-  brew cask install wireshark
+######################################
+# Install my toys
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+######################################
+install_my_toys() {
+  casks=(
+    wireshark
+    xquartz
+  )
+  formulas=(
+    wine
+    winetricks
+  )
+  # install casks
+  brew cask install ${casks[@]}
 
-  # install wine
-  brew cask install xquartz
-  brew install wine
-  brew install winetricks
-  winetricks d3dx9
-  winetricks d3dx10
-  winetricks d3dx11
-  winetricks directmusic
-  winetricks dsound
-  winetricks allfonts
-  winetricks vcrun6
-  winetricks vcrun2005
-  winetricks vcrun2008
-  winetricks vcrun2010
-  winetricks vcrun2012
-  winetricks vcrun2013
-  winetricks vcrun2015
+  # install formulas
+  brew install ${formulas[@]}
+
+  # install winetricks plugins
+  wine_plugins=(
+    allfonts
+    d3dx10
+    d3dx11
+    d3dx9
+    directmusic
+    dsound
+    vcrun2005
+    vcrun2008
+    vcrun2010
+    vcrun2012
+    vcrun2013
+    vcrun2015
+    vcrun6  
+  )
+  winetricks ${wine_plugins[@]}
 }
 
 # ------------------------------
-# Do functions
+# Run installation
 # ------------------------------
 # install my dotfiles
 for name in *; do
   target="$HOME/.$name"
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
+  if [[ -e "$target" ]] && [[ ! -L "$target" ]]; then
     echo "$target already exists"
   else
-  if [ "$name" != 'setup.zsh' ] && [ "$name" != 'README.md' ] && [ "$name" != 'prezto' ] && [ "$name" != 'remove.zsh' ]; then
-    echo "creating $target"
-    ln -sf "$PWD/$name" "$target"
+    if [[ "$name" != 'setup.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]] && [[ "$name" != 'remove.zsh' ]]; then
+      echo "creating $target"
+      ln -sf "$PWD/$name" "$target"
+    fi
   fi
-fi
 done
 
 # install Prezto
@@ -185,7 +225,7 @@ ln -sf "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 # install brew files
 echo 'install brew files? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   echo "Install brew files..."
   install_brew_files
 fi
@@ -193,7 +233,7 @@ fi
 # install brew casks
 echo 'install brew casks? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   echo "Install brew casks..."
   install_brew_casks
 fi
@@ -201,7 +241,7 @@ fi
 # install my toys
 echo 'install my toys? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   echo "Install my toys..."
   install_my_toys
 fi

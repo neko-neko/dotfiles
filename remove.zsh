@@ -1,7 +1,7 @@
 #!/bin/zsh
 echo 'remove dotfiles? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || confirmation = "Y" ]]; then
+if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   unlink ${ZDOTDIR:-$HOME}/.aliases
   unlink ${ZDOTDIR:-$HOME}/.gemrc
   unlink ${ZDOTDIR:-$HOME}/.gitconfig

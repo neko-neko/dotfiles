@@ -112,3 +112,6 @@ repo = 'scrooloose/nerdtree'
 
 [[plugins]]
 repo = 'vim-perl/vim-perl'
+
+[[plugins]]
+repo = 'ConradIrwin/vim-bracketed-paste'
