@@ -10,6 +10,10 @@ call dein#load_toml('~/.vim/dein.toml', {'lazy': 0})
 call dein#load_toml('~/.vim/deinlazy.toml', {'lazy' : 1})
 call dein#end()
 call dein#save_state()
+" auto setup plugins on startup
+if dein#check_install()
+  call dein#install()
+endif
 
 "--------------------
 "" Base settings:
