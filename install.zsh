@@ -187,9 +187,9 @@ install_my_toys() {
   # install winetricks plugins
   wine_plugins=(
     allfonts
-    d3dx10
-    d3dx11
-    d3dx9
+    d3dx9_43
+    d3dx10_43
+    d3dx11_43
     directmusic
     dsound
     vcrun2005
@@ -198,7 +198,7 @@ install_my_toys() {
     vcrun2012
     vcrun2013
     vcrun2015
-    vcrun6  
+    vcrun6
   )
   winetricks ${wine_plugins[@]}
 }
