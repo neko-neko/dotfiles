@@ -13,12 +13,6 @@ set -eu
 #   None
 #######################################
 install_brew_files() {
-  # update brew and formulas
-  echo "brew updating..."
-  brew outdated
-  brew update
-  brew upgrade --all
-
   # install basic formulas
   echo "install basic formulas..."
   taps=(
@@ -144,9 +138,6 @@ install_brew_casks() {
     virtualbox
   )
 
-  # cask update
-  brew cask update
-
   # install taps
   brew tap ${taps[@]}
 
@@ -218,7 +209,7 @@ for name in *; do
   if [[ -e "$target" ]] && [[ ! -L "$target" ]]; then
     echo "$target already exists"
   else
-    if [[ "$name" != 'setup.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]] && [[ "$name" != 'remove.zsh' ]]; then
+    if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
       echo "creating $target"
       ln -sf "$PWD/$name" "$target"
     fi
