@@ -206,6 +206,12 @@ install_my_toys() {
 # ------------------------------
 # Run installation
 # ------------------------------
+# clone my dotfiles
+git clone --recursive https://github.com/neko-neko/dotfiles.git "${ZDOTDIR:-$HOME}/.dotfiles"
+
+# move dotfiles dir
+cd "${ZDOTDIR:-$HOME}/.dotfiles"
+
 # install my dotfiles
 for name in *; do
   target="$HOME/.$name"
