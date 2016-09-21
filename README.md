@@ -4,7 +4,7 @@
 # Installation
 1. Install my dot files:  
     ```
-    curl https://raw.githubusercontent.com/neko-neko/dotfiles/master/install.zsh | zsh
+    zsh -c "$(curl -s https://raw.githubusercontent.com/neko-neko/dotfiles/master/install.zsh)"
     ```
 
 # Uninstallation
