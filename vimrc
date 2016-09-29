@@ -65,8 +65,14 @@ set wrapscan
 set hlsearch
 
 "--------------------
+"" NERTDTree
+"
+let NERDTreeShowHidden = 1
+autocmd vimenter * if !argc() | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"--------------------
 "" Keymap settings:
 "
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 map <C-n> :NERDTreeToggle<CR>
-
