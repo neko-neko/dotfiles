@@ -53,6 +53,7 @@ install_brew_files() {
     tig
     tmux
     tree
+    terraform
     watch
     wget
     zsh --without-etcdir
