@@ -38,7 +38,6 @@ eval "$(rbenv init - zsh)"
 # node Settings
 # ------------------------------
 export PATH=$HOME/.nodebrew/current/bin:$PATH
-export NODEBREW_ROOT=/usr/local/var/nodebrew
 
 # ------------------------------
 # Java Settings

@@ -45,7 +45,6 @@ install_brew_files() {
     imagemagick
     jq
     nkf
-    nodebrew
     openssl
     p7zip
     peco
@@ -85,6 +84,9 @@ install_brew_files() {
   for get_item in ${golang_get[@]}; do
     go get -u ${get_item}
   done
+
+  # install nodebrew
+  curl -L git.io/nodebrew | perl - setup
 
   # cleanup brew
   brew cleanup
