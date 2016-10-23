@@ -54,6 +54,7 @@ install_brew_files() {
     tmux
     tree
     terraform
+    ttyd
     watch
     wget
     zsh --without-etcdir
@@ -78,6 +79,8 @@ install_brew_files() {
     github.com/jteeuwen/go-bindata/...
     github.com/mitchellh/gox
     golang.org/x/tools/cmd/stringer
+    github.com/davecheney/httpstat
+    github.com/variadico/noti/cmd/noti
   )
   for install_item in ${golang_installs[@]}; do
     go install ${install_item}
