@@ -47,6 +47,7 @@ install_brew_files() {
     nkf
     openssl
     p7zip
+    packer
     peco
     readline
     reattach-to-user-namespace
