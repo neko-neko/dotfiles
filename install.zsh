@@ -82,6 +82,7 @@ install_brew_files() {
     golang.org/x/tools/cmd/stringer
     github.com/davecheney/httpstat
     github.com/variadico/noti/cmd/noti
+    github.com/simeji/jid/cmd/jid
   )
   for install_item in ${golang_installs[@]}; do
     go install ${install_item}
