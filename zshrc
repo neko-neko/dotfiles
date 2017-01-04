@@ -53,7 +53,7 @@ git() { hub "$@" }
 # ------------------------------
 # tmuxinator Settings
 # ------------------------------
-source ~/.tmuxinator
+source ~/.tmuxinator/tmuxinator.zsh
 
 # ------------------------------
 # Load aliases

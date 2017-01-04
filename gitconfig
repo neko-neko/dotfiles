@@ -29,7 +29,7 @@
 	untracked = cyan
 
 [commit]
-	gpgsign = true
+	gpgsign = false
 
 [diff]
 	renames = copies

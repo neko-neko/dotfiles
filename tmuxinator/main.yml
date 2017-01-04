@@ -1,0 +1,13 @@
+name: main
+root: ~/
+
+windows:
+  - develop:
+      layout: main-vertical
+      panes:
+        - editor:
+          - $EDITOR
+        - pane1:
+          - cd ~/git
+        - pane2:
+          -
