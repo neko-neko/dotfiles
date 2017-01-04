@@ -10,6 +10,7 @@ export LANG=en_US.UTF-8
 export EDITOR=vim
 export VISUAL=vim
 export PAGER=less
+export SHELL=zsh
 PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
 MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 
@@ -47,7 +48,12 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 # ------------------------------
 # Hub command Settings
 # ------------------------------
-function git(){hub "$@"}
+git() { hub "$@" }
+
+# ------------------------------
+# tmuxinator Settings
+# ------------------------------
+source ~/.tmuxinator
 
 # ------------------------------
 # Load aliases

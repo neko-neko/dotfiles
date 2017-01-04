@@ -93,6 +93,14 @@ install_brew_files() {
   # install nodebrew
   curl -L git.io/nodebrew | perl - setup
 
+  # install gems
+  install_gems=(
+    tmuxinator
+  )
+  for install_gem in ${install_gems[@]}; do
+    gem install ${install_gem}
+  done
+
   # cleanup brew
   brew cleanup
 
