@@ -88,16 +88,9 @@ on_ft = 'ruby'
 repo = 'Shougo/neosnippet-snippets'
 
 [[plugins]]
-repo = 'mattn/webapi-vim'
-
-[[plugins]]
 repo = 'nsf/gocode'
 rtp = 'vim'
 on_ft = 'go'
-
-[[plugins]]
-repo = 'vim-jp/vimdoc-ja'
-on_ft = 'help'
 
 [[plugins]]
 repo = 'vim-jp/syntax-vim-ex'

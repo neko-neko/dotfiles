@@ -5,6 +5,8 @@ if &compatible
   set nocompatible
 endif
 set runtimepath^=~/.vim/dein.vim
+let g:dein#enable_notification = 1
+
 call dein#begin(expand('~/.cache/dein'))
 call dein#load_toml('~/.vim/dein.toml', {'lazy': 0})
 call dein#load_toml('~/.vim/deinlazy.toml', {'lazy' : 1})

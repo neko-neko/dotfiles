@@ -68,10 +68,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'aharisu/vim-gdev'
-on_ft = 'scheme'
-
-[[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
 
