@@ -67,7 +67,6 @@ repo = 'vim-jp/autofmt'
 [[plugins]]
 repo = 'kana/vim-textobj-user'
 
-# Operators
 [[plugins]]
 repo = 'kana/vim-operator-user'
 
@@ -87,10 +86,6 @@ on_ft = 'ruby'
 
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
-
-[[plugins]]
-repo = 'ujihisa/vimshell-ssh'
-on_ft = 'vimshell'
 
 [[plugins]]
 repo = 'mattn/webapi-vim'

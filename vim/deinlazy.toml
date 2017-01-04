@@ -31,16 +31,6 @@ hook_source = 'source ~/.vim/rc/plugins/neosnippet.rc.vim'
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
-repo = 'Shougo/neossh.vim'
-on_ft = ['vimfiler', 'vimshell']
-
-[[plugins]]
-repo = 'Shougo/vimshell.vim'
-on_map = [['n', '<Plug>']]
-hook_add = 'nmap [Space]s  <Plug>(vimshell_switch)'
-hook_source = 'source ~/.vim/rc/plugins/vimshell.rc.vim'
-
-[[plugins]]
 repo = 'Shougo/neco-vim'
 on_ft = 'vim'
 on_i = 1
