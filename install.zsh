@@ -214,26 +214,24 @@ install_my_toys() {
 # Run installation
 # ------------------------------
 # clone my dotfiles
-git clone --recursive https://github.com/neko-neko/dotfiles.git "${ZDOTDIR:-$HOME}/.dotfiles"
+if [[ ! -e ${ZDOTDIR:-$HOME}/.dotfiles ]]; then
+  git clone --recursive https://github.com/neko-neko/dotfiles.git "${ZDOTDIR:-$HOME}/.dotfiles"
+else
+  git pull ${ZDOTDIR:-$HOME}/.dotfiles
+fi
 
 # move dotfiles dir
 cd "${ZDOTDIR:-$HOME}/.dotfiles"
 
 # install my dotfiles
 for name in *; do
-  target="$HOME/.$name"
-  if [[ -e "$target" ]] && [[ ! -L "$target" ]]; then
-    echo "$target already exists"
-  else
-    if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
-      echo "creating $target"
-      ln -sf "$PWD/$name" "$target"
+  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
+    if [[ -e ${ZDOTDIR:-$HOME}/.$name ]]; then
+      unlink "${ZDOTDIR:-$HOME}/.$name"
     fi
+    ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
   fi
 done
-
-# install Prezto
-echo "creating prezto link ${ZDOTDIR:-$HOME}/.zprezto"
 ln -sf "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 
 # install brew files
