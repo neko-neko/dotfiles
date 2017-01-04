@@ -232,6 +232,9 @@ for name in *; do
     ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
   fi
 done
+if [[ -e ${ZDOTDIR:-$HOME}/.zprezto ]]; then
+  unlink "${ZDOTDIR:-$HOME}/.zprezto"
+fi
 ln -sf "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 
 # install brew files
