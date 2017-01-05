@@ -93,6 +93,7 @@ install_brew_files() {
 
   # install nodebrew
   curl -L git.io/nodebrew | perl - setup
+  mkdir -p ${ZDOTDIR:-$HOME}/.nodebrew/src
 
   # install gems
   install_gems=(
