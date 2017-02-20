@@ -93,6 +93,10 @@ rtp = 'vim'
 on_ft = 'go'
 
 [[plugins]]
+repo = 'fatih/vim-go'
+on_ft = 'go'
+
+[[plugins]]
 repo = 'vim-jp/syntax-vim-ex'
 
 [[plugins]]
