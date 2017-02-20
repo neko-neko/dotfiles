@@ -51,6 +51,7 @@ install_brew_files() {
     peco
     readline
     reattach-to-user-namespace
+    lua
     tig
     tmux
     tree
