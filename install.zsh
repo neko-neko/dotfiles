@@ -41,6 +41,7 @@ install_brew_files() {
     gnu-tar --with-default-names
     gnu-which --with-default-names
     go --cross-compile-all
+    grip
     hub
     imagemagick
     jq

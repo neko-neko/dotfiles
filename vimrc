@@ -74,6 +74,11 @@ autocmd vimenter * if !argc() | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 "--------------------
+"" Markdown preview
+"
+let vim_markdown_preview_github = 1
+
+"--------------------
 "" Keymap settings:
 "
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
