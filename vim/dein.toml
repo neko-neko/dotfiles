@@ -76,7 +76,6 @@ on_ft = ['markdown', 'mkd']
 
 [[plugins]]
 repo = 'JamshedVesuna/vim-markdown-preview'
-on_ft = ['markdown', 'mkd']
 
 [[plugins]]
 repo = 'marijnh/tern_for_vim'

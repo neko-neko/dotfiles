@@ -77,6 +77,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 "" Markdown preview
 "
 let vim_markdown_preview_github = 1
+let vim_markdown_preview_hotkey = '<C-m>'
+let vim_markdown_preview_browser = 'Google Chrome'
 
 "--------------------
 "" Keymap settings:
