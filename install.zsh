@@ -108,6 +108,10 @@ install_brew_files() {
   # cleanup brew
   brew cleanup
 
+  # install plantuml
+  mkdir -p ${ZDOTDIR:-$HOME}/lib/java
+  wget http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar -P ${ZDOTDIR:-$HOME}/lib/java/
+
   # update zsh
   echo 'update using zsh path? (y/n)'
   read confirmation
