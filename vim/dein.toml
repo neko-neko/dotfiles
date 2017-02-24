@@ -110,3 +110,6 @@ repo = 'vim-perl/vim-perl'
 
 [[plugins]]
 repo = 'ConradIrwin/vim-bracketed-paste'
+
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
