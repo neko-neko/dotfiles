@@ -41,6 +41,7 @@ install_brew_files() {
     gnu-tar --with-default-names
     gnu-which --with-default-names
     go --cross-compile-all
+    graphviz
     grip
     hub
     imagemagick
