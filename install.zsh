@@ -79,6 +79,7 @@ install_brew_files() {
     github.com/Masterminds/glide
   )
   golang_get=(
+    github.com/golang/dep/...
     github.com/codegangsta/cli
     github.com/jteeuwen/go-bindata/...
     github.com/mitchellh/gox
