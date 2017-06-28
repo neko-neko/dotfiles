@@ -34,30 +34,32 @@ install_brew_files() {
     gibo
     git-extras
     git-flow
-    gnupg
-    gnutls
     gnu-indent --with-default-names
     gnu-sed --with-default-names
     gnu-tar --with-default-names
     gnu-which --with-default-names
+    gnupg
+    gnutls
     go --cross-compile-all
     graphviz
+    grep --with-default-names
     grip
     hub
     imagemagick
     jq
+    lua
     nkf
     openssl
     p7zip
     packer
+    pandoc
     peco
     readline
     reattach-to-user-namespace
-    lua
+    terraform
     tig
     tmux
     tree
-    terraform
     ttyd
     watch
     wget
@@ -150,6 +152,7 @@ install_brew_casks() {
     firefox
     google-chrome
     google-japanese-ime
+    iterm2
     java
     karabiner
     licecap
@@ -158,7 +161,6 @@ install_brew_casks() {
     shiftit
     slack
     sourcetree
-    iterm2
     vagrant
     virtualbox
   )
