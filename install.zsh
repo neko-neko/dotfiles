@@ -52,6 +52,7 @@ install_brew_files() {
     packer
     pandoc
     peco
+    python3
     readline
     reattach-to-user-namespace
     terraform
@@ -93,6 +94,10 @@ install_brew_files() {
   for install_gem in ${install_gems[@]}; do
     gem install ${install_gem}
   done
+
+  # install pips
+  pip3 install --upgrade pip setuptools wheel
+  pip3 install neovim
 
   # cleanup brew
   brew cleanup

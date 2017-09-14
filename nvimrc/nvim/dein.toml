@@ -2,6 +2,9 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
+repo = 'Shougo/denite.nvim'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 build = 'make'
 
@@ -101,9 +104,6 @@ on_ft = 'go'
 
 [[plugins]]
 repo = 'vim-jp/syntax-vim-ex'
-
-[[plugins]]
-repo = 'scrooloose/nerdtree'
 
 [[plugins]]
 repo = 'vim-perl/vim-perl'

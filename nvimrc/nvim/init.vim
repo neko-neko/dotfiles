@@ -70,11 +70,14 @@ set wrapscan
 set hlsearch
 
 "--------------------
-"" NERTDTree
+"" denite
 "
-let NERDTreeShowHidden = 1
-autocmd vimenter * if !argc() | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+call denite#custom#map('insert', '<C-j>', '<denite:do_action:split>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:do_action:vsplit>', 'noremap')
+noremap <C-P> :Denite buffer<CR>
+noremap <C-N> :Denite -buffer-name=file file<CR>
+noremap <C-Z> :Denite file_old<CR>
+noremap <C-C> :Denite file_rec<CR>
 
 "--------------------
 "" Markdown preview
@@ -87,4 +90,3 @@ let plantuml_executable_script = '~/.functions/plantuml'
 "" Keymap settings:
 "
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
-map <C-n> :NERDTreeToggle<CR>
