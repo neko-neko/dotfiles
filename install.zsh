@@ -19,7 +19,6 @@ install_brew_files() {
     homebrew/dupes
   )
   formulas=(
-    ag
     ansible
     autoconf
     binutils
@@ -33,7 +32,6 @@ install_brew_files() {
     gawk
     gibo
     git-extras
-    git-flow
     gnu-indent --with-default-names
     gnu-sed --with-default-names
     gnu-tar --with-default-names
@@ -43,7 +41,6 @@ install_brew_files() {
     go --cross-compile-all
     graphviz
     grep --with-default-names
-    grip
     hub
     imagemagick
     jq
@@ -60,8 +57,6 @@ install_brew_files() {
     tig
     tmux
     tree
-    ttyd
-    watch
     wget
     zsh --without-etcdir
   )
@@ -77,22 +72,13 @@ install_brew_files() {
 
   # install golang
   echo "install golang formulas..."
-  golang_installs=(
-    github.com/Masterminds/glide
-  )
   golang_get=(
     github.com/golang/dep/...
-    github.com/codegangsta/cli
     github.com/jteeuwen/go-bindata/...
     github.com/mitchellh/gox
     golang.org/x/tools/cmd/stringer
-    github.com/davecheney/httpstat
-    github.com/variadico/noti/cmd/noti
     github.com/simeji/jid/cmd/jid
   )
-  for install_item in ${golang_installs[@]}; do
-    go install ${install_item}
-  done
   for get_item in ${golang_get[@]}; do
     go get -u ${get_item}
   done
