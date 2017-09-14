@@ -7,10 +7,11 @@ source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
 # General Settings
 # ------------------------------
 export LANG=en_US.UTF-8
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export PAGER=less
 export SHELL=zsh
+export XDG_CONFIG_HOME=${ZDOTDIR:-$HOME}/.nvimrc
 PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
 MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 FPATH=${ZDOTDIR:-$HOME}/.functions:$FPATH

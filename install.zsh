@@ -45,6 +45,7 @@ install_brew_files() {
     imagemagick
     jq
     lua
+    neovim
     nkf
     openssl
     p7zip
@@ -62,8 +63,6 @@ install_brew_files() {
   )
   brew tap ${taps[@]}
   brew install ${formulas[@]}
-  brew install macvim --with-cscope --with-lua --with-override-system-vim
-  brew linkapps macvim
 
   # install ruby formulas
   echo "install ruby formulas..."
@@ -80,7 +79,7 @@ install_brew_files() {
     github.com/simeji/jid/cmd/jid
   )
   for get_item in ${golang_get[@]}; do
-    go get -u ${get_item}
+    go get -u -v ${get_item}
   done
 
   # install nodebrew
@@ -221,7 +220,7 @@ cd "${ZDOTDIR:-$HOME}/.dotfiles"
 # install my dotfiles
 for name in *; do
   if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
-    if [[ -e ${ZDOTDIR:-$HOME}/.$name ]]; then
+    if [[ -L ${ZDOTDIR:-$HOME}/.$name ]]; then
       unlink "${ZDOTDIR:-$HOME}/.$name"
     fi
     ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
@@ -257,7 +256,7 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
 fi
 
 # Fixed key repeat?
-echo 'fixed key repeat?'
+echo 'fixed key repeat? (y/n)'
 read confirmation
 if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   defaults write -g InitialKeyRepeat -int 10

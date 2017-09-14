@@ -4,14 +4,17 @@
 if &compatible
   set nocompatible
 endif
-set runtimepath^=~/.vim/dein.vim
+set runtimepath^=~/.nvimrc/nvim/dein.vim
 let g:dein#enable_notification = 1
+let g:dein#install_progress_type = 'title'
+let g:dein#install_message_type = 'none'
 
 call dein#begin(expand('~/.cache/dein'))
-call dein#load_toml('~/.vim/dein.toml', {'lazy': 0})
-call dein#load_toml('~/.vim/deinlazy.toml', {'lazy' : 1})
+call dein#load_toml('~/.nvimrc/nvim/dein.toml', {'lazy': 0})
+call dein#load_toml('~/.nvimrc/nvim/deinlazy.toml', {'lazy' : 1})
 call dein#end()
 call dein#save_state()
+
 " auto setup plugins on startup
 if dein#check_install()
   call dein#install()
