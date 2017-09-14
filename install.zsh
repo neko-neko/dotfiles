@@ -154,7 +154,7 @@ install_brew_casks() {
     google-japanese-ime
     iterm2
     java
-    karabiner
+    karabiner-elements
     licecap
     mou
     mysqlworkbench
@@ -270,4 +270,12 @@ read confirmation
 if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   echo "Install my toys..."
   install_my_toys
+fi
+
+# Fixed key repeat?
+echo 'fixed key repeat?'
+read confirmation
+if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+  defaults write -g InitialKeyRepeat -int 10
+  defaults write -g KeyRepeat -int 1
 fi
