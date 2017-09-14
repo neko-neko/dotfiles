@@ -156,11 +156,9 @@ install_brew_casks() {
     java
     karabiner-elements
     licecap
-    mou
     mysqlworkbench
     shiftit
     slack
-    sourcetree
     vagrant
     virtualbox
   )
