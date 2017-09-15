@@ -53,7 +53,7 @@
 	nevermind = !git reset --hard HEAD && git clean -d -f
 	precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
 	unmerged = diff --name-only --diff-filter=U
-	subupdate = submodule foreach 'git pull origin master'
+	subupdate = git submodule update --init --recursive
 
 [include]
 	path = ~/.gitconfig.local
