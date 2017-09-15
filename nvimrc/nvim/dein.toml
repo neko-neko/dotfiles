@@ -12,104 +12,35 @@ build = 'make'
 repo = 'itchyny/lightline.vim'
 
 [[plugins]]
-repo = 'bronson/vim-trailing-whitespace'
-
-[[plugins]]
-repo = 'othree/html5.vim'
-
-[[plugins]]
-repo = 'hail2u/vim-css3-syntax'
-
-[[plugins]]
-repo = 'jelera/vim-javascript-syntax'
-on_ft = 'javascript'
-
-[[plugins]]
-repo = 'mxw/vim-jsx'
-on_ft = 'javascript'
-
-[[plugins]]
-repo = 'shawncplus/phpcomplete.vim'
-on_ft = 'php'
-
-[[plugins]]
-repo = 'jiangmiao/simple-javascript-indenter'
-on_ft = 'javascript'
-
-[[plugins]]
-repo = 'thinca/vim-ft-diff_fold'
-on_ft = 'diff'
-
-[[plugins]]
-repo = 'thinca/vim-ft-vim_fold'
-on_ft = 'vim'
-
-[[plugins]]
-repo = 'thinca/vim-ft-help_fold'
-on_ft = 'help'
-
-[[plugins]]
-repo = 'yomi322/vim-gitcomplete'
-on_ft = 'vimshell'
-
-[[plugins]]
-repo = 'vim-jp/cpp-vim'
-on_ft = 'cpp'
-
-[[plugins]]
-repo = 'cespare/vim-toml'
-on_ft = 'toml'
-
-[[plugins]]
-repo = 'elzr/vim-json'
-on_ft = 'json'
-
-[[plugins]]
-repo = 'vim-jp/autofmt'
-
-[[plugins]]
-repo = 'kana/vim-textobj-user'
-
-[[plugins]]
-repo = 'kana/vim-operator-user'
-
-[[plugins]]
-repo = 'rcmdnk/vim-markdown'
-on_ft = ['markdown', 'mkd']
-
-[[plugins]]
-repo = 'JamshedVesuna/vim-markdown-preview'
-
-[[plugins]]
-repo = 'marijnh/tern_for_vim'
-on_ft = 'javascript'
-build = 'npm install'
-
-[[plugins]]
-repo = 'vim-ruby/vim-ruby'
-on_map = '<Plug>'
-on_ft = 'ruby'
-
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'
-
-[[plugins]]
-repo = 'nsf/gocode'
-rtp = 'vim'
-on_ft = 'go'
-
-[[plugins]]
-repo = 'fatih/vim-go'
-on_ft = 'go'
-
-[[plugins]]
-repo = 'vim-jp/syntax-vim-ex'
-
-[[plugins]]
-repo = 'vim-perl/vim-perl'
+repo = 'Shougo/deoplete.nvim'
 
 [[plugins]]
 repo = 'ConradIrwin/vim-bracketed-paste'
 
 [[plugins]]
-repo = 'aklt/plantuml-syntax'
+repo = 'bronson/vim-trailing-whitespace'
+
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+hook_add = '''
+  let g:context_filetype#filetypes = {
+  \   'html': [
+  \     {
+  \       'start': '<script\%( [^>]*\)\?>',
+  \       'end': '</script>', 'filetype': 'javascript',
+  \     },
+  \     {
+  \       'start': '<style type="text/scss"\%( [^>]*\)\?>',
+  \       'end': '</style>', 'filetype': 'scss',
+  \     },
+  \     {
+  \       'start': '<style\%( [^>]*\)\?>',
+  \       'end': '</style>', 'filetype': 'css',
+  \     },
+  \   ]
+  \ }
+'''
+
+[[plugins]]
+repo = 'osyo-manga/vim-precious'

@@ -80,13 +80,6 @@ noremap <C-Z> :Denite file_old<CR>
 noremap <C-C> :Denite file_rec<CR>
 
 "--------------------
-"" Markdown preview
-"
-let vim_markdown_preview_github = 1
-let vim_markdown_preview_hotkey = '<C-m>'
-let vim_markdown_preview_browser = 'Google Chrome'
-let plantuml_executable_script = '~/.functions/plantuml'
-"--------------------
 "" Keymap settings:
 "
 nmap <Esc><Esc> :nohlsearch<CR><Esc>

@@ -41,6 +41,7 @@ install_brew_files() {
     go --cross-compile-all
     graphviz
     grep --with-default-names
+    grip
     hub
     imagemagick
     jq
