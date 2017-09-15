@@ -51,7 +51,6 @@
 	discard = checkout --
 	remotes = remote -v
 	nevermind = !git reset --hard HEAD && git clean -d -f
-	precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
 	unmerged = diff --name-only --diff-filter=U
 	subupdate = git submodule update --init --recursive
 
