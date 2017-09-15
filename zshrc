@@ -73,3 +73,10 @@ add-zsh-hook chpwd chpwd_hook
 # ------------------------------
 autoload brew-cask-upgrade
 autoload plantuml
+
+# ------------------------------
+# Custom local files
+# ------------------------------
+if [[ -f "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.local"
+fi

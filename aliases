@@ -14,3 +14,8 @@ alias lx='ll -XB --color'
 alias cat='ccat'
 alias vim='nvim'
 alias reload='source ~/.zshrc'
+
+# Custom local file
+if [[ -f "${ZDOTDIR:-$HOME}/.aliases.local" ]]; then
+  source "${ZDOTDIR:-$HOME}/.aliases.local"
+fi
