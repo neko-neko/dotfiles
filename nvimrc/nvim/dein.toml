@@ -33,6 +33,7 @@ repo = 'tpope/vim-fugitive'
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
+build = ':UpdateRemotePlugins'
 hook_add = '''
   let g:deoplete#enable_at_startup = 1
 '''
