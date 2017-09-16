@@ -70,12 +70,31 @@ set wrapscan
 set hlsearch
 
 "--------------------
+"" Filetypes
+"
+" Ruby
+autocmd BufNewFile,BufRead *.cap set filetype=ruby
+autocmd BufNewFile,BufRead Capfile set filetype=ruby
+autocmd BufNewFile,BufRead Gemfile set filetype=ruby
+autocmd BufNewFile,BufRead Guardfile set filetype=ruby
+autocmd BufNewFile,BufRead Berksfile set filetype=ruby
+autocmd BufNewFile,BufRead Rakefile set filetype=ruby
+
+" Markdown
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+autocmd BufRead,BufNewFile *.mkd set filetype=markdown
+autocmd BufRead,BufNewFile *.markdown set filetype=markdown
+
+" Yaml
+autocmd BufRead,BufNewFile *.yml set filetype=yaml
+autocmd BufRead,BufNewFile *.yaml set filetype=yaml
+
+"--------------------
 "" denite
 "
 call denite#custom#map('insert', '<C-j>', '<denite:do_action:split>', 'noremap')
 call denite#custom#map('insert', '<C-k>', '<denite:do_action:vsplit>', 'noremap')
 noremap <C-P> :Denite buffer<CR>
-noremap <C-N> :Denite -buffer-name=file file<CR>
 noremap <C-Z> :Denite file_old<CR>
 noremap <C-C> :Denite file_rec<CR>
 

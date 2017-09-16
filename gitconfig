@@ -2,6 +2,9 @@
 	name = neko-neko
 	email = seiichi.nishikata456@gmail.com
 
+[init]
+	templatedir = ~/git_template
+
 [core]
 	editor = vim
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space

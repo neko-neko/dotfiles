@@ -9,38 +9,21 @@ repo = 'Shougo/vimproc.vim'
 build = 'make'
 
 [[plugins]]
-repo = 'itchyny/lightline.vim'
-
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-
-[[plugins]]
-repo = 'ConradIrwin/vim-bracketed-paste'
-
-[[plugins]]
-repo = 'bronson/vim-trailing-whitespace'
-
-
-[[plugins]]
-repo = 'Shougo/context_filetype.vim'
+repo = 'scrooloose/nerdtree'
 hook_add = '''
-  let g:context_filetype#filetypes = {
-  \   'html': [
-  \     {
-  \       'start': '<script\%( [^>]*\)\?>',
-  \       'end': '</script>', 'filetype': 'javascript',
-  \     },
-  \     {
-  \       'start': '<style type="text/scss"\%( [^>]*\)\?>',
-  \       'end': '</style>', 'filetype': 'scss',
-  \     },
-  \     {
-  \       'start': '<style\%( [^>]*\)\?>',
-  \       'end': '</style>', 'filetype': 'css',
-  \     },
-  \   ]
-  \ }
+  map <C-n> :NERDTreeToggle<CR>
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  let NERDTreeShowHidden = 1
 '''
 
 [[plugins]]
-repo = 'osyo-manga/vim-precious'
+repo = 'jistr/vim-nerdtree-tabs'
+hook_add = '''
+  let g:nerdtree_tabs_open_on_console_startup = 1
+'''
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+  let g:lightline = {'colorscheme': 'Dracula'}
+'''

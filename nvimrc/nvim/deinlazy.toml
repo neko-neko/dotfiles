@@ -1,6 +1,123 @@
 [[plugins]]
+repo = 'kana/vim-operator-user'
+
+[[plugins]]
+repo = 'kana/vim-textobj-user'
+
+[[plugins]]
+repo = 'kana/vim-textobj-function'
+
+[[plugins]]
+repo = 'osyo-manga/vim-operator-search'
+depends = ['vim-operator-user', 'vim-textobj-function', 'vim-textobj-user']
+hook_add = '''
+  nmap <Space>/ <Plug>(operator-search)if
+'''
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+hook_add='''
+  let g:deoplete#enable_at_startup = 1
+'''
+
+[[plugins]]
+repo = 'ConradIrwin/vim-bracketed-paste'
+
+[[plugins]]
+repo = 'bronson/vim-trailing-whitespace'
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+hook_add = '''
+  let g:context_filetype#filetypes = {
+  \   'html': [
+  \     {
+  \       'start': '<script\%( [^>]*\)\?>',
+  \       'end': '</script>', 'filetype': 'javascript',
+  \     },
+  \     {
+  \       'start': '<style type="text/scss"\%( [^>]*\)\?>',
+  \       'end': '</style>', 'filetype': 'scss',
+  \     },
+  \     {
+  \       'start': '<style\%( [^>]*\)\?>',
+  \       'end': '</style>', 'filetype': 'css',
+  \     },
+  \   ]
+  \ }
+'''
+
+[[plugins]]
+repo = 'editorconfig/editorconfig-vim'
+hook_add = '''
+  let g:EditorConfig_exclude_patterns = ['scp://.*']
+'''
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+on_i = 1
+
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+  nmap <F8> :TagbarToggle<CR>
+  let g:tagbar_left = 0
+  let g:tagbar_autofocus = 1
+  let g:tagbar_autoshowtag = 1
+
+  let g:tagbar_type_ruby = {
+    \ 'kinds' : [
+      \ 'm:modules',
+      \ 'c:classes',
+      \ 'd:describes',
+      \ 'C:contexts',
+      \ 'f:methods',
+      \ 'F:singleton methods'
+    \ ]
+  \ }
+
+  let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+      \ 'p:package',
+      \ 'i:imports:1',
+      \ 'c:constants',
+      \ 'v:variables',
+      \ 't:types',
+      \ 'n:interfaces',
+      \ 'w:fields',
+      \ 'e:embedded',
+      \ 'm:methods',
+      \ 'r:constructor',
+      \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+      \ 't' : 'ctype',
+      \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+      \ 'ctype' : 't',
+      \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+  \}
+'''
+
+[[plugins]]
+repo = 'soramugi/auto-ctags.vim'
+hook_add = '''
+  let g:auto_ctags = 1
+  let g:auto_ctags_directory_list = ['.git']
+'''
+
+[[plugins]]
 repo = 'Shougo/neco-vim'
-on_ft = 'vim'
+on_ft = ['vim']
 on_i = 1
 
 [[plugins]]
@@ -14,6 +131,14 @@ on_ft = ['html']
 [[plugins]]
 repo = 'hail2u/vim-css3-syntax'
 on_ft = ['css']
+
+[[plugins]]
+repo = 'mattn/emmet-vim'
+on_ft = ['html', 'php', 'css', 'scss']
+
+[[plugins]]
+repo = 'slim-template/vim-slim'
+on_ft = ['slim']
 
 [[plugins]]
 repo = 'othree/yajs.vim'
@@ -55,10 +180,6 @@ repo = 'vim-scripts/ruby-matchit'
 on_ft = ['ruby']
 
 [[plugins]]
-repo = 'todesking/ruby_hl_lvar.vim'
-on_ft = ['ruby']
-
-[[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
 hook_add = '''
@@ -68,6 +189,25 @@ hook_add = '''
   let g:go_highlight_types = 1
   let g:go_highlight_operators = 1
   let g:go_highlight_build_constraints = 1
+  let g:go_gocode_unimported_packages = 1
+'''
+
+[[plugins]]
+repo = 'zchee/deoplete-go'
+build = 'make'
+on_ft = 'go'
+depends = ['deoplete.nvim']
+hook_source = '''
+  let g:deoplete#sources#go#gocode_binary = $GOPATH . '/bin/gocode'
+'''
+
+[[plugins]]
+repo = 'zchee/deoplete-clang'
+on_ft = ['c', 'cpp']
+depends = ['deoplete.nvim']
+hook_source = '''
+  let g:deoplete#sources#clang#libclang_path='/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+  let g:deoplete#sources#clang#clang_header='/Library/Developer/CommandLineTools/usr/lib/clang'
 '''
 
 [[plugins]]
@@ -82,12 +222,29 @@ repo = 'shawncplus/phpcomplete.vim'
 on_ft = ['php']
 
 [[plugins]]
-repo = 'vim-jp/cpp-vim'
-on_ft = ['cpp']
-
-[[plugins]]
 repo = 'vim-perl/vim-perl'
 on_ft = ['pl']
+
+[[plugins]]
+repo = 'zchee/deoplete-zsh'
+depends = ['deoplete.nvim']
+on_ft = ['zsh']
+
+[[plugins]]
+repo = 'zchee/deoplete-docker'
+depends = ['deoplete.nvim']
+on_ft = ['dockerfile']
+
+[[plugins]]
+repo = 'hashivim/vim-vagrant'
+on_ft = ['Vagrantfile']
+
+[[plugins]]
+repo = 'hashivim/vim-terraform'
+on_ft = ['tf', 'tfvars', 'tfstate', 'hcl']
+hook_add = '''
+  let g:terraform_fmt_on_save = 1
+'''
 
 [[plugins]]
 repo = 'cespare/vim-toml'
@@ -98,12 +255,16 @@ repo = 'elzr/vim-json'
 on_ft = ['json']
 
 [[plugins]]
+repo = 'stephpy/vim-yaml'
+on_ft = ['yaml']
+
+[[plugins]]
 repo = 'plasticboy/vim-markdown'
-on_ft = ['markdown', 'md']
+on_ft = ['markdown']
 
 [[plugins]]
 repo = 'JamshedVesuna/vim-markdown-preview'
-on_ft = ['markdown', 'md']
+on_ft = ['markdown']
 hook_add = '''
   let g:vim_markdown_preview_github = 1
   let g:vim_markdown_preview_hotkey = '<C-m>'
@@ -111,8 +272,9 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'JamshedVesuna/vim-markdown-preview'
-on_ft = ['markdown', 'md']
+repo = 'fszymanski/deoplete-emoji'
+depends = ['deoplete.nvim']
+on_ft = ['markdown']
 
 [[plugins]]
 repo = 'aklt/plantuml-syntax'
