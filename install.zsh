@@ -234,17 +234,29 @@ cd "${ZDOTDIR:-$HOME}/.dotfiles"
 
 # install my dotfiles
 for name in *; do
-  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
+  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'config' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
     if [[ -L ${ZDOTDIR:-$HOME}/.$name ]]; then
       unlink "${ZDOTDIR:-$HOME}/.$name"
     fi
     ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
   fi
 done
+
+# install prezto
 if [[ -e ${ZDOTDIR:-$HOME}/.zprezto ]]; then
   unlink "${ZDOTDIR:-$HOME}/.zprezto"
 fi
-ln -sf "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
+ln -sfv "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
+
+# install my config
+cd config
+for name in *; do
+  if [[ -L ${XDG_CONFIG_HOME:-$HOME/.config}/$name ]]; then
+    unlink "${XDG_CONFIG_HOME:-$HOME/.config}/$name"
+  fi
+  ln -sfv "$PWD/$name" "${XDG_CONFIG_HOME:-$HOME/.config}/$name"
+done
+cd ..
 
 # install brew files
 echo 'install brew files? (y/n)'
