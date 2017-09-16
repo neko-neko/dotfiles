@@ -2,4 +2,4 @@
 set -e
 
 dir=$(git rev-parse --git-dir)
-git ls-files | ctags -R -f "$dir/tags"
+ctags -R -f "$dir/tags" $(pwd)
