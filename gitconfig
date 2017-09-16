@@ -65,7 +65,7 @@
 	remotes = remote -v
 	nevermind = !git reset --hard HEAD && git clean -d -f
 	unmerged = diff --name-only --diff-filter=U
-	subupdate = git submodule update --init --recursive
+	subupdate = submodule update --init --recursive
 
 [include]
 	path = ~/.gitconfig.local
