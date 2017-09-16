@@ -1,17 +1,23 @@
 "--------------------
+"" config dir
+let s:config_dir = $XDG_CONFIG_HOME . '/nvim'
+
+"--------------------
 "" For dein:
-"
+let s:dein_dir = s:config_dir . '/dein.vim'
+let s:dein_plugin_dir = $XDG_CACHE_HOME . '/dein'
+
 if &compatible
   set nocompatible
 endif
-set runtimepath^=~/.nvimrc/nvim/dein.vim
+let &runtimepath = &runtimepath . ',' . s:dein_dir
 let g:dein#enable_notification = 1
 let g:dein#install_progress_type = 'title'
 let g:dein#install_message_type = 'none'
 
-call dein#begin(expand('~/.cache/dein'))
-call dein#load_toml('~/.nvimrc/nvim/dein.toml', {'lazy': 0})
-call dein#load_toml('~/.nvimrc/nvim/deinlazy.toml', {'lazy' : 1})
+call dein#begin(s:dein_plugin_dir)
+call dein#load_toml(s:config_dir . '/dein.toml', {'lazy': 0})
+call dein#load_toml(s:config_dir . '/deinlazy.toml', {'lazy' : 1})
 call dein#end()
 call dein#save_state()
 
