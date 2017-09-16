@@ -27,3 +27,13 @@ repo = 'itchyny/lightline.vim'
 hook_add = '''
   let g:lightline = {'colorscheme': 'Dracula'}
 '''
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+hook_add = '''
+  let g:deoplete#enable_at_startup = 1
+'''
+on_i = 1

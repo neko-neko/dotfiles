@@ -10,14 +10,8 @@ repo = 'kana/vim-textobj-function'
 [[plugins]]
 repo = 'osyo-manga/vim-operator-search'
 depends = ['vim-operator-user', 'vim-textobj-function', 'vim-textobj-user']
-hook_add = '''
+hook_source = '''
   nmap <Space>/ <Plug>(operator-search)if
-'''
-
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-hook_add='''
-  let g:deoplete#enable_at_startup = 1
 '''
 
 [[plugins]]
@@ -28,7 +22,7 @@ repo = 'bronson/vim-trailing-whitespace'
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
-hook_add = '''
+hook_source = '''
   let g:context_filetype#filetypes = {
   \   'html': [
   \     {
@@ -49,12 +43,9 @@ hook_add = '''
 
 [[plugins]]
 repo = 'editorconfig/editorconfig-vim'
-hook_add = '''
+hook_source = '''
   let g:EditorConfig_exclude_patterns = ['scp://.*']
 '''
-
-[[plugins]]
-repo = 'tpope/vim-fugitive'
 
 [[plugins]]
 repo = 'jiangmiao/auto-pairs'
@@ -62,7 +53,7 @@ on_i = 1
 
 [[plugins]]
 repo = 'majutsushi/tagbar'
-hook_add = '''
+hook_source = '''
   nmap <F8> :TagbarToggle<CR>
   let g:tagbar_left = 0
   let g:tagbar_autofocus = 1
@@ -110,7 +101,7 @@ hook_add = '''
 
 [[plugins]]
 repo = 'soramugi/auto-ctags.vim'
-hook_add = '''
+hook_source = '''
   let g:auto_ctags = 1
   let g:auto_ctags_directory_list = ['.git']
 '''
@@ -180,9 +171,20 @@ repo = 'vim-scripts/ruby-matchit'
 on_ft = ['ruby']
 
 [[plugins]]
+repo = 'osyo-manga/vim-monster'
+on_ft = ['ruby']
+depends = ['vimproc.vim']
+hook_source = '''
+  let g:monster#completion#rcodetools#backend = "async_rct_complete"
+  let g:deoplete#sources#omni#input_patterns = {
+    \"ruby" : '[^. *\t]\.\w*\|\h\w*::',
+  \}
+'''
+
+[[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
-hook_add = '''
+hook_source = '''
   let g:go_highlight_functions = 1
   let g:go_highlight_methods = 1
   let g:go_highlight_fields = 1
@@ -213,7 +215,7 @@ hook_source = '''
 [[plugins]]
 repo = 'StanAngeloff/php.vim'
 on_ft = ['php']
-hook_add = '''
+hook_source = '''
   let g:PHP_vintage_case_default_indent = 1
 '''
 
@@ -242,7 +244,7 @@ on_ft = ['Vagrantfile']
 [[plugins]]
 repo = 'hashivim/vim-terraform'
 on_ft = ['tf', 'tfvars', 'tfstate', 'hcl']
-hook_add = '''
+hook_source = '''
   let g:terraform_fmt_on_save = 1
 '''
 
@@ -265,7 +267,7 @@ on_ft = ['markdown']
 [[plugins]]
 repo = 'JamshedVesuna/vim-markdown-preview'
 on_ft = ['markdown']
-hook_add = '''
+hook_source = '''
   let g:vim_markdown_preview_github = 1
   let g:vim_markdown_preview_hotkey = '<C-m>'
   let g:vim_markdown_preview_browser = 'Google Chrome'
@@ -279,6 +281,6 @@ on_ft = ['markdown']
 [[plugins]]
 repo = 'aklt/plantuml-syntax'
 on_ft = ['pu', 'uml', 'plantuml']
-hook_add = '''
+hook_source = '''
   let g:plantuml_executable_script = '~/.functions/plantuml'
 '''

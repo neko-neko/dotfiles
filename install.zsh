@@ -92,6 +92,8 @@ install_brew_files() {
 
   # install gems
   install_gems=(
+    neovim
+    rcodetools
     tmuxinator
   )
   for install_gem in ${install_gems[@]}; do

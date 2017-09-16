@@ -90,15 +90,6 @@ autocmd BufRead,BufNewFile *.yml set filetype=yaml
 autocmd BufRead,BufNewFile *.yaml set filetype=yaml
 
 "--------------------
-"" denite
-"
-call denite#custom#map('insert', '<C-j>', '<denite:do_action:split>', 'noremap')
-call denite#custom#map('insert', '<C-k>', '<denite:do_action:vsplit>', 'noremap')
-noremap <C-P> :Denite buffer<CR>
-noremap <C-Z> :Denite file_old<CR>
-noremap <C-C> :Denite file_rec<CR>
-
-"--------------------
 "" Keymap settings:
 "
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
