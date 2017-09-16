@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-PATH="/usr/local/bin:$PATH"
 
 dir=$(git rev-parse --git-dir)
 git ls-files | ctags -R -f "$dir/tags"

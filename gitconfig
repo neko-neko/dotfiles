@@ -3,7 +3,7 @@
 	email = seiichi.nishikata456@gmail.com
 
 [init]
-	templatedir = ~/git_template
+	templatedir = ~/.git_template
 
 [core]
 	editor = vim
