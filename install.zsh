@@ -79,6 +79,8 @@ install_brew_files() {
     github.com/mitchellh/gox
     golang.org/x/tools/cmd/stringer
     github.com/simeji/jid/cmd/jid
+    github.com/nsf/gocode
+    github.com/go-swagger/go-swagger/cmd/swagger
   )
   for get_item in ${golang_get[@]}; do
     go get -u -v ${get_item}
@@ -97,8 +99,13 @@ install_brew_files() {
   done
 
   # install pips
+  install_py3_pips=(
+    neovim
+  )
   pip3 install --upgrade pip setuptools wheel
-  pip3 install neovim
+  for install_py3_pip in ${install_py3_pips[@]}; do
+    pip3 install ${install_py3_pip}
+  done
 
   # cleanup brew
   brew cleanup
