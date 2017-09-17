@@ -282,10 +282,11 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   install_my_toys
 fi
 
-# Fixed key repeat?
-echo 'fixed key repeat? (y/n)'
+# update mac settings?
+echo 'update mac settings? (y/n)'
 read confirmation
 if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   defaults write -g InitialKeyRepeat -int 10
   defaults write -g KeyRepeat -int 1
+  defaults write com.apple.finder AppleShowAllFiles -boolean true
 fi
