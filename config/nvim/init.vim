@@ -127,6 +127,7 @@ endfunction
 "--------------------
 "" Keymap settings:
 "
+let mapleader = "\<Space>"
 nnoremap s <Nop>
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
