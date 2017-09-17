@@ -167,15 +167,9 @@ repo = 'vim-scripts/ruby-matchit'
 on_ft = ['ruby']
 
 [[plugins]]
-repo = 'osyo-manga/vim-monster'
+repo = 'Shougo/deoplete-rct'
 on_ft = ['ruby']
 depends = ['vimproc.vim']
-hook_source = '''
-  let g:monster#completion#rcodetools#backend = "async_rct_complete"
-  let g:deoplete#sources#omni#input_patterns = {
-    \"ruby" : '[^. *\t]\.\w*\|\h\w*::',
-  \}
-'''
 
 [[plugins]]
 repo = 'fatih/vim-go'
