@@ -62,9 +62,9 @@ repo = 'airblade/vim-gitgutter'
 [[plugins]]
 repo = 'ap/vim-buftabline'
 hook_add = '''
-let g:buftabline_numbers    = 0
-let g:buftabline_indicators = 1
-let g:buftabline_separators = 1
+  let g:buftabline_numbers = 0
+  let g:buftabline_indicators = 1
+  let g:buftabline_separators = 1
 '''
 
 [[plugins]]
