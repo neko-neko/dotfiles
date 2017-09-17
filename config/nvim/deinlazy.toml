@@ -18,6 +18,13 @@ repo = 'ConradIrwin/vim-bracketed-paste'
 repo = 'bronson/vim-trailing-whitespace'
 
 [[plugins]]
+repo = 'AndrewRadev/splitjoin.vim'
+hook_source = '''
+  let g:splitjoin_split_mapping = ''
+  let g:splitjoin_join_mapping = ''
+'''
+
+[[plugins]]
 repo = 'Shougo/context_filetype.vim'
 hook_source = '''
   let g:context_filetype#filetypes = {

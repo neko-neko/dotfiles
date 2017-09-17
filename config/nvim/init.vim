@@ -127,11 +127,19 @@ endfunction
 "--------------------
 "" Keymap settings:
 "
-map <C-n> :NERDTreeToggle<CR>
-nmap <Esc><Esc> :nohlsearch<CR><Esc>
-nmap <F8> :TagbarToggle<CR>
-nmap <Space>/ <Plug>(operator-search)if
+nnoremap s <Nop>
+nnoremap sj <C-w>j
+nnoremap sk <C-w>k
+nnoremap sl <C-w>l
+nnoremap sh <C-w>h
 inoremap <C-e> <Esc>$a
 inoremap <C-a> <Esc>^a
 noremap <C-e> <Esc>$a
 noremap <C-a> <Esc>^a
+
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
+nmap <Space>/ <Plug>(operator-search)if
+nmap <F8> :TagbarToggle<CR>
+noremap <C-n> :NERDTreeToggle<CR>
+nmap <C-j> :SplitjoinJoin<CR>
+nmap <C-s> :SplitjoinSplit<CR>
