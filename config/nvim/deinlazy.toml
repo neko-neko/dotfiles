@@ -110,6 +110,21 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = 'w0rp/ale'
+hook_source = '''
+  let g:ale_lint_on_save = 1
+  let g:ale_lint_on_text_changed = 0
+  let g:ale_lint_on_enter = 0
+
+  let g:ale_linters = {
+    \ 'c': ['clang'],
+    \ 'c++': ['clang'],
+    \ 'php': ['php -l'],
+    \ 'ruby': ['rubocop', 'ruby']
+  \ }
+'''
+
+[[plugins]]
 repo = 'Shougo/neco-vim'
 on_ft = ['vim']
 on_i = 1

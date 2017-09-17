@@ -31,7 +31,7 @@ hook_add = '''
     \ 'colorscheme': 'Dracula',
     \ 'active': {
     \   'left': [ ['mode', 'paste'],
-    \             ['fugitive', 'filename', 'gitgutter']
+    \             ['fugitive', 'filename', 'gitgutter', 'ale']
     \           ],
     \   'right': [ ['lineinfo'], ['percent'],
     \              ['charcode', 'fileformat', 'fileencoding', 'filetype']
@@ -45,7 +45,8 @@ hook_add = '''
     \ },
     \ 'component_function': {
     \   'gitgutter': 'LightlineGitGutter',
-    \   'filename': 'LightlineFilename'
+    \   'filename': 'LightlineFilename',
+    \   'ale': 'ALEGetStatusLine'
     \ },
     \ 'separator': { 'left': ' ', 'right': ' ' },
     \ 'subseparator': { 'left': ' ', 'right': ' ' }

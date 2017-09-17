@@ -1,5 +1,11 @@
 "--------------------
-"" config dir
+"" Off compatibility
+if &compatible
+  set nocompatible
+endif
+
+"--------------------
+"" Config dir
 let s:config_dir = $XDG_CONFIG_HOME . '/nvim'
 
 "--------------------
@@ -7,9 +13,6 @@ let s:config_dir = $XDG_CONFIG_HOME . '/nvim'
 let s:dein_dir = s:config_dir . '/dein.vim'
 let s:dein_plugin_dir = $XDG_CACHE_HOME . '/dein'
 
-if &compatible
-  set nocompatible
-endif
 let &runtimepath = &runtimepath . ',' . s:dein_dir
 let g:dein#enable_notification = 1
 let g:dein#install_progress_type = 'title'
@@ -28,8 +31,8 @@ endif
 
 "--------------------
 "" Base settings:
-"
 set fenc=utf-8
+set ambiwidth=double
 syntax enable
 colorscheme molokai
 filetype plugin indent on
@@ -56,8 +59,6 @@ set smartindent
 set showmatch
 set laststatus=2
 set wildmode=list:longest
-nnoremap j gj
-nnoremap k gk
 
 "--------------------
 "" Tab settings:
@@ -129,6 +130,8 @@ endfunction
 "
 let mapleader = "\<Space>"
 nnoremap s <Nop>
+nnoremap j gj
+nnoremap k gk
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
 nnoremap sl <C-w>l
