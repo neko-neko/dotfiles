@@ -10,18 +10,12 @@ repo = 'kana/vim-textobj-function'
 [[plugins]]
 repo = 'osyo-manga/vim-operator-search'
 depends = ['vim-operator-user', 'vim-textobj-function', 'vim-textobj-user']
-hook_source = '''
-  nmap <Space>/ <Plug>(operator-search)if
-'''
 
 [[plugins]]
 repo = 'ConradIrwin/vim-bracketed-paste'
 
 [[plugins]]
 repo = 'bronson/vim-trailing-whitespace'
-
-[[plugins]]
-repo = 'Yggdroot/indentLine'
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
@@ -57,7 +51,6 @@ on_i = 1
 [[plugins]]
 repo = 'majutsushi/tagbar'
 hook_source = '''
-  nmap <F8> :TagbarToggle<CR>
   let g:tagbar_left = 0
   let g:tagbar_autofocus = 1
   let g:tagbar_autoshowtag = 1

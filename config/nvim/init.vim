@@ -99,4 +99,11 @@ autocmd BufRead,BufNewFile *.yaml set filetype=yaml
 "--------------------
 "" Keymap settings:
 "
+map <C-n> :NERDTreeToggle<CR>
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
+nmap <F8> :TagbarToggle<CR>
+nmap <Space>/ <Plug>(operator-search)if
+inoremap <C-e> <Esc>$a
+inoremap <C-a> <Esc>^a
+noremap <C-e> <Esc>$a
+noremap <C-a> <Esc>^a
