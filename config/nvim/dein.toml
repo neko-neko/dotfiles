@@ -28,11 +28,44 @@ hook_add = '''
 [[plugins]]
 repo = 'itchyny/lightline.vim'
 hook_add = '''
-  let g:lightline = {'colorscheme': 'Dracula'}
+  let g:lightline = {
+    \ 'colorscheme': 'Dracula',
+    \ 'active': {
+    \   'left': [ ['mode', 'paste'],
+    \             ['fugitive', 'gitgutter', 'readonly', 'filename', 'modified']
+    \           ],
+    \   'right': [ ['lineinfo'], ['percent'],
+    \              ['charcode', 'fileformat', 'fileencoding', 'filetype']
+    \            ]
+    \ },
+    \ 'component': {
+    \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
+    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+    \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+    \ },
+    \ 'component_visible_condition': {
+    \   'readonly': '(&filetype!="help"&& &readonly)',
+    \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+    \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+    \ },
+    \ 'separator': { 'left': ' ', 'right': ' ' },
+    \ 'subseparator': { 'left': ' ', 'right': ' ' }
+  \ }
 '''
 
 [[plugins]]
 repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'ap/vim-buftabline'
+hook_add = '''
+let g:buftabline_numbers    = 0
+let g:buftabline_indicators = 1
+let g:buftabline_separators = 1
+'''
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'

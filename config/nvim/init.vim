@@ -45,6 +45,7 @@ set t_vb=
 set novisualbell
 set belloff=all
 
+set title
 set autoread
 set hidden
 set showcmd
