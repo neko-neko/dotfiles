@@ -31,21 +31,21 @@ hook_add = '''
     \ 'colorscheme': 'Dracula',
     \ 'active': {
     \   'left': [ ['mode', 'paste'],
-    \             ['fugitive', 'gitgutter', 'readonly', 'filename', 'modified']
+    \             ['fugitive', 'filename', 'gitgutter']
     \           ],
     \   'right': [ ['lineinfo'], ['percent'],
     \              ['charcode', 'fileformat', 'fileencoding', 'filetype']
     \            ]
     \ },
     \ 'component': {
-    \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
-    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
     \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
     \ },
     \ 'component_visible_condition': {
-    \   'readonly': '(&filetype!="help"&& &readonly)',
-    \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
     \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+    \ },
+    \ 'component_function': {
+    \   'gitgutter': 'LightlineGitGutter',
+    \   'filename': 'LightlineFilename'
     \ },
     \ 'separator': { 'left': ' ', 'right': ' ' },
     \ 'subseparator': { 'left': ' ', 'right': ' ' }

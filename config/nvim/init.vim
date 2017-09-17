@@ -97,6 +97,34 @@ autocmd BufRead,BufNewFile *.yml set filetype=yaml
 autocmd BufRead,BufNewFile *.yaml set filetype=yaml
 
 "--------------------
+"" lightline functions
+"
+function! LightlineGitGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+    \ || ! get(g:, 'gitgutter_enabled', 0)
+    \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+    \ g:gitgutter_sign_added . ' ',
+    \ g:gitgutter_sign_modified . ' ',
+    \ g:gitgutter_sign_removed . ' '
+    \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+function! LightlineFilename()
+  return expand('%:t') !=# '' ? expand('%:p:h') : '[No Name]'
+endfunction
+
+"--------------------
 "" Keymap settings:
 "
 map <C-n> :NERDTreeToggle<CR>
