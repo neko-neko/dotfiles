@@ -25,6 +25,26 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+  let g:ale_sign_column_always = 1
+  let g:ale_open_list = 1
+  let g:ale_lint_on_text_changed = 'never'
+  let g:ale_lint_on_enter = 0
+
+  let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
+  let g:ale_sign_error = '⤫'
+  let g:ale_sign_warning = '⚠'
+
+  let g:ale_linters = {
+    \ 'c': ['clang'],
+    \ 'c++': ['clang'],
+    \ 'php': ['php -l'],
+    \ 'ruby': ['rubocop', 'ruby']
+  \ }
+'''
+
+[[plugins]]
 repo = 'itchyny/lightline.vim'
 hook_add = '''
   let g:lightline = {
@@ -34,22 +54,33 @@ hook_add = '''
     \             ['fugitive', 'filename', 'gitgutter', 'ale']
     \           ],
     \   'right': [ ['lineinfo'], ['percent'],
-    \              ['charcode', 'fileformat', 'fileencoding', 'filetype']
+    \              ['ale_error', 'ale_warning', 'ale_ok', 'charcode', 'fileformat', 'fileencoding', 'filetype']
     \            ]
     \ },
     \ 'component': {
-    \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+    \   'lineinfo': ' %3l:%-2v'
     \ },
-    \ 'component_visible_condition': {
-    \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+    \ 'component_function_visible_condition': {
+    \   'mode': 1,
+    \ },
+    \ 'component_expand': {
+    \   'ale_error': 'LightLineAleError',
+    \   'ale_warning': 'LightLineAleWarning',
+    \   'ale_ok': 'LightLineAleOk',
+    \ },
+    \ 'component_type': {
+    \   'ale_error': 'error',
+    \   'ale_waring': 'waring',
+    \   'ale_ok': 'ok',
     \ },
     \ 'component_function': {
+    \   'fugitive': 'LightlineFugitive',
     \   'gitgutter': 'LightlineGitGutter',
     \   'filename': 'LightlineFilename',
     \   'ale': 'ALEGetStatusLine'
     \ },
-    \ 'separator': { 'left': ' ', 'right': ' ' },
-    \ 'subseparator': { 'left': ' ', 'right': ' ' }
+    \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+    \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
   \ }
 '''
 

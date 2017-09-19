@@ -141,6 +141,7 @@ install_brew_casks() {
   # brew taps
   taps=(
     caskroom/cask
+    sanemat/font
   )
 
   # brew casks
@@ -158,6 +159,7 @@ install_brew_casks() {
     karabiner-elements
     licecap
     mysqlworkbench
+    ricty --with-powerline
     shiftit
     slack
     vagrant
@@ -169,6 +171,10 @@ install_brew_casks() {
 
   # install casks
   brew cask install ${casks[@]}
+
+  # setup ricty font
+  cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
+  fc-cache -vf
 
   # atom package manager
   apm install sync-settings
