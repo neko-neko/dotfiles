@@ -63,6 +63,7 @@ install_brew_files() {
     wget
     zsh --without-etcdir
   )
+  brew upgrade
   brew tap ${taps[@]}
   brew install ${formulas[@]}
 
