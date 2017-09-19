@@ -15,6 +15,9 @@ set -eu
 install_brew_files() {
   # install basic formulas
   echo "install basic formulas..."
+  taps=(
+    sanemat/font
+  )
   formulas=(
     ansible
     autoconf
@@ -53,6 +56,7 @@ install_brew_files() {
     python3
     readline
     reattach-to-user-namespace
+    ricty --with-powerline
     terraform
     tig
     tmux
@@ -61,8 +65,13 @@ install_brew_files() {
     zsh --without-etcdir
   )
   brew upgrade
+  brew tap ${taps[@]}
   brew install ${formulas[@]}
 
+  # setup ricty font
+  cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
+  fc-cache -vf
+  
   # install ruby formulas
   echo "install ruby formulas..."
   brew install ruby-build
@@ -138,7 +147,6 @@ install_brew_casks() {
   # brew taps
   taps=(
     caskroom/cask
-    sanemat/font
   )
 
   # brew casks
@@ -156,7 +164,6 @@ install_brew_casks() {
     karabiner-elements
     licecap
     mysqlworkbench
-    'ricty --with-powerline'
     shiftit
     slack
     vagrant
@@ -168,10 +175,6 @@ install_brew_casks() {
 
   # install casks
   brew cask install ${casks[@]}
-
-  # setup ricty font
-  cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
-  fc-cache -vf
 
   # atom package manager
   apm install sync-settings
