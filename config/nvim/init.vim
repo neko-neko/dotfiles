@@ -184,8 +184,7 @@ noremap <C-a> <Esc>^a
 
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 nmap <Space>/ <Plug>(operator-search)if
-nmap <F8> :TagbarToggle<CR>
-nmap <C-t> :Tnew<CR>
+nmap <C-t> :TagbarToggle<CR>
 noremap <C-n> :NERDTreeToggle<CR>
 nmap <C-j> :SplitjoinJoin<CR>
 nmap <C-s> :SplitjoinSplit<CR>
