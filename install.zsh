@@ -15,9 +15,6 @@ set -eu
 install_brew_files() {
   # install basic formulas
   echo "install basic formulas..."
-  taps=(
-    homebrew/dupes
-  )
   formulas=(
     ansible
     autoconf
@@ -64,7 +61,6 @@ install_brew_files() {
     zsh --without-etcdir
   )
   brew upgrade
-  brew tap ${taps[@]}
   brew install ${formulas[@]}
 
   # install ruby formulas
