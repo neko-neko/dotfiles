@@ -166,6 +166,11 @@ function! s:ale_string(mode)
   return l:counts.total == 0? l:no_errors: ''
 endfunction
 
+augroup LightLineALE
+  autocmd!
+  autocmd User ALELint call lightline#update()
+augroup END
+
 "--------------------
 "" Keymap settings:
 "
