@@ -156,7 +156,7 @@ install_brew_casks() {
     karabiner-elements
     licecap
     mysqlworkbench
-    ricty --with-powerline
+    'ricty --with-powerline'
     shiftit
     slack
     vagrant
