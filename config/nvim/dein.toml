@@ -40,9 +40,16 @@ hook_add = '''
   let g:ale_linters = {
     \ 'c': ['clang'],
     \ 'c++': ['clang'],
+    \ 'go': ['gometalinter'],
     \ 'php': ['php'],
-    \ 'ruby': ['rubocop', 'ruby']
+    \ 'perl': ['perl'],
+    \ 'ruby': ['ruby', 'rubocop'],
+    \ 'slim': ['slim-lint'],
+    \ 'scss': ['stylelint'],
+    \ 'javascript': ['flow', 'eslint']
   \ }
+  let g:ale_ruby_rubocop_executable = 'bundle'
+  let g:ale_go_gometalinter_options = '--fast --enable=staticcheck --enable=gosimple --enable=unused'
 '''
 
 [[plugins]]

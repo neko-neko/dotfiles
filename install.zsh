@@ -81,6 +81,7 @@ install_brew_files() {
   echo "install golang formulas..."
   golang_get=(
     github.com/golang/dep/...
+    gopkg.in/alecthomas/gometalinter.v1
     github.com/jteeuwen/go-bindata/...
     github.com/mitchellh/gox
     golang.org/x/tools/cmd/stringer
@@ -91,6 +92,7 @@ install_brew_files() {
   for get_item in ${golang_get[@]}; do
     go get -u -v ${get_item}
   done
+  gometalinter --install --update
 
   # install nodebrew
   curl -L git.io/nodebrew | perl - setup
@@ -101,7 +103,6 @@ install_brew_files() {
     neovim
     rcodetools
     tmuxinator
-    rubocop
   )
   for install_gem in ${install_gems[@]}; do
     gem install ${install_gem}
