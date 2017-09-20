@@ -1,4 +1,11 @@
 # ------------------------------
+# Read Compiled zshrc
+# ------------------------------
+if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
+  zcompile ~/.zshrc
+fi
+
+# ------------------------------
 # Read Prezto
 # ------------------------------
 source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
