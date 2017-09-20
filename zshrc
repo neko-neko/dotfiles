@@ -24,6 +24,7 @@ export XDG_DATA_HOME=${ZDOTDIR:-$HOME}/.local/share
 PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
 MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 FPATH=${ZDOTDIR:-$HOME}/.functions:$FPATH
+umask 022
 
 # ------------------------------
 # History Settings
