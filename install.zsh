@@ -16,6 +16,7 @@ install_brew_files() {
   # install basic formulas
   echo "install basic formulas..."
   taps=(
+    universal-ctags/universal-ctags
     sanemat/font
   )
   formulas=(
@@ -25,7 +26,6 @@ install_brew_files() {
     ccat
     cmake
     coreutils
-    ctags
     curl
     diffutils
     findutils --with-default-names
@@ -61,6 +61,7 @@ install_brew_files() {
     tig
     tmux
     tree
+    --HEAD universal-ctags
     wget
     zsh --without-etcdir
   )
