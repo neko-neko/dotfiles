@@ -26,6 +26,7 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
+in_i = 1
 hook_source = '''
   let g:context_filetype#filetypes = {
   \   'html': [
@@ -176,6 +177,7 @@ on_ft = ['ruby']
 [[plugins]]
 repo = 'Shougo/deoplete-rct'
 on_ft = ['ruby']
+in_i = 1
 depends = ['vimproc.vim']
 
 [[plugins]]
@@ -195,6 +197,7 @@ hook_source = '''
 repo = 'zchee/deoplete-go'
 build = 'make'
 on_ft = 'go'
+in_i = 1
 depends = ['deoplete.nvim']
 hook_source = '''
   let g:deoplete#sources#go#gocode_binary = $GOPATH . '/bin/gocode'
@@ -203,6 +206,7 @@ hook_source = '''
 [[plugins]]
 repo = 'zchee/deoplete-clang'
 on_ft = ['c', 'cpp']
+in_i = 1
 depends = ['deoplete.nvim']
 hook_source = '''
   let g:deoplete#sources#clang#libclang_path='/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
@@ -228,11 +232,13 @@ on_ft = ['pl']
 repo = 'zchee/deoplete-zsh'
 depends = ['deoplete.nvim']
 on_ft = ['zsh']
+in_i = 1
 
 [[plugins]]
 repo = 'zchee/deoplete-docker'
 depends = ['deoplete.nvim']
 on_ft = ['dockerfile']
+in_i = 1
 
 [[plugins]]
 repo = 'hashivim/vim-vagrant'
@@ -274,6 +280,7 @@ hook_source = '''
 repo = 'fszymanski/deoplete-emoji'
 depends = ['deoplete.nvim']
 on_ft = ['markdown']
+in_i = 1
 
 [[plugins]]
 repo = 'aklt/plantuml-syntax'
