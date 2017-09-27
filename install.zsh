@@ -66,7 +66,9 @@ install_brew_files() {
     zsh --without-etcdir
   )
   brew upgrade
-  brew tap ${taps[@]}
+  for tap in ${taps[@]}; do
+    brew tap ${tap}
+  done
   brew install ${formulas[@]}
 
   # setup ricty font
