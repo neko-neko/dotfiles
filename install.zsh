@@ -261,6 +261,9 @@ fi
 ln -sfv "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 
 # install my config
+if [[ ! -d ${ZDOTDIR:-$HOME}/.config ]]; then
+  mkdir ${ZDOTDIR:-$HOME}/.config
+fi
 cd config
 for name in *; do
   if [[ -L ${XDG_CONFIG_HOME:-$HOME/.config}/$name ]]; then
