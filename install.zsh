@@ -61,7 +61,6 @@ install_brew_files() {
     tig
     tmux
     tree
-    --HEAD universal-ctags
     wget
     zsh --without-etcdir
   )
@@ -84,6 +83,7 @@ install_brew_files() {
   fi
 
   # setup ricty font
+  brew install --HEAD universal-ctags
   cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
   fc-cache -vf
   
