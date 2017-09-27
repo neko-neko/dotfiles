@@ -79,6 +79,8 @@ install_brew_files() {
     sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
     echo "switch new zsh..."
     chsh -s /usr/local/bin/zsh
+    echo "refreshing environment..."
+    source ${ZDOTDIR:-$HOME}/.zshrc
   fi
 
   # setup ricty font
