@@ -71,6 +71,16 @@ install_brew_files() {
   done
   brew install ${formulas[@]}
 
+  # update zsh
+  echo 'update using zsh path? (y/n)'
+  read confirmation
+  if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+    echo "update /etc/shells..."
+    sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
+    echo "switch new zsh..."
+    chsh -s /usr/local/bin/zsh
+  fi
+
   # setup ricty font
   cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
   fc-cache -vf
@@ -127,16 +137,6 @@ install_brew_files() {
   # install plantuml
   mkdir -p ${ZDOTDIR:-$HOME}/lib/java
   wget http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar -P ${ZDOTDIR:-$HOME}/lib/java/
-
-  # update zsh
-  echo 'update using zsh path? (y/n)'
-  read confirmation
-  if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
-    echo "update /etc/shells..."
-    sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
-    echo "switch new zsh..."
-    chsh -s /usr/local/bin/zsh
-  fi
 }
 
 #######################################
