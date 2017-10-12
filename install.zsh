@@ -45,6 +45,7 @@ install_brew_files() {
     hub
     imagemagick
     jq
+    kubectl
     lua
     neovim
     nkf
