@@ -229,6 +229,10 @@ repo = 'vim-perl/vim-perl'
 on_ft = ['pl']
 
 [[plugins]]
+repo = 'udalov/kotlin-vim'
+on_ft = ['kotlin']
+
+[[plugins]]
 repo = 'zchee/deoplete-zsh'
 depends = ['deoplete.nvim']
 on_ft = ['zsh']
