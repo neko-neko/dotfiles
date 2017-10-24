@@ -186,6 +186,8 @@ inoremap <C-e> <Esc>$a
 inoremap <C-a> <Esc>^a
 noremap <C-e> <Esc>$a
 noremap <C-a> <Esc>^a
+noremap <Leader>b :Denite buffer<CR>
+noremap <Leader>p :DeniteProjectDir file_rec<CR>
 
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 nmap <Space>/ <Plug>(operator-search)if
