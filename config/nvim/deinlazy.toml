@@ -137,24 +137,37 @@ on_ft = ['slim']
 
 [[plugins]]
 repo = 'othree/yajs.vim'
-on_ft = ['js']
+on_ft = ['javascript', 'javascript.jsx']
 
 [[plugins]]
-repo = 'othree/es.next.syntax.vim'
-on_ft = ['js']
-
-[[plugins]]
-repo = 'marijnh/tern_for_vim'
-on_ft = ['js']
-build = 'npm install'
+repo = 'pangloss/vim-javascript'
+on_ft = ['javascript', 'javascript.jsx']
 
 [[plugins]]
 repo = 'mxw/vim-jsx'
-on_ft = ['jsx']
+on_ft = ['jsx', 'javascript.jsx']
 
 [[plugins]]
-repo = 'posva/vim-vue'
-on_ft = ['vue']
+repo = 'trotzig/import-js'
+on_ft = ['javascript', 'javascript.jsx']
+
+[[plugins]]
+repo = 'marijnh/tern_for_vim'
+on_ft = ['javascript', 'javascript.jsx']
+build = 'npm install'
+
+[[plugins]]
+repo = 'othree/javascript-libraries-syntax.vim'
+on_ft = ['javascript', 'javascript.jsx']
+hook_source = '''
+  let g:used_javascript_libs = 'jquery,react'
+  let b:javascript_lib_use_jquery = 1
+  let b:javascript_lib_use_react = 1
+'''
+
+[[plugins]]
+repo = 'letientai299/vim-react-snippets'
+on_ft = ['javascript', 'javascript.jsx']
 
 [[plugins]]
 repo = 'vim-ruby/vim-ruby'
