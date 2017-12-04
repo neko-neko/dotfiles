@@ -305,3 +305,7 @@ on_ft = ['pu', 'uml', 'plantuml']
 hook_source = '''
   let g:plantuml_executable_script = '~/.functions/plantuml'
 '''
+
+[[plugins]]
+repo = 'spacewander/openresty-vim'
+on_ft = ['nginx']

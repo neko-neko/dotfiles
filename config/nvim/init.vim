@@ -97,6 +97,9 @@ autocmd BufRead,BufNewFile *.markdown set filetype=markdown
 autocmd BufRead,BufNewFile *.yml set filetype=yaml
 autocmd BufRead,BufNewFile *.yaml set filetype=yaml
 
+" nginx
+autocmd BufRead,BufNewFile nginx*.conf set filetype=nginx
+
 "--------------------
 "" lightline functions
 function! LightlineFugitive()
