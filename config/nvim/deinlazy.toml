@@ -309,3 +309,6 @@ hook_source = '''
 [[plugins]]
 repo = 'spacewander/openresty-vim'
 on_ft = ['nginx']
+
+[[plugins]]
+repo = 'tpope/vim-git'

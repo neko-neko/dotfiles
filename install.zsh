@@ -104,6 +104,7 @@ install_brew_files() {
     github.com/simeji/jid/cmd/jid
     github.com/nsf/gocode
     github.com/go-swagger/go-swagger/cmd/swagger
+    github.com/jstemmer/gotags
   )
   for get_item in ${golang_get[@]}; do
     go get -u -v ${get_item}

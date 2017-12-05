@@ -100,6 +100,9 @@ autocmd BufRead,BufNewFile *.yaml set filetype=yaml
 " nginx
 autocmd BufRead,BufNewFile nginx*.conf set filetype=nginx
 
+" gitconfig
+autocmd BufRead,BufNewFile *gitconfig set filetype=gitconfig
+
 "--------------------
 "" lightline functions
 function! LightlineFugitive()
