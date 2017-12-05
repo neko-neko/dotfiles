@@ -71,6 +71,7 @@
 	nevermind = !git reset --hard HEAD && git clean -d -f
 	unmerged = diff --name-only --diff-filter=U
 	subupdate = submodule update --init --recursive
+	subupdate-all = submodule foreach git pull origin master
 
 [include]
 	path = ~/.gitconfig.local
