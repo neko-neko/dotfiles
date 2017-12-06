@@ -21,6 +21,7 @@ install_brew_files() {
     curl
     diffutils
     findutils --with-default-names
+    fzf
     gawk
     gibo
     git-extras
@@ -42,7 +43,6 @@ install_brew_files() {
     neovim
     nkf
     openssl
-    p7zip
     packer
     pandoc
     peco
