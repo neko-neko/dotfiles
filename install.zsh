@@ -1,28 +1,6 @@
 #!/bin/zsh
 ########################
 #
-# Install zplug
-#
-########################
-install_zplug_install() {
-  # install zplug
-  echo 'install zplug...'
-  if [[ ! -d ${HOME}/.zplug ]]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
-  fi
-  source ${HOME}/.zshrc
-  zplug install
-
-  # install prezto
-  echo 'install prezto...'
-  if [[ -e ${HOME}/.zprezto ]]; then
-    unlink ${HOME}/.zprezto
-  fi
-  ln -sfv ${HOME}/.zplug/repos/sorin-ionescu/prezto ${HOME}/.zprezto
-}
-
-########################
-#
 # Install brew formulas
 #
 ########################
@@ -88,7 +66,7 @@ install_brew_files() {
   # update zsh
   echo 'update using zsh path? (y/n)'
   read confirmation
-  if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+  if [[ ${confirmation} = "y" || ${confirmation} = "Y" ]]; then
     echo "update /etc/shells..."
     sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
     echo "switch new zsh..."
@@ -98,6 +76,7 @@ install_brew_files() {
   fi
 
   # setup ricty font
+  echo "install ricty font..."
   brew install --HEAD universal-ctags
   cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
   fc-cache -vf
@@ -107,8 +86,8 @@ install_brew_files() {
   brew install ruby-build
   brew install rbenv
   rbenv rehash
-  rbenv install 2.4.2
-  rbenv rehash
+  rbenv install -s 2.4.2
+  rbenv global 2.4.2
 
   # install golang
   echo "install golang formulas..."
@@ -248,6 +227,28 @@ install_my_toys() {
 
 ########################
 #
+# Install zplug
+#
+########################
+install_zplug_install() {
+  # install zplug
+  echo 'install zplug...'
+  if [[ ! -d ${HOME}/.zplug ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
+  fi
+  source ${HOME}/.zshrc
+  zplug install
+
+  # install prezto
+  echo 'install prezto...'
+  if [[ -e ${HOME}/.zprezto ]]; then
+    unlink ${HOME}/.zprezto
+  fi
+  ln -sfv ${HOME}/.zplug/repos/sorin-ionescu/prezto ${HOME}/.zprezto
+}
+
+########################
+#
 # Run installation
 #
 ########################
@@ -263,11 +264,11 @@ cd ${HOME}/.dotfiles
 
 # install my dotfiles
 for name in *; do
-  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'config' ]] && [[ "$name" != 'README.md' ]]; then
-    if [[ -L ${HOME}/.$name ]]; then
-      unlink ${HOME}/.$name
+  if [[ ${name} != 'install.zsh' ]] && [[ ${name} != 'uninstall.zsh' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'README.md' ]]; then
+    if [[ -L ${HOME}/.${name} ]]; then
+      unlink ${HOME}/.${name}
     fi
-    ln -sfv $PWD/$name ${HOME}/.$name
+    ln -sfv ${PWD}/${name} ${HOME}/.${name}
   fi
 done
 
@@ -280,14 +281,14 @@ for name in *; do
   if [[ -L ${XDG_CONFIG_HOME:-$HOME/.config}/$name ]]; then
     unlink ${XDG_CONFIG_HOME:-$HOME/.config}/$name
   fi
-  ln -sfv $PWD/$name ${XDG_CONFIG_HOME:-$HOME/.config}/$name
+  ln -sfv ${PWD}/${name} ${XDG_CONFIG_HOME:-$HOME/.config}/${name}
 done
 cd ..
 
 # install brew files
 echo 'install brew files? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+if [[ ${confirmation} = "y" || ${confirmation} = "Y" ]]; then
   echo "Install brew files..."
   install_brew_files
 fi
@@ -295,7 +296,7 @@ fi
 # install brew casks
 echo 'install brew casks? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+if [[ ${confirmation} = "y" || ${confirmation} = "Y" ]]; then
   echo "Install brew casks..."
   install_brew_casks
 fi
@@ -303,7 +304,7 @@ fi
 # install my toys
 echo 'install my toys? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+if [[ ${confirmation} = "y" || ${confirmation} = "Y" ]]; then
   echo "Install my toys..."
   install_my_toys
 fi
@@ -311,7 +312,7 @@ fi
 # update mac settings?
 echo 'update mac settings? (y/n)'
 read confirmation
-if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
+if [[ ${confirmation} = "y" || ${confirmation} = "Y" ]]; then
   defaults write -g InitialKeyRepeat -int 10
   defaults write -g KeyRepeat -int 1
   defaults write com.apple.finder AppleShowAllFiles -boolean true
