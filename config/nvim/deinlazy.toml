@@ -178,6 +178,10 @@ repo = 'letientai299/vim-react-snippets'
 on_ft = ['javascript', 'javascript.jsx']
 
 [[plugins]]
+repo = 'leafgarland/typescript-vim'
+on_ft = 'typescript'
+
+[[plugins]]
 repo = 'vim-ruby/vim-ruby'
 on_map = '<Plug>'
 on_ft = ['ruby']
