@@ -92,6 +92,9 @@ install_brew_files() {
   echo "install ruby formulas..."
   brew install ruby-build
   brew install rbenv
+  rbenv rehash
+  rbenv install 2.4.2
+  rbenv rehash
 
   # install golang
   echo "install golang formulas..."
@@ -115,6 +118,8 @@ install_brew_files() {
   # install nodebrew
   curl -L git.io/nodebrew | perl - setup
   mkdir -p ${ZDOTDIR:-$HOME}/.nodebrew/src
+  nodebrew install-binary v8.7.0
+  nodebrew use v8.7.0
 
   # install gems
   install_gems=(
