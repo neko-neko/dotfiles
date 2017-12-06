@@ -156,6 +156,14 @@ repo = 'marijnh/tern_for_vim'
 on_ft = ['javascript', 'javascript.jsx']
 build = 'npm install'
 
+[[plugin]]
+repo = 'carlitux/deoplete-ternjs'
+on_ft = ['javascript','javascript.jsx']
+hook_source = '''
+  let g:tern#command = ["tern"]
+  let g:tern#arguments = ["--persistent"]
+'''
+
 [[plugins]]
 repo = 'othree/javascript-libraries-syntax.vim'
 on_ft = ['javascript', 'javascript.jsx']
