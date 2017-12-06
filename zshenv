@@ -1,11 +1,11 @@
 # ------------------------------
 # Read Prezto
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshenv"
+source ${HOME}/.zprezto/runcoms/zshenv
 
 # ------------------------------
 # Custom local files
 # ------------------------------
-if [[ -f "${ZDOTDIR:-$HOME}/.zshenv.local" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zshenv.local"
+if [[ -f ${HOME}/.zshenv.local ]]; then
+  source ${HOME}/.zshenv.local
 fi

@@ -1,7 +1,7 @@
 # ------------------------------
 # Read Prezto
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zpreztorc"
+source ${HOME}/.zprezto/runcoms/zpreztorc
 
 # ------------------------------
 # Override

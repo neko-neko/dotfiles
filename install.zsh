@@ -1,17 +1,31 @@
 #!/bin/zsh
+########################
 #
-# Install my tools
-set -eu
+# Install zplug
+#
+########################
+install_zplug_install() {
+  # install zplug
+  echo 'install zplug...'
+  if [[ ! -d ${HOME}/.zplug ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
+  fi
+  source ${HOME}/.zshrc
+  zplug install
 
-#######################################
+  # install prezto
+  echo 'install prezto...'
+  if [[ -e ${HOME}/.zprezto ]]; then
+    unlink ${HOME}/.zprezto
+  fi
+  ln -sfv ${HOME}/.zplug/repos/sorin-ionescu/prezto ${HOME}/.zprezto
+}
+
+########################
+#
 # Install brew formulas
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
+#
+########################
 install_brew_files() {
   # install basic formulas
   echo "install basic formulas..."
@@ -80,7 +94,7 @@ install_brew_files() {
     echo "switch new zsh..."
     chsh -s /usr/local/bin/zsh
     echo "refreshing environment..."
-    source ${ZDOTDIR:-$HOME}/.zshrc
+    source ${HOME}/.zshrc
   fi
 
   # setup ricty font
@@ -117,7 +131,7 @@ install_brew_files() {
 
   # install nodebrew
   curl -L git.io/nodebrew | perl - setup
-  mkdir -p ${ZDOTDIR:-$HOME}/.nodebrew/src
+  mkdir -p ${HOME}/.nodebrew/src
   nodebrew install-binary v8.7.0
   nodebrew use v8.7.0
 
@@ -144,19 +158,15 @@ install_brew_files() {
   brew cleanup
 
   # install plantuml
-  mkdir -p ${ZDOTDIR:-$HOME}/lib/java
-  wget http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar -P ${ZDOTDIR:-$HOME}/lib/java/
+  mkdir -p ${HOME}/lib/java
+  wget http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar -P ${HOME}/lib/java/
 }
 
-#######################################
+########################
+#
 # Install brew casks
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
+#
+########################
 install_brew_casks() {
   # brew taps
   taps=(
@@ -197,15 +207,11 @@ install_brew_casks() {
   brew cask cleanup
 }
 
-######################################
+########################
+#
 # Install my toys
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
-######################################
+#
+########################
 install_my_toys() {
   casks=(
     wireshark
@@ -240,39 +246,41 @@ install_my_toys() {
   winetricks ${wine_plugins[@]}
 }
 
-# ------------------------------
+########################
+#
 # Run installation
-# ------------------------------
+#
+########################
 # clone my dotfiles
-if [[ ! -e ${ZDOTDIR:-$HOME}/.dotfiles ]]; then
-  git clone --recursive https://github.com/neko-neko/dotfiles.git "${ZDOTDIR:-$HOME}/.dotfiles"
+if [[ ! -e ${HOME}/.dotfiles ]]; then
+  git clone --recursive https://github.com/neko-neko/dotfiles.git ${HOME}/.dotfiles
 else
-  git pull ${ZDOTDIR:-$HOME}/.dotfiles
+  git pull ${HOME}/.dotfiles
 fi
 
 # move dotfiles dir
-cd "${ZDOTDIR:-$HOME}/.dotfiles"
+cd ${HOME}/.dotfiles
 
 # install my dotfiles
 for name in *; do
   if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'config' ]] && [[ "$name" != 'README.md' ]]; then
-    if [[ -L ${ZDOTDIR:-$HOME}/.$name ]]; then
-      unlink "${ZDOTDIR:-$HOME}/.$name"
+    if [[ -L ${HOME}/.$name ]]; then
+      unlink ${HOME}/.$name
     fi
-    ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
+    ln -sfv $PWD/$name ${HOME}/.$name
   fi
 done
 
 # install my config
-if [[ ! -d ${ZDOTDIR:-$HOME}/.config ]]; then
-  mkdir ${ZDOTDIR:-$HOME}/.config
+if [[ ! -d ${HOME}/.config ]]; then
+  mkdir ${HOME}/.config
 fi
 cd config
 for name in *; do
   if [[ -L ${XDG_CONFIG_HOME:-$HOME/.config}/$name ]]; then
-    unlink "${XDG_CONFIG_HOME:-$HOME/.config}/$name"
+    unlink ${XDG_CONFIG_HOME:-$HOME/.config}/$name
   fi
-  ln -sfv "$PWD/$name" "${XDG_CONFIG_HOME:-$HOME/.config}/$name"
+  ln -sfv $PWD/$name ${XDG_CONFIG_HOME:-$HOME/.config}/$name
 done
 cd ..
 
@@ -310,12 +318,4 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
 fi
 
 # install zplug
-brew install zplug
-source ${ZDOTDIR:-$HOME}/.zshrc
-zplug install
-
-# install prezto
-if [[ -e ${ZDOTDIR:-$HOME}/.zprezto ]]; then
-  unlink "${ZDOTDIR:-$HOME}/.zprezto"
-fi
-ln -sfv "${ZDOTDIR:-$HOME}/.zplug/repos/sorin-ionescu/prezto ${ZDOTDIR:-$HOME}/.zprezto"
+install_zplug_install

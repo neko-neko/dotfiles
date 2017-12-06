@@ -2,20 +2,23 @@
 echo 'remove dotfiles? (y/n)'
 read confirmation
 if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
-  unlink ${ZDOTDIR:-$HOME}/.aliases
-  unlink ${ZDOTDIR:-$HOME}/.editorconfig
-  unlink ${ZDOTDIR:-$HOME}/.functions
-  unlink ${ZDOTDIR:-$HOME}/.gemrc
-  unlink ${ZDOTDIR:-$HOME}/.gitconfig
-  unlink ${ZDOTDIR:-$HOME}/.git_template
-  unlink ${ZDOTDIR:-$HOME}/.hushlogin
-  unlink ${ZDOTDIR:-$HOME}/.tmux.conf
-  unlink ${ZDOTDIR:-$HOME}/.tmuxinator
-  unlink ${ZDOTDIR:-$HOME}/.zprezto
-  unlink ${ZDOTDIR:-$HOME}/.zlogin
-  unlink ${ZDOTDIR:-$HOME}/.zlogout
-  unlink ${ZDOTDIR:-$HOME}/.zpreztorc
-  unlink ${ZDOTDIR:-$HOME}/.zprofile
-  unlink ${ZDOTDIR:-$HOME}/.zshenv
-  unlink ${ZDOTDIR:-$HOME}/.zshrc
+  unlink ${HOME}/.aliases
+  unlink ${HOME}/.ctags
+  unlink ${HOME}/.editorconfig
+  unlink ${HOME}/.functions
+  unlink ${HOME}/.gemrc
+  unlink ${HOME}/.gitconfig
+  unlink ${HOME}/.gitignore_global
+  unlink ${HOME}/.git_template
+  unlink ${HOME}/.hushlogin
+  unlink ${HOME}/.tmux.conf
+  unlink ${HOME}/.tmuxinator
+  unlink ${HOME}/.zprezto
+  unlink ${HOME}/.zlogin
+  unlink ${HOME}/.zlogout
+  unlink ${HOME}/.zpreztorc
+  unlink ${HOME}/.zprofile
+  unlink ${HOME}/.zshenv
+  unlink ${HOME}/.zshrc
+  unlink ${HOME}/.config/nvim
 fi

@@ -8,14 +8,15 @@ fi
 # ------------------------------
 # Read zplug
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zplug/init.zsh"
+export ZPLUG_HOME=${HOME}/.zplug
+source ${ZPLUG_HOME}/init.zsh
 zplug "sorin-ionescu/prezto"
-zplug load --verbose
+zplug "b4b4r07/emoji-cli"
 
 # ------------------------------
 # Read Prezto
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
+source ${HOME}/.zprezto/runcoms/zshrc
 
 # ------------------------------
 # General Settings
@@ -25,18 +26,18 @@ export EDITOR=nvim
 export VISUAL=nvim
 export PAGER=less
 export SHELL=zsh
-export XDG_CONFIG_HOME=${ZDOTDIR:-$HOME}/.config
-export XDG_CACHE_HOME=${ZDOTDIR:-$HOME}/.cache
-export XDG_DATA_HOME=${ZDOTDIR:-$HOME}/.local/share
-PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH
-MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
-FPATH=${ZDOTDIR:-$HOME}/.functions:$FPATH
+export XDG_CONFIG_HOME=${HOME}/.config
+export XDG_CACHE_HOME=${HOME}/.cache
+export XDG_DATA_HOME=${HOME}/.local/share
+PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:${PATH}
+MANPATH=/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}
+FPATH=${HOME}/.functions:${FPATH}
 umask 022
 
 # ------------------------------
 # History Settings
 # ------------------------------
-HISTFILE="${ZDOTDIR:-$HOME}/.zhistory"
+HISTFILE=${HOME}/.zhistory
 HISTSIZE=10000
 SAVEHIST=10000
 setopt hist_ignore_dups
@@ -45,19 +46,19 @@ setopt share_history
 # ------------------------------
 # golang Settings
 # ------------------------------
-export GOPATH=$HOME/.go
-export PATH=$GOPATH/bin:$PATH
+export GOPATH=${HOME}/.go
+export PATH=${GOPATH}/bin:${PATH}
 
 # ------------------------------
 # ruby Settings
 # ------------------------------
-export PATH=$HOME/.rbenv/bin:$PATH
+export PATH=${HOME}/.rbenv/bin:${PATH}
 eval "$(rbenv init - zsh)"
 
 # ------------------------------
 # node Settings
 # ------------------------------
-export PATH=$HOME/.nodebrew/current/bin:$PATH
+export PATH=${HOME}/.nodebrew/current/bin:${PATH}
 
 # ------------------------------
 # Java Settings
@@ -77,7 +78,7 @@ source ~/.tmuxinator/tmuxinator.zsh
 # ------------------------------
 # Load aliases
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.aliases"
+source ${HOME}/.aliases
 
 # ------------------------------
 # define zsh hooks
@@ -94,6 +95,6 @@ autoload plantuml
 # ------------------------------
 # Custom local files
 # ------------------------------
-if [[ -f "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zshrc.local"
+if [[ -f ${HOME}/.zshrc.local ]]; then
+  source ${HOME}/.zshrc.local
 fi

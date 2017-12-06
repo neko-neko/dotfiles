@@ -15,6 +15,6 @@ alias vim='nvim'
 alias reload='source ~/.zshrc'
 
 # Custom local file
-if [[ -f "${ZDOTDIR:-$HOME}/.aliases.local" ]]; then
-  source "${ZDOTDIR:-$HOME}/.aliases.local"
+if [[ -f ${HOME}/.aliases.local ]]; then
+  source ${HOME}/.aliases.local
 fi

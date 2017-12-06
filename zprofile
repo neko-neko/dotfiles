@@ -1,4 +1,4 @@
 # ------------------------------
 # Read Prezto
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile"
+source ${HOME}/.zprezto/runcoms/zprofile

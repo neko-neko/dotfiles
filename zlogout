@@ -1,4 +1,4 @@
 # ------------------------------
 # Read Prezto
 # ------------------------------
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zlogout"
+source ${HOME}/.zprezto/runcoms/zlogout
