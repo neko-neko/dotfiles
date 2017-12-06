@@ -6,6 +6,13 @@ if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
 fi
 
 # ------------------------------
+# Read zplug
+# ------------------------------
+source "${ZDOTDIR:-$HOME}/.zplug/init.zsh"
+zplug "sorin-ionescu/prezto"
+zplug load --verbose
+
+# ------------------------------
 # Read Prezto
 # ------------------------------
 source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"

@@ -255,19 +255,13 @@ cd "${ZDOTDIR:-$HOME}/.dotfiles"
 
 # install my dotfiles
 for name in *; do
-  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'config' ]] && [[ "$name" != 'README.md' ]] && [[ "$name" != 'prezto' ]]; then
+  if [[ "$name" != 'install.zsh' ]] && [[ "$name" != 'uninstall.zsh' ]] && [[ "$name" != 'config' ]] && [[ "$name" != 'README.md' ]]; then
     if [[ -L ${ZDOTDIR:-$HOME}/.$name ]]; then
       unlink "${ZDOTDIR:-$HOME}/.$name"
     fi
     ln -sfv "$PWD/$name" "${ZDOTDIR:-$HOME}/.$name"
   fi
 done
-
-# install prezto
-if [[ -e ${ZDOTDIR:-$HOME}/.zprezto ]]; then
-  unlink "${ZDOTDIR:-$HOME}/.zprezto"
-fi
-ln -sfv "$PWD/prezto" "${ZDOTDIR:-$HOME}/.zprezto"
 
 # install my config
 if [[ ! -d ${ZDOTDIR:-$HOME}/.config ]]; then
@@ -314,3 +308,14 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   defaults write -g KeyRepeat -int 1
   defaults write com.apple.finder AppleShowAllFiles -boolean true
 fi
+
+# install zplug
+brew install zplug
+source ${ZDOTDIR:-$HOME}/.zshrc
+zplug install
+
+# install prezto
+if [[ -e ${ZDOTDIR:-$HOME}/.zprezto ]]; then
+  unlink "${ZDOTDIR:-$HOME}/.zprezto"
+fi
+ln -sfv "${ZDOTDIR:-$HOME}/.zplug/repos/sorin-ionescu/prezto ${ZDOTDIR:-$HOME}/.zprezto"
