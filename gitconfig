@@ -45,6 +45,7 @@
 	untracked = cyan
 
 [commit]
+	template = ~/.gitmessage
 	gpgsign = false
 
 [diff]
