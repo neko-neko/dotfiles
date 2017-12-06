@@ -9,6 +9,7 @@
 	editor = nvim
 	ignorecase = false
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+	excludesfile = ~/.gitignore_global
 
 [apply]
 	whitespace = fix
