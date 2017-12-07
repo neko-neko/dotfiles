@@ -11,7 +11,6 @@ fi
 export ZPLUG_HOME=${HOME}/.zplug
 source ${ZPLUG_HOME}/init.zsh
 zplug "sorin-ionescu/prezto"
-zplug "b4b4r07/emoji-cli"
 
 # ------------------------------
 # Read Prezto
