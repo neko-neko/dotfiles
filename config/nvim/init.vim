@@ -36,6 +36,7 @@ set ambiwidth=double
 syntax enable
 colorscheme molokai
 filetype plugin indent on
+set clipboard+=unnamedplus
 
 " Do not create backup
 set nowritebackup
