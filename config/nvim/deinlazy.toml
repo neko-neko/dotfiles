@@ -26,25 +26,10 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
-in_i = 1
-hook_source = '''
-  let g:context_filetype#filetypes = {
-  \   'html': [
-  \     {
-  \       'start': '<script\%( [^>]*\)\?>',
-  \       'end': '</script>', 'filetype': 'javascript',
-  \     },
-  \     {
-  \       'start': '<style type="text/scss"\%( [^>]*\)\?>',
-  \       'end': '</style>', 'filetype': 'scss',
-  \     },
-  \     {
-  \       'start': '<style\%( [^>]*\)\?>',
-  \       'end': '</style>', 'filetype': 'css',
-  \     },
-  \   ]
-  \ }
-'''
+
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
 
 [[plugins]]
 repo = 'editorconfig/editorconfig-vim'
@@ -275,10 +260,14 @@ on_ft = ['Vagrantfile']
 
 [[plugins]]
 repo = 'hashivim/vim-terraform'
-on_ft = ['tf', 'tfvars', 'tfstate', 'hcl']
+on_ft = ['terraform']
 hook_source = '''
   let g:terraform_fmt_on_save = 1
 '''
+
+[[plugins]]
+repo = 'juliosueiras/vim-terraform-completion'
+on_ft = ['terraform']
 
 [[plugins]]
 repo = 'cespare/vim-toml'

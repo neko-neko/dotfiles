@@ -10,6 +10,7 @@ install_brew_files() {
   taps=(
     universal-ctags/universal-ctags
     sanemat/font
+    wata727/tflint
   )
   formulas=(
     ansible
@@ -51,6 +52,7 @@ install_brew_files() {
     reattach-to-user-namespace
     ricty --with-powerline
     terraform
+    tflint
     tig
     tmux
     tree

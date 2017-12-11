@@ -27,16 +27,17 @@ hook_add = '''
 [[plugins]]
 repo = 'w0rp/ale'
 hook_add = '''
+  " General
   let g:ale_sign_column_always = 1
   let g:ale_open_list = 1
   let g:ale_lint_on_text_changed = 'never'
   let g:ale_lint_on_enter = 0
-
   let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
   let g:ale_sign_error = '⤫'
   let g:ale_sign_warning = '⚠'
   let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
+  " Lint
   let g:ale_linters = {
     \ 'c': ['clang'],
     \ 'c++': ['clang'],
@@ -46,7 +47,8 @@ hook_add = '''
     \ 'ruby': ['ruby', 'rubocop'],
     \ 'slim': ['slim-lint'],
     \ 'scss': ['stylelint'],
-    \ 'javascript': ['flow', 'eslint']
+    \ 'javascript': ['flow', 'eslint'],
+    \ 'Terraform': ['tflint']
   \ }
   let g:ale_ruby_rubocop_executable = 'bundle'
   let g:ale_go_gometalinter_options = '--fast --enable=staticcheck --enable=gosimple --enable=unused'

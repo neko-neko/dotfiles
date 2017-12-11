@@ -104,6 +104,12 @@ autocmd BufRead,BufNewFile nginx*.conf set filetype=nginx
 " gitconfig
 autocmd BufRead,BufNewFile *gitconfig set filetype=gitconfig
 
+" terraform
+autocmd BufRead,BufNewFile *.tf set filetype=terraform
+autocmd BufRead,BufNewFile *.tfvars set filetype=terraform
+autocmd BufRead,BufNewFile *.tfstate set filetype=terraform
+autocmd BufRead,BufNewFile hcl set filetype=terraform
+
 "--------------------
 "" lightline functions
 function! LightlineFugitive()
