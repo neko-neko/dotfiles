@@ -25,13 +25,6 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'Shougo/context_filetype.vim'
-
-[[plugins]]
-repo = 'osyo-manga/vim-precious'
-depends = ['context_filetype.vim']
-
-[[plugins]]
 repo = 'editorconfig/editorconfig-vim'
 hook_source = '''
   let g:EditorConfig_exclude_patterns = ['scp://.*']
@@ -89,6 +82,13 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+
+[[plugins]]
 repo = 'soramugi/auto-ctags.vim'
 hook_source = '''
   let g:auto_ctags = 1
@@ -144,6 +144,7 @@ build = 'npm install'
 [[plugin]]
 repo = 'carlitux/deoplete-ternjs'
 on_ft = ['javascript','javascript.jsx']
+on_i = 1
 hook_source = '''
   let g:tern#command = ["tern"]
   let g:tern#arguments = ["--persistent"]
