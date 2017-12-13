@@ -267,10 +267,6 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'juliosueiras/vim-terraform-completion'
-on_ft = ['terraform']
-
-[[plugins]]
 repo = 'cespare/vim-toml'
 on_ft = ['toml']
 

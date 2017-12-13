@@ -33,6 +33,7 @@ install_brew_files() {
     gnupg
     gnutls
     go --cross-compile-all
+    google-cloud-sdk
     graphviz
     grep --with-default-names
     grip

@@ -65,6 +65,12 @@ export PATH=${HOME}/.nodebrew/current/bin:${PATH}
 export JAVA_HOME=$(/usr/libexec/java_home)
 
 # ------------------------------
+# GCP Settings
+# ------------------------------
+source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
+source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+
+# ------------------------------
 # Hub command Settings
 # ------------------------------
 git() { hub "$@" }
