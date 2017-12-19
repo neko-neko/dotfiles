@@ -335,9 +335,9 @@
 	<key>NSTableView Supports v2 KeyBingingTable</key>
 	<true/>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>297 1117 796 473 -172 900 1920 1057 </string>
+	<string>297 1117 796 473 -172 900 1920 1080 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>4 0 1410 877 0 0 1440 877 </string>
+	<string>31 993 1578 867 -172 900 1920 1057 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -901,7 +901,7 @@
 			<key>Rows</key>
 			<integer>45</integer>
 			<key>Screen</key>
-			<integer>-1</integer>
+			<integer>-2</integer>
 			<key>Scrollback Lines</key>
 			<integer>10000</integer>
 			<key>Scrollback With Status Bar</key>
@@ -1036,6 +1036,8 @@
 					<string>\btelnet:([a-z0-9A-Z_]+@)?([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\b</string>
 				</dict>
 			</array>
+			<key>Space</key>
+			<integer>-1</integer>
 			<key>Sync Title</key>
 			<false/>
 			<key>Tags</key>
@@ -1065,7 +1067,7 @@
 			<key>Visual Bell</key>
 			<true/>
 			<key>Window Type</key>
-			<integer>0</integer>
+			<integer>1</integer>
 			<key>Working Directory</key>
 			<string>/Users/neko-neko</string>
 		</dict>
@@ -1195,7 +1197,7 @@
 	<key>UseCompactLabel</key>
 	<true/>
 	<key>UseLionStyleFullscreen</key>
-	<true/>
+	<false/>
 	<key>WebKitDefaultFontSize</key>
 	<integer>11</integer>
 	<key>WebKitStandardFont</key>
