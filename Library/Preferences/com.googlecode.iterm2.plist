@@ -270,7 +270,7 @@
 	<key>HideScrollbar</key>
 	<false/>
 	<key>HideTab</key>
-	<true/>
+	<false/>
 	<key>HighlightTabLabels</key>
 	<true/>
 	<key>HotKeyBookmark</key>
@@ -335,9 +335,9 @@
 	<key>NSTableView Supports v2 KeyBingingTable</key>
 	<true/>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>297 1117 796 473 -172 900 1920 1080 </string>
+	<string>297 1161 796 473 -172 900 1920 1080 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>31 993 1578 867 -172 900 1920 1057 </string>
+	<string>-172 900 1920 1080 -172 900 1920 1057 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -894,6 +894,8 @@
 			<string>RictyForPowerline-Regular 14</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
+			<key>Prevent Opening in a Tab</key>
+			<false/>
 			<key>Prompt Before Closing 2</key>
 			<integer>0</integer>
 			<key>Right Option Key Sends</key>
