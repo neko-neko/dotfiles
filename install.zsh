@@ -99,6 +99,7 @@ install_brew_files() {
     gopkg.in/alecthomas/gometalinter.v1
     github.com/jteeuwen/go-bindata/...
     github.com/mitchellh/gox
+    github.com/motemen/ghq
     golang.org/x/tools/cmd/stringer
     github.com/simeji/jid/cmd/jid
     github.com/nsf/gocode
@@ -108,6 +109,7 @@ install_brew_files() {
   for get_item in ${golang_get[@]}; do
     go get -u -v ${get_item}
   done
+  mkdir ${HOME}/ghq
   ln -sfv ${GOPATH}/bin/gometalinter.v1 ${GOPATH}/bin/gometalinter
   gometalinter --install --update
 

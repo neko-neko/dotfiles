@@ -75,6 +75,10 @@
 	subupdate = submodule update --init --recursive
 	subupdate-all = submodule foreach git pull origin master
 
+[ghq]
+	root = ~/.ghq
+	root = ~/.go/src
+
 [include]
 	path = ~/.gitconfig.local
 
