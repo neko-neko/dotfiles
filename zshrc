@@ -103,6 +103,8 @@ autoload -Uz ssh-list
 # ------------------------------
 # Key bindings
 # ------------------------------
+source ${HOME}/.functions/historyp
+bindkey '^r' historyp
 
 # ------------------------------
 # Custom local files
