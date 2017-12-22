@@ -14,6 +14,9 @@ alias lx='ll -XB --color'
 alias vim='nvim'
 alias reload='source ~/.zshrc'
 alias history='history 1'
+alias repo='ghq list -p | peco'
+alias repoc='cd $(repo)'
+alias repob='open https://$(ghq list | peco)'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
