@@ -96,6 +96,8 @@ add-zsh-hook chpwd chpwd_hook
 # ------------------------------
 autoload brew-cask-upgrade
 autoload plantuml
+autoload git-ls-files
+autoload ssh-list
 
 # ------------------------------
 # Custom local files

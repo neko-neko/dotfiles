@@ -1,0 +1,4 @@
+peco_ssh_list=$(grep '^Host' ~/.ssh/config |awk '{print $2}' | peco)
+if [[ -n "$peco_ssh_list" ]]; then
+  ssh ${peco_ssh_list}
+fi
