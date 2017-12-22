@@ -92,12 +92,17 @@ chpwd_hook() { pwd && ls }
 add-zsh-hook chpwd chpwd_hook
 
 # ------------------------------
-# auto loads
+# Auto loads
 # ------------------------------
-autoload brew-cask-upgrade
-autoload plantuml
-autoload git-ls-files
-autoload ssh-list
+autoload -Uz brew-cask-upgrade
+autoload -Uz plantuml
+autoload -Uz git-ls-files
+autoload -Uz git-checkout
+autoload -Uz ssh-list
+
+# ------------------------------
+# Key bindings
+# ------------------------------
 
 # ------------------------------
 # Custom local files

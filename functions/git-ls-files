@@ -1,4 +1,4 @@
-peco_git_ls_files=$(git ls-files | xargs ls -At | peco)
+local peco_git_ls_files=$(git ls-files | xargs ls -At | peco)
 if [[ -n "$peco_git_ls_files" ]]; then
   vim $peco_git_ls_files
 fi

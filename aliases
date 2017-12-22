@@ -18,6 +18,7 @@ alias repo='ghq list -p | peco'
 alias repoc='cd $(repo)'
 alias repob='open https://$(ghq list | peco)'
 alias viml='git-ls-files'
+alias checkout='git-checkout'
 alias sshl='ssh-list'
 
 # Custom local file

@@ -1,0 +1,9 @@
+local branch=$(git branch -a | peco | tr -d ' ')
+if [ -n "$branch" ]; then
+  if [[ "$branch" =~ "remotes/" ]]; then
+    local b=$(echo $branch | awk -F'/' '{for(i=3;i<NF;i++){printf("%s%s",$i,OFS="/")}print $NF}')
+    git checkout -b '${b}' '${branch}'
+  else
+    git checkout '${branch}'
+  fi
+fi
