@@ -109,7 +109,6 @@ install_brew_files() {
   for get_item in ${golang_get[@]}; do
     go get -u -v ${get_item}
   done
-  mkdir ${HOME}/ghq
   ln -sfv ${GOPATH}/bin/gometalinter.v1 ${GOPATH}/bin/gometalinter
   gometalinter --install --update
 

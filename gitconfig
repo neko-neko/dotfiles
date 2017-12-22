@@ -76,7 +76,7 @@
 	subupdate-all = submodule foreach git pull origin master
 
 [ghq]
-	root = ~/.ghq
+	root = ~/ghq
 	root = ~/.go/src
 
 [include]
