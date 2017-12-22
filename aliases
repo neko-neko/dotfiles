@@ -13,6 +13,7 @@ alias lu='lt -u --color'
 alias lx='ll -XB --color'
 alias vim='nvim'
 alias reload='source ~/.zshrc'
+alias history='history 1'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
