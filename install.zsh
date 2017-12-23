@@ -21,6 +21,7 @@ install_brew_files() {
     coreutils
     curl
     diffutils
+    diff-so-fancy
     findutils --with-default-names
     fzf
     gawk

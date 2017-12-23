@@ -13,6 +13,7 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   unlink ${HOME}/.hushlogin
   unlink ${HOME}/.tmux.conf
   unlink ${HOME}/.tmuxinator
+  unlink ${HOME}/.tigrc
   unlink ${HOME}/.zprezto
   unlink ${HOME}/.zlogin
   unlink ${HOME}/.zlogout

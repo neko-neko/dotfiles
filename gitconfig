@@ -10,6 +10,7 @@
 	ignorecase = false
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
+	pager = diff-so-fancy | less --tabs=4 -RFX
 
 [apply]
 	whitespace = fix
@@ -27,7 +28,7 @@
 	default = current
 
 [color]
-	ui = auto
+	ui = true
 
 [color "branch"]
 	current = yellow reverse
@@ -35,10 +36,18 @@
 	remote = green
 
 [color "diff"]
-	meta = yellow bold
+	meta = 227
 	frag = magenta bold
-	old = red
-	new = green
+	old = red bold
+	new = green bold
+	commit = 227 bold
+	whitespace = red reverse
+
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
 
 [color "status"]
 	added = yellow
