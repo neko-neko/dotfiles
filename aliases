@@ -25,6 +25,8 @@ alias repob='open https://$(ghq list | peco)'
 alias viml='peco-git-ls-files'
 alias checkout='peco-git-checkout'
 alias sshl='peco-ssh-list'
+alias dockerl='docker logs -f $(docker ps | peco | cut -d " " -f 1)'
+alias dockere='docker exec -it $(docker ps | peco | cut -d " " -f 1)'
 
 # For fasd
 alias a='fasd -a'
