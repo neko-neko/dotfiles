@@ -1,4 +1,4 @@
-function historyp() {
+function widget::peco::history() {
   local tac
   if which tac > /dev/null; then
     tac="tac"
@@ -9,4 +9,4 @@ function historyp() {
   CURSOR=$#BUFFER
   zle clear-screen
 }
-zle -N historyp
+zle -N widget::peco::history

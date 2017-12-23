@@ -30,7 +30,7 @@ export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_DATA_HOME=${HOME}/.local/share
 PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:${PATH}
 MANPATH=/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}
-FPATH=${HOME}/.functions:${FPATH}
+FPATH=${HOME}/.functions/autoloads:${HOME}/.functions/widgets:${FPATH}
 umask 022
 
 # ------------------------------
@@ -71,11 +71,6 @@ source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.z
 source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 
 # ------------------------------
-# Hub command Settings
-# ------------------------------
-git() { hub "$@" }
-
-# ------------------------------
 # tmuxinator Settings
 # ------------------------------
 source ~/.tmuxinator/tmuxinator.zsh
@@ -86,25 +81,21 @@ source ~/.tmuxinator/tmuxinator.zsh
 source ${HOME}/.aliases
 
 # ------------------------------
-# define zsh hooks
-# ------------------------------
-chpwd_hook() { pwd && ls }
-add-zsh-hook chpwd chpwd_hook
-
-# ------------------------------
 # Auto loads
 # ------------------------------
-autoload -Uz brew-cask-upgrade
-autoload -Uz plantuml
-autoload -Uz git-ls-files
-autoload -Uz git-checkout
-autoload -Uz ssh-list
+autoload -z brew-cask-upgrade
+autoload -z plantuml
+autoload -z peco-git-ls-files
+autoload -z peco-git-checkout
+autoload -z peco-hub-pull-requests
+autoload -z peco-hub-issues
+autoload -z peco-ssh-list
 
 # ------------------------------
 # Key bindings
 # ------------------------------
-source ${HOME}/.functions/historyp
-bindkey '^r' historyp
+source ${HOME}/.functions/widgets/peco-history
+bindkey '^r' widget::peco::history
 
 # ------------------------------
 # Custom local files
