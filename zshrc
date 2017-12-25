@@ -52,7 +52,7 @@ export PATH=${GOPATH}/bin:${PATH}
 # ruby Settings
 # ------------------------------
 export PATH=${HOME}/.rbenv/bin:${PATH}
-eval "$(rbenv init - zsh)"
+eval "$(rbenv init - --no-rehash)"
 
 # ------------------------------
 # node Settings
