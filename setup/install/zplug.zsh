@@ -4,6 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 
 install::zplug() {
   util::info 'install zplug plugins...'
+  source ${HOME}/.zshrc
   zplug install
 
   # install prezto
@@ -12,4 +13,5 @@ install::zplug() {
     unlink ${HOME}/.zprezto
   fi
   ln -sfv ${HOME}/.zplug/repos/sorin-ionescu/prezto ${HOME}/.zprezto
+  source ${HOME}/.zshrc
 }
