@@ -1,5 +1,5 @@
 #!/bin/zsh
-readonly UNINSTALL_TAGETS=(
+readonly UNINSTALL_TARGETS=(
   aliases
   bin
   ctags
@@ -29,7 +29,7 @@ readonly UNINSTALL_TAGETS=(
 echo 'remove dotfiles? (y/N)'
 read confirmation
 if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
-  for target in ${UNINSTALL_TAGETS[@]}; do
+  for target in ${UNINSTALL_TARGETS[@]}; do
     unlink ${HOME}/.${target}
   done
 fi
