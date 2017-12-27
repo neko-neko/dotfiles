@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::go() {
-  info 'install golang and libs...'
+  util::info 'install golang and libs...'
   
   local libs=(
     github.com/motemen/ghq

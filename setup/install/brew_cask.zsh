@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::brew_cask() {
-  info 'install brew cask formulas...'
+  util::info 'install brew cask formulas...'
 
   local taps=(
     caskroom/cask

@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::python() {
-  info 'install Python...'
+  util::info 'install Python...'
 
   local pips=(
     awscli

@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::ruby() {
-  info 'install Ruby and gems...'
+  util::info 'install Ruby and gems...'
 
   local gems=(
     neovim

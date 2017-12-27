@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::zplug() {
-  info 'install zplug plugins...'
+  util::info 'install zplug plugins...'
   zplug install
 
   # install prezto

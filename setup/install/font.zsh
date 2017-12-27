@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::font() {
-  info 'install font files...'
+  util::info 'install font files...'
 
   brew install fontforge
 

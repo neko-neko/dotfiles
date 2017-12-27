@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::nodejs() {
-  info 'install Node.js...'
+  util::info 'install Node.js...'
 
   curl -L git.io/nodebrew | perl - setup
   mkdir -p ${HOME}/.nodebrew/src

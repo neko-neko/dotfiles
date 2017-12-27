@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::toy() {
-  info 'install my toys...'
+  util::info 'install my toys...'
 
   local casks=(
     wireshark

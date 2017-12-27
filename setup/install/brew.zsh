@@ -3,7 +3,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 install::brew() {
-  info 'install brew formulas...'
+  util::info 'install brew formulas...'
   
   local taps=(
     wata727/tflint
