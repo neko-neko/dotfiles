@@ -37,6 +37,7 @@ syntax enable
 colorscheme molokai
 filetype plugin indent on
 set clipboard+=unnamedplus
+set guifont=RictyNerdFontAAEOPL-Regular:h14
 
 " Do not create backup
 set nowritebackup
@@ -79,39 +80,15 @@ set wrapscan
 set hlsearch
 
 "--------------------
-"" Filetypes
-"
-" Ruby
-autocmd BufNewFile,BufRead *.cap set filetype=ruby
-autocmd BufNewFile,BufRead Capfile set filetype=ruby
-autocmd BufNewFile,BufRead Gemfile set filetype=ruby
-autocmd BufNewFile,BufRead Guardfile set filetype=ruby
-autocmd BufNewFile,BufRead Berksfile set filetype=ruby
-autocmd BufNewFile,BufRead Rakefile set filetype=ruby
-
-" Markdown
-autocmd BufRead,BufNewFile *.md set filetype=markdown
-autocmd BufRead,BufNewFile *.mkd set filetype=markdown
-autocmd BufRead,BufNewFile *.markdown set filetype=markdown
-
-" Yaml
-autocmd BufRead,BufNewFile *.yml set filetype=yaml
-autocmd BufRead,BufNewFile *.yaml set filetype=yaml
-
-" nginx
-autocmd BufRead,BufNewFile nginx*.conf set filetype=nginx
-
-" gitconfig
-autocmd BufRead,BufNewFile *gitconfig set filetype=gitconfig
-
-" terraform
-autocmd BufRead,BufNewFile *.tf set filetype=terraform
-autocmd BufRead,BufNewFile *.tfvars set filetype=terraform
-autocmd BufRead,BufNewFile *.tfstate set filetype=terraform
-autocmd BufRead,BufNewFile hcl set filetype=terraform
-
-"--------------------
 "" lightline functions
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+endfunction
+
 function! LightlineFugitive()
   try
     if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head') && strlen(fugitive#head())

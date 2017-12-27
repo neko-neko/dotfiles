@@ -75,10 +75,8 @@ hook_source = '''
     \ 'scope2kind' : {
       \ 'ctype' : 't',
       \ 'ntype' : 'n'
-    \ },
-    \ 'ctagsbin'  : 'gotags',
-    \ 'ctagsargs' : '-sort -silent'
-  \}
+    \ }
+  \ }
 '''
 
 [[plugins]]
@@ -139,7 +137,7 @@ on_ft = ['javascript', 'javascript.jsx']
 [[plugins]]
 repo = 'marijnh/tern_for_vim'
 on_ft = ['javascript', 'javascript.jsx']
-build = 'npm install'
+build = 'npm install -g tern'
 
 [[plugin]]
 repo = 'carlitux/deoplete-ternjs'

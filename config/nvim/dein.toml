@@ -12,20 +12,51 @@ repo = 'Shougo/vimproc.vim'
 build = 'make'
 
 [[plugins]]
-repo = 'scrooloose/nerdtree'
+repo = 'ryanoasis/vim-devicons'
 hook_add = '''
-  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  let NERDTreeShowHidden = 1
+  let g:webdevicons_enable = 1
+
+  let g:webdevicons_enable_nerdtree = 1
+
+  let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+  let g:DevIconsEnableFoldersOpenClose = 1
+  let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+  let g:DevIconsDefaultFolderOpenSymbol = ''
 '''
 
 [[plugins]]
-repo = 'jistr/vim-nerdtree-tabs'
+repo = 'scrooloose/nerdtree'
 hook_add = '''
-  let g:nerdtree_tabs_open_on_console_startup = 1
+  autocmd StdinReadPre * let s:std_in=1
+  autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+  let NERDTreeShowHidden = 1
+  let g:NERDTreeDirArrowExpandable = '▸'
+  let g:NERDTreeDirArrowCollapsible = '▾'
+'''
+
+[[plugins]]
+repo = 'tiagofumo/vim-nerdtree-syntax-highlight'
+hook_add = '''
+  let g:NERDTreeLimitedSyntax = 1
+  let g:NERDTreeSyntaxDisableDefaultExtensions = 1
+  let g:NERDTreeDisableExactMatchHighlight = 1
+  let g:NERDTreeDisablePatternMatchHighlight = 1
+  let g:NERDTreeSyntaxEnabledExtensions = ['rb', 'go', 'js', 'jsx', 'css', 'scss', 'html', 'sh'. 'zsh', 'conf', 'vim', 'md', 'yml', 'toml']
 '''
 
 [[plugins]]
 repo = 'w0rp/ale'
+build = '''
+  gem install rubocop && \
+  go get -u gopkg.in/alecthomas/gometalinter.v2 && \
+  ln -sfv ${GOPATH}/bin/gometalinter.v2 ${GOPATH}/bin/gometalinter && \
+  gometalinter --install --update && \
+  npm install -g eslint && \
+  brew install tflint && \
+  luarocks install luacheck
+'''
 hook_add = '''
   " General
   let g:ale_sign_column_always = 1
@@ -45,9 +76,7 @@ hook_add = '''
     \ 'php': ['php'],
     \ 'perl': ['perl'],
     \ 'ruby': ['ruby', 'rubocop'],
-    \ 'slim': ['slim-lint'],
-    \ 'scss': ['stylelint'],
-    \ 'javascript': ['flow', 'eslint'],
+    \ 'javascript': ['eslint'],
     \ 'Terraform': ['tflint']
   \ }
   let g:ale_ruby_rubocop_executable = 'bundle'
@@ -87,6 +116,8 @@ hook_add = '''
     \   'fugitive': 'LightlineFugitive',
     \   'gitgutter': 'LightlineGitGutter',
     \   'filename': 'LightlineFilename',
+    \   'filetype': 'LightlineFiletype',
+    \   'fileformat': 'LightlineFileformat',
     \   'ale': 'ALEGetStatusLine'
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
@@ -124,3 +155,6 @@ hook_source = '''
   let g:neoterm_position = 'horizontal'
   let g:neoterm_automap_keys = ',tt'
 '''
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'

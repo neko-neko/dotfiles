@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+#
+# fzf git checkout branch.
+fzf_git_branch=$(git branch -a | fzf | tr -d ' ')
+if [[ -n ${fzf_git_branch} ]]; then
+  if [[ ${fzf_git_branch} =~ "remotes/" ]]; then
+    local b=$(echo $peco_git_branch | awk -F'/' '{for(i=3;i<NF;i++){printf("%s%s",$i,OFS="/")}print $NF}')
+    git checkout -b ${b} ${fzf_git_branch}
+  else
+    git checkout ${fzf_git_branch}
+  fi
+fi

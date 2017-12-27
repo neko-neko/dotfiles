@@ -1,4 +1,13 @@
 # ------------------------------
+# General
+# ------------------------------
+alias vim='nvim'
+alias curl='httpstat'
+alias history='history 1'
+alias hub='GITHUB_HOST=$(git config --get remote.origin.url | awk "match($0, /^https:\/\/(.+?)\/(.+?)\/(.+?)\.git$/, m) {print m[1]}") hub'
+alias reload='source ~/.zshrc'
+
+# ------------------------------
 # List
 # ------------------------------
 alias l='ls -1A --color'
@@ -11,32 +20,31 @@ alias ls='ls --color'
 alias lt='ll -tr --color'
 alias lu='lt -u --color'
 alias lx='ll -XB --color'
-alias vim='nvim'
-alias reload='source ~/.zshrc'
-alias history='history 1'
-alias hub='GITHUB_HOST=$(git config --get remote.origin.url | awk "match($0, /^https:\/\/(.+?)\/(.+?)\/(.+?)\.git$/, m) {print m[1]}") hub'
-alias pr='peco-hub-pull-requests'
-alias prc='hub pull-request'
-alias is='peco-hub-issues'
-alias isc='hub issue create'
-alias repo='ghq list -p | peco'
-alias repoc='cd "$(repo)"'
-alias repob='open https://$(ghq list | peco)'
-alias viml='peco-git-ls-files'
-alias checkout='peco-git-checkout'
-alias sshl='peco-ssh-list'
-alias dockerl='docker logs -f $(docker ps | peco | cut -d " " -f 1)'
-alias dockere='docker exec -it $(docker ps | peco | cut -d " " -f 1)'
 
-# For fasd
+# ------------------------------
+# fzf
+# ------------------------------
+alias repo='ghq list -p | fzf'
+alias repoc='cd "$(repo)"'
+alias repob='open https://$(ghq list | fzf)'
+alias viml='fzf-git-ls-files'
+
+alias sshl='fzf-ssh-list'
+
+alias dockerl='docker logs -f $(docker ps | fzf | cut -d " " -f 1)'
+alias dockere='docker exec -it $(docker ps | fzf | cut -d " " -f 1)'
+
+# ------------------------------
+# fasd
+# ------------------------------
 alias a='fasd -a'
 alias s='fasd -si'
 alias d='fasd -d'
 alias f='fasd -f'
 alias sd='fasd -sid'
 alias sf='fasd -sif'
-alias z='fasd_cd -d'
-alias zz='cd "$(fasd -ld | peco)"'
+alias z='"$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1'
+alias zz='fasd_cd -d -i'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then

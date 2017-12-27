@@ -10,7 +10,7 @@
 	ignorecase = false
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	pager = diff-so-fancy | less --tabs=2 -RFX
 
 [apply]
 	whitespace = fix
@@ -83,6 +83,12 @@
 	unmerged = diff --name-only --diff-filter=U
 	subupdate = submodule update --init --recursive
 	subupdate-all = submodule foreach git pull origin master
+	pull-requst = !fzf-hub-pull-requests
+	pr = pull-requst
+	prc = !hub pull-request
+	issue = !fzf-hub-issues
+	isc = !hub issue create
+	cc = !fzf-git-checkout
 
 [ghq]
 	root = ~/ghq

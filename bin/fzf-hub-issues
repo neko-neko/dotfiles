@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+#
+# fzf open issue.
+fzf_issue_url=$(hub issue | grep 'issue' | fzf | sed -e 's/.*( \(.*\) )$/\1/')
+if [[ -n ${fzf_issue_url} ]]; then
+  open $fzf_issue_url
+fi

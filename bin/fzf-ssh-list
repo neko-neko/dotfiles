@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+#
+# fzf connect ssh list.
+fzf_ssh_list=$(grep '^Host' ${HOME}/.ssh/config |awk '{print $2}' | fzf)
+if [[ -n ${fzf_ssh_list} ]]; then
+  ssh ${fzf_ssh_list}
+fi

@@ -1,3 +1,6 @@
+#!/usr/bin/env zsh
+#
+# brew cask upgrade.
 for app in $(brew cask list); do
   local latest="$(brew cask info "${app}" | awk 'NR==1{print $2}')"
   local versions=($(ls -1 "/usr/local/Caskroom/${app}/.metadata/"))

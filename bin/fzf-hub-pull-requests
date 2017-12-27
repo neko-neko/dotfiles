@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+#
+# fzf open pull requst.
+fzf_pull_requet_url=$(hub issue | grep 'pull' | fzf | sed -e 's/.*( \(.*\) )$/\1/')
+if [[ -n ${fzf_pull_requet_url} ]]; then
+  open ${fzf_pull_requet_url}
+fi

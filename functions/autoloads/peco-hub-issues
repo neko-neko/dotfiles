@@ -1,4 +1,0 @@
-peco_issue_url=$(hub issue | grep 'issue' | peco | sed -e 's/.*( \(.*\) )$/\1/')
-if [[ -n "$peco_issue_url" ]]; then
-  open $peco_issue_url
-fi

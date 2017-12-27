@@ -4,11 +4,11 @@
 # Installation
 1. Install my dot files:  
     ```
-    zsh -c "$(curl -s https://raw.githubusercontent.com/neko-neko/dotfiles/master/install.zsh)"
+    zsh -c "$(curl -s https://raw.githubusercontent.com/neko-neko/dotfiles/master/setup/setup.zsh)"
     ```
 
 # Uninstallation
 1. run this:  
     ```
-    cd ~/.dotfiles && zsh uninstall.zsh
+    cd ~/.dotfiles && ./setup/uninstall.zsh
     ```

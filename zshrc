@@ -28,9 +28,9 @@ export SHELL=zsh
 export XDG_CONFIG_HOME=${HOME}/.config
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_DATA_HOME=${HOME}/.local/share
-PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:${PATH}
-MANPATH=/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}
-FPATH=${HOME}/.functions/autoloads:${HOME}/.functions/widgets:${FPATH}
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:${PATH}
+export MANPATH=/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}
+export FPATH=${HOME}/.functions:${FPATH}
 umask 022
 
 # ------------------------------
@@ -65,37 +65,49 @@ export PATH=${HOME}/.nodebrew/current/bin:${PATH}
 export JAVA_HOME=$(/usr/libexec/java_home)
 
 # ------------------------------
+# Lua Settings
+# ------------------------------
+eval $(luarocks path --bin)
+
+# ------------------------------
 # GCP Settings
 # ------------------------------
 source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
 source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 
 # ------------------------------
-# tmuxinator Settings
+# fzf Settings
 # ------------------------------
-source ~/.tmuxinator/tmuxinator.zsh
+export FZF_DEFAULT_OPTS='
+  --reverse
+  --inline-info
+  --ansi
+  --border
+  --height 60%
+  --color fg:252,bg:233,hl:67,fg+:252,bg+:235,hl+:81
+  --color info:144,prompt:161,spinner:135,pointer:135,marker:118
+'
+
+# ------------------------------
+# scripts
+# ------------------------------
+export PATH=${HOME}/.bin:${PATH}
+
+# ------------------------------
+# Auto load
+# ------------------------------
+autoload fzf-history
+zle -N fzf-history
+
+# ------------------------------
+# Key bindings
+# ------------------------------
+bindkey '^r' fzf-history
 
 # ------------------------------
 # Load aliases
 # ------------------------------
 source ${HOME}/.aliases
-
-# ------------------------------
-# Auto loads
-# ------------------------------
-autoload -z brew-cask-upgrade
-autoload -z plantuml
-autoload -z peco-git-ls-files
-autoload -z peco-git-checkout
-autoload -z peco-hub-pull-requests
-autoload -z peco-hub-issues
-autoload -z peco-ssh-list
-
-# ------------------------------
-# Key bindings
-# ------------------------------
-source ${HOME}/.functions/widgets/peco-history
-bindkey '^r' widget::peco::history
 
 # ------------------------------
 # Custom local files
