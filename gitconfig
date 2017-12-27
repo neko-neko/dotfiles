@@ -94,8 +94,8 @@
 	root = ~/ghq
 	root = ~/.go/src
 
-[include]
-	path = ~/.gitconfig.local
-
 [credential]
 	helper = osxkeychain
+
+[include]
+	path = ~/.gitconfig.local

@@ -1,5 +1,5 @@
 # My dotfiles
-[prezto](https://github.com/sorin-ionescu/prezto) base my dotfiles
+my dotfiles
 
 # Installation
 1. Install my dot files:  
