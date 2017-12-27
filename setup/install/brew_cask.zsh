@@ -15,6 +15,7 @@ install::brew_cask() {
     caffeine
     docker
     firefox
+    google-cloud-sdk
     google-chrome
     google-japanese-ime
     iterm2
