@@ -21,7 +21,7 @@ theme_precmd() {
   vcs_info
 
   PROMPT="${colors[3]}%n%f at ${colors[2]}%m%f in ${colors[5]}%~%f ${vcs_info_msg_0_}"
-  RPROMPT=''
+  RPROMPT="${colors[5]}(%T)%f"
 }
 
 setopt prompt_subst
