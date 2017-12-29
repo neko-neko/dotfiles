@@ -30,4 +30,7 @@ augroup filetypedetect
 
   " tern-config
   autocmd BufNewFile,BufRead *tern-config set filetype=json
+
+  " zsh theme
+  autocmd BufNewFile,BufRead *.zsh-theme set filetype=zsh
 augroup END

@@ -2,6 +2,7 @@
 # General Settings
 # ------------------------------
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 export EDITOR=nvim
 export VISUAL=nvim
@@ -22,8 +23,9 @@ export FPATH=${HOME}/.functions:${FPATH}
 # History Settings
 # ------------------------------
 export HISTFILE=${HOME}/.zhistory
-export HISTSIZE=10000
-export SAVEHIST=10000
+export HISTSIZE=1000000
+export SAVEHIST=1000000
+export LISTMAX=100
 
 # ------------------------------
 # golang Settings
@@ -59,6 +61,7 @@ export FZF_DEFAULT_OPTS='
   --reverse
   --inline-info
   --ansi
+  --multi
   --border
   --height 60%
   --color fg:252,bg:233,hl:67,fg+:252,bg+:235,hl+:81
@@ -73,6 +76,7 @@ export PATH=${HOME}/.bin:${PATH}
 # ------------------------------
 # Auto load
 # ------------------------------
+autoload -Uz add-zsh-hook
 autoload -Uz compinit && compinit -u
 autoload fzf-history
 zle -N fzf-history

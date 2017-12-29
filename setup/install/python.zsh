@@ -8,6 +8,8 @@ install::python() {
   local pips=(
     awscli
     neovim
+    powerline-status
+    psutil
   )
 
   brew install python3

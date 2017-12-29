@@ -13,15 +13,12 @@ readonly UNINSTALL_TARGETS=(
   tigrc
   tmux.conf
   zprezto
-  zlogin
-  zlogout
-  zpreztorc
-  zprofile
   zshenv
   zshrc
   Library/Preferences/com.googlecode.iterm2.plist
   config/karabiner
   config/nvim
+  config/powerline
   'functions'
   git_template
 )
