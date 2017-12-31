@@ -84,6 +84,10 @@ setopt share_history
 setopt extended_history
 setopt inc_append_history
 
+export LESS='-R'
+export LESSOPEN='|/usr/local/bin/src-hilite-lesspipe.sh %s'
+export GREP_OPTIONS='--color=auto'
+
 # powerline
 # . /usr/local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
 
