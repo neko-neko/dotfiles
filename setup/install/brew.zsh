@@ -35,6 +35,7 @@ install::brew() {
     packer
     pandoc
     readline
+    source-highlight
     terraform
     tig
     tmux

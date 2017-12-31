@@ -4,6 +4,8 @@
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
+export LESS='-R'
+export LESSOPEN='|/usr/local/bin/src-hilite-lesspipe.sh %s'
 export EDITOR=nvim
 export VISUAL=nvim
 export PAGER=less
