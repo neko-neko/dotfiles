@@ -49,12 +49,13 @@ hook_add = '''
 [[plugins]]
 repo = 'w0rp/ale'
 build = '''
+  brew install tflint && \
+  brew install shellcheck && \
   gem install rubocop && \
   go get -u gopkg.in/alecthomas/gometalinter.v2 && \
   ln -sfv ${GOPATH}/bin/gometalinter.v2 ${GOPATH}/bin/gometalinter && \
   gometalinter --install --update && \
   npm install -g eslint && \
-  brew install tflint && \
   luarocks install luacheck
 '''
 hook_add = '''
