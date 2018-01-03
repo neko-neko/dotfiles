@@ -28,9 +28,10 @@ alias lx='ll -XB --color'
 alias repo='ghq list -p | fzf'
 alias repoc='cd "$(repo)"'
 alias repob='open https://$(ghq list | fzf)'
-alias viml='fzf-git-ls-files'
-
-alias sshl='fzf-ssh-list'
+alias vimf='fzf-git-ls-files'
+alias sshf='fzf-ssh-list'
+alias killf='fzf-kill'
+alias chromef='fzf-chrome-history'
 
 alias dockerl='docker logs -f $(docker ps | fzf | cut -d " " -f 1)'
 alias dockere='docker exec -it $(docker ps | fzf | cut -d " " -f 1)'

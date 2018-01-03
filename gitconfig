@@ -88,7 +88,7 @@
 	prc = !hub pull-request
 	issue = !fzf-hub-issues
 	isc = !hub issue create
-	cc = !fzf-git-checkout
+	c = !fzf-git-checkout
 
 [ghq]
 	root = ~/ghq
