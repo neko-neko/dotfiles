@@ -2,6 +2,7 @@
 # General
 # ------------------------------
 alias vim='nvim'
+alias grep='grep --color=auto'
 alias curl='httpstat'
 alias history='history 1'
 alias hub='GITHUB_HOST=$(git config --get remote.origin.url | awk "match($0, /^https:\/\/(.+?)\/(.+?)\/(.+?)\.git$/, m) {print m[1]}") hub'
