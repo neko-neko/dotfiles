@@ -8,6 +8,7 @@ taps=(
 )
 
 casks=(
+  1password
   alfred
   atom
   caffeine
