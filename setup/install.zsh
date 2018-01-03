@@ -80,7 +80,7 @@ if [[ $? = 0 ]]; then
 fi
 
 # Finallize...
-info 'cleanup...'
+util::info 'cleanup...'
 brew cleanup
 brew cask cleanup
-info 'done!'
+util::info 'done!'

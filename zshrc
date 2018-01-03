@@ -91,6 +91,12 @@ export GREP_OPTIONS='--color=auto'
 # powerline
 # . /usr/local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
 
+
+# ------------------------------
+# pip Settings
+# ------------------------------
+eval "$(pip3 completion --zsh)"
+
 # ------------------------------
 # GCP Settings
 # ------------------------------
