@@ -6,16 +6,16 @@ theme_precmd() {
     "%F{161}" # Hotpink
     "%F{118}" # Limegreen
   )
-  local branch_format="${colors[1]}%b %f%c%u%m"
+  local branch_format="${colors[1]}%b %f%c%u%m%f"
   local action_format="${colors[5]}%a%f"
-  local staged_format="${colors[5]}%f "
-  local unstaged_format="${colors[2]}%f "
+  local staged_format="${colors[5]}%f"
+  local unstaged_format="${colors[2]}%f"
 
   zstyle ':vcs_info:*' enable bzr git hg svn
   zstyle ':vcs_info:*' check-for-changes true
   zstyle ':vcs_info:*' formats "${branch_format}"
-  zstyle ':vcs_info:*' stagedstr "${staged_format}"
-  zstyle ':vcs_info:*' unstagedstr "${unstaged_format}"
+  zstyle ':vcs_info:*' stagedstr "${staged_format} "
+  zstyle ':vcs_info:*' unstagedstr "${unstaged_format} "
   zstyle ':vcs_info:*' actionformats "${branch_format}${action_format}"
 
   vcs_info

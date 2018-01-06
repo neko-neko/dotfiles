@@ -12,14 +12,18 @@ export ZPLUG_HOME=${HOME}/.zplug
 source ${ZPLUG_HOME}/init.zsh
 
 zplug 'chrissicool/zsh-256color'
+zplug 'seebi/dircolors-solarized'
+
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
-zplug 'seebi/dircolors-solarized'
 zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+
+zplug "rimraf/k"
+
 zplug 'modules/environment', from:prezto
-zplug 'modules/terminal', from:prezto
-zplug 'modules/editor', from:prezto
-zplug 'modules/directory', from:prezto
+zplug 'modules/terminal', from:prezto, frozen:1
+zplug 'modules/editor', from:prezto, frozen:1
+zplug 'modules/directory', from:prezto, frozen:1
 zplug "${HOME}/.dotfiles/theme", \
   from:local, \
   as:theme
@@ -85,7 +89,7 @@ setopt extended_history
 setopt inc_append_history
 
 export LESS='-R'
-export LESSOPEN='|/usr/local/bin/src-hilite-lesspipe.sh %s'
+export LESSOPEN="|/usr/local/bin/src-hilite-lesspipe.sh %s"
 
 # powerline
 # . /usr/local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh

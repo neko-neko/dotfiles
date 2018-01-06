@@ -3,5 +3,5 @@
 # open vim fzf git ls-files.
 fzf_git_ls_files=$(git ls-files | xargs ls -At | fzf)
 if [[ -n ${fzf_git_ls_files} ]]; then
-  vim ${fzf_git_ls_files}
+  ${EDITOR} ${fzf_git_ls_files}
 fi

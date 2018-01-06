@@ -158,4 +158,7 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = '/usr/local/opt/fzf'
+
+[[plugins]]
 repo = 'junegunn/fzf.vim'

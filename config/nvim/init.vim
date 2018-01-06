@@ -176,7 +176,8 @@ inoremap <C-e> <Esc>$a
 inoremap <C-a> <Esc>^a
 noremap <C-e> <Esc>$a
 noremap <C-a> <Esc>^a
-noremap <Leader>b :Denite buffer<CR>
+noremap <Leader>b :Buffers<CR>
+noremap <Leader>f :GFiles<CR>
 noremap <Leader>p :DeniteProjectDir file_rec<CR>
 
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
