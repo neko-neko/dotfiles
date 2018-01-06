@@ -46,7 +46,10 @@ util::confirm 'update using zsh path?'
 if [[ $? = 0 ]]; then
   brew upgrade
   brew install zsh --without-etcdir
-  sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
+  configured=$(grep -c '/usr/local/bin/zsh' /etc/shells)
+  if [[ $configured = 0 ]]; then
+    sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
+  fi
   chsh -s /usr/local/bin/zsh
   source ${HOME}/.zshrc
 fi
