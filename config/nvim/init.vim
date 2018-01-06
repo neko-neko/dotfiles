@@ -178,7 +178,7 @@ noremap <C-e> <Esc>$a
 noremap <C-a> <Esc>^a
 noremap <Leader>b :Buffers<CR>
 noremap <Leader>f :GFiles<CR>
-noremap <Leader>p :DeniteProjectDir file_rec<CR>
+noremap <Leader>h :History<CR>
 
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 nmap <Space>/ <Plug>(operator-search)if
