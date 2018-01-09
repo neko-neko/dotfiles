@@ -25,6 +25,7 @@ formulas=(
   imagemagick
   jq
   kubectl
+  kubernetes-helm
   lua
   mas
   neovim
