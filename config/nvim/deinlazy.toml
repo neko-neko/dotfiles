@@ -308,3 +308,8 @@ on_ft = ['nginx']
 
 [[plugins]]
 repo = 'tpope/vim-git'
+on_ft = ['git', 'gitconfig', 'gitrebase', 'gitsendemail']
+
+[[plugins]]
+repo = 'itkq/fluentd-vim'
+on_ft = ['fluentd']

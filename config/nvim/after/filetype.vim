@@ -28,6 +28,9 @@ augroup filetypedetect
   autocmd BufRead,BufNewFile *.tfstate set filetype=terraform
   autocmd BufRead,BufNewFile hcl set filetype=terraform
 
+  " fluentd
+  autocmd BufRead,BufNewFile *td-agent.conf set filetype=fluentd
+
   " tern-config
   autocmd BufNewFile,BufRead *tern-config set filetype=json
 
