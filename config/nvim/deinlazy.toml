@@ -12,9 +12,6 @@ repo = 'osyo-manga/vim-operator-search'
 depends = ['vim-operator-user', 'vim-textobj-function', 'vim-textobj-user']
 
 [[plugins]]
-repo = 'ConradIrwin/vim-bracketed-paste'
-
-[[plugins]]
 repo = 'bronson/vim-trailing-whitespace'
 
 [[plugins]]
