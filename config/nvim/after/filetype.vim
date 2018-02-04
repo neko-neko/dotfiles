@@ -36,4 +36,7 @@ augroup filetypedetect
 
   " zsh theme
   autocmd BufNewFile,BufRead *.zsh-theme set filetype=zsh
+
+  " dig
+  autocmd BufNewFile,BufRead *.dig set filetype=yaml
 augroup END
