@@ -15,6 +15,7 @@ formulas=(
   dep
   diffutils
   diff-so-fancy
+  fasd
   fzf
   gawk
   gibo
