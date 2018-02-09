@@ -1,3 +1,15 @@
+k8s_current_info() {
+  if which kubectl > /dev/null; then
+    cname=`kubectl config current-context`
+    args="--output=jsonpath={.contexts[?(@.name == \"${cname}\")].context.namespace}"
+    namespace=$(kubectl config view "${args}")
+    if [ -z $namespace ]; then
+      namespace="default"
+    fi
+    echo "${cname}/${namespace}"
+  fi
+}
+
 theme_precmd() {
   local colors=(
     "%F{81}"  # Turquoise
@@ -21,7 +33,7 @@ theme_precmd() {
   vcs_info
 
   PROMPT="${colors[3]}%n%f at ${colors[2]}%m%f in ${colors[5]}%~%f ${vcs_info_msg_0_}"
-  RPROMPT="${colors[5]}(%T)%f"
+  RPROMPT="%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} $(k8s_current_info) ${colors[5]}(%T)%f%{$reset_color%}"
 }
 
 setopt prompt_subst
