@@ -18,10 +18,10 @@ theme_precmd() {
     "%F{161}" # Hotpink
     "%F{118}" # Limegreen
   )
-  local branch_format="${colors[1]}%b %f%c%u%m%f"
-  local action_format="${colors[5]}%a%f"
-  local staged_format="${colors[5]}%f"
-  local unstaged_format="${colors[2]}%f"
+  local branch_format="%{$colors[1]%}%b %f%c%u%m%f"
+  local action_format="%{$colors[5]%}%a%f"
+  local staged_format="%{$colors[5]%}%f"
+  local unstaged_format="%{$colors[2]%}%f"
 
   zstyle ':vcs_info:*' enable bzr git hg svn
   zstyle ':vcs_info:*' check-for-changes true
@@ -32,8 +32,15 @@ theme_precmd() {
 
   vcs_info
 
-  PROMPT="${colors[3]}%n%f at ${colors[2]}%m%f in ${colors[5]}%~%f ${vcs_info_msg_0_}"
-  RPROMPT="%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} $(k8s_current_info) ${colors[5]}(%T)%f%{$reset_color%}"
+  local symbol='$'
+  case ${USERNAME} in
+  'root')
+    symbol='#'
+    ;;
+  esac
+
+  local new_line=$'\n'
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f %{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} $(k8s_current_info) %{$colors[5]%}(%T)%f%{$reset_color%} ${new_line} %{$colors[5]%}%~%f ${vcs_info_msg_0_}${symbol} "
 }
 
 setopt prompt_subst
