@@ -39,7 +39,7 @@ alias dockere='docker exec -it $(docker ps | fzf | cut -d " " -f 1)'
 # ------------------------------
 # kubectl
 # ------------------------------
-alias kubecu='kubectl config current-context'
+alias kubec='kubectl config current-context'
 
 # ------------------------------
 # fasd
