@@ -1,12 +1,16 @@
 k8s_current_info() {
   if which kubectl > /dev/null; then
-    cname=`kubectl config current-context`
+    cname=$(kubectl config current-context 2>/dev/null)
+
+    if [[ $? != 0 ]]; then
+      return
+    fi
     args="--output=jsonpath={.contexts[?(@.name == \"${cname}\")].context.namespace}"
     namespace=$(kubectl config view "${args}")
     if [ -z $namespace ]; then
-      namespace="default"
+    namespace="default"
     fi
-    echo "${cname}/${namespace}"
+    echo "%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} ${cname}/${namespace} %{$reset_color%}"
   fi
 }
 
@@ -60,7 +64,7 @@ theme_precmd() {
   esac
 
   local new_line=$'\n'
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f %{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} $(k8s_current_info) %{$colors[5]%}(%T)%f%{$reset_color%} ${new_line} %{$colors[5]%}%~%f ${vcs_info_msg_0_} ${symbol} "
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(k8s_current_info)%{$colors[5]%}(%T)%f%{$reset_color%} ${new_line} %{$colors[5]%}%~%f ${vcs_info_msg_0_} ${symbol} "
 }
 
 setopt prompt_subst
