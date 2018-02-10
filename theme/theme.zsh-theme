@@ -49,8 +49,8 @@ theme_precmd() {
   zstyle ':vcs_info:git:*' enable bzr git hg svn
   zstyle ':vcs_info:git:*' check-for-changes true
   zstyle ':vcs_info:git:*' formats "${branch_format}"
-  zstyle ':vcs_info:git:*' stagedstr "${staged_format} "
-  zstyle ':vcs_info:git:*' unstagedstr "${unstaged_format} "
+  zstyle ':vcs_info:git:*' stagedstr "${staged_format}"
+  zstyle ':vcs_info:git:*' unstagedstr "${unstaged_format}"
   zstyle ':vcs_info:git:*' actionformats "${branch_format}${action_format}"
   zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-st
 
@@ -64,7 +64,9 @@ theme_precmd() {
   esac
 
   local new_line=$'\n'
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(k8s_current_info)%{$colors[5]%}(%T)%f%{$reset_color%} ${new_line} %{$colors[5]%}%~%f ${vcs_info_msg_0_} ${symbol} "
+  local vcs_message=''
+  [[ ${vcs_info_msg_0_} != '' ]] && vcs_message="${vcs_info_msg_0_} " || vcs_message=''
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(k8s_current_info)%{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
 }
 
 setopt prompt_subst
