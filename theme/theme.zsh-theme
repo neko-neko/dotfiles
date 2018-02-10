@@ -1,14 +1,14 @@
 k8s_current_info() {
   if which kubectl > /dev/null; then
-    cname=$(kubectl config current-context 2>/dev/null)
-
-    if [[ $? != 0 ]]; then
+    local cname=$(kubectl config current-context 2>/dev/null)
+    if [[ "${cname}" = '' ]]; then
       return
     fi
-    args="--output=jsonpath={.contexts[?(@.name == \"${cname}\")].context.namespace}"
-    namespace=$(kubectl config view "${args}")
-    if [ -z $namespace ]; then
-    namespace="default"
+
+    local args="--output=jsonpath={.contexts[?(@.name == \"${cname}\")].context.namespace}"
+    local namespace=$(kubectl config view "${args}")
+    if [[ -z $namespace ]]; then
+      namespace='default'
     fi
     echo "%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} ${cname}/${namespace} %{$reset_color%}"
   fi
@@ -17,7 +17,7 @@ k8s_current_info() {
 +vi-git-untracked() {
   if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
     git status --porcelain | grep '??' &> /dev/null ; then
-    hook_com[staged]+='%{$fg[yellow]%}%{$reset_color%}'
+    hook_com[staged]+="%{$fg[yellow]%}%{$reset_color%}"
   fi
 }
 
