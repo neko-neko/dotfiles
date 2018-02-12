@@ -7,6 +7,10 @@ augroup filetypedetect
   autocmd BufNewFile,BufRead Berksfile set filetype=ruby
   autocmd BufNewFile,BufRead Rakefile set filetype=ruby
 
+  " TypeScript
+  autocmd BufNewFile,BufRead *.ts set filetype=typescript
+  autocmd BufNewFile,BufRead *.tsx set filetype=typescript.tsx
+
   " Markdown
   autocmd BufRead,BufNewFile *.md set filetype=markdown
   autocmd BufRead,BufNewFile *.mkd set filetype=markdown

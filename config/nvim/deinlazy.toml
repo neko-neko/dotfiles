@@ -77,13 +77,6 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'Shougo/context_filetype.vim'
-
-[[plugins]]
-repo = 'osyo-manga/vim-precious'
-depends = ['context_filetype.vim']
-
-[[plugins]]
 repo = 'soramugi/auto-ctags.vim'
 hook_source = '''
   let g:auto_ctags = 1
@@ -172,8 +165,16 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = 'styled-components/vim-styled-components'
+on_ft = ['javascript', 'javascript.jsx', 'typescript', 'typescript.tsx']
+
+[[plugins]]
 repo = 'leafgarland/typescript-vim'
-on_ft = 'typescript'
+on_ft = ['typescript', 'typescript.tsx']
+
+[[plugins]]
+repo = 'mhartington/nvim-typescript'
+on_ft = ['typescript', 'typescript.tsx']
 
 [[plugins]]
 repo = 'vim-ruby/vim-ruby'

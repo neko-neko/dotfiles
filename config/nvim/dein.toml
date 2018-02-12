@@ -143,7 +143,36 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'kassio/neoterm'
+hook_source = '''
+  let g:neoterm_position = 'horizontal'
+  let g:neoterm_automap_keys = ',tt'
+'''
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+hook_add = '''
+  let g:precious_enable_switch_CursorMoved = {
+    \ "*" : 0
+  \}
+  let g:precious_enable_switch_CursorMoved_i = {
+    \ "*" : 0
+  \}
+
+  augroup test
+    autocmd!
+    autocmd InsertEnter * :PreciousSwitch
+    autocmd InsertLeave * :PreciousReset
+  augroup END
+'''
+
+[[plugins]]
 repo = 'Shougo/deoplete.nvim'
+depends = ['context_filetype.vim']
 build = ':UpdateRemotePlugins'
 on_i = 1
 hook_add = '''
@@ -153,11 +182,23 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'kassio/neoterm'
-hook_source = '''
-  let g:neoterm_position = 'horizontal'
-  let g:neoterm_automap_keys = ',tt'
+repo = 'autozimu/LanguageClient-neovim'
+depends = ['deoplete.nvim']
+build = '''
+  ./install.sh
+  npm install -g typescript typescript-language-server
 '''
+hook_source = '''
+  set hidden
+  let g:LanguageClient_autoStart = 1
+  let g:LanguageClient_serverCommands = {
+    \ 'typescript': ['typescript-language-server', '--stdio'],
+  \ }
+  nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+  nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+  nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+'''
+on_ft = ['typescript', 'typescript.tsx']
 
 [[plugins]]
 repo = '/usr/local/opt/fzf'
