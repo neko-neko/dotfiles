@@ -2,17 +2,17 @@
 readonly UNINSTALL_TARGETS=(
   aliases
   bin
-  ctags
+  'ctags.d'
   editorconfig
   gemrc
   gitconfig
   gitignore_global
+  git_template
   gitmessage
   hushlogin
   tern-config
   tigrc
   tmux.conf
-  zprezto
   zshenv
   zshrc
   Library/Preferences/com.googlecode.iterm2.plist
@@ -20,7 +20,6 @@ readonly UNINSTALL_TARGETS=(
   config/nvim
   config/powerline
   'functions'
-  git_template
 )
 
 echo 'remove dotfiles? (y/N)'
