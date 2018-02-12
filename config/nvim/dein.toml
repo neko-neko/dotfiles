@@ -56,6 +56,7 @@ build = '''
   ln -sfv ${GOPATH}/bin/gometalinter.v2 ${GOPATH}/bin/gometalinter && \
   gometalinter --install --update && \
   npm install -g eslint && \
+  npm install -g tslint && \
   luarocks install luacheck
 '''
 hook_add = '''
@@ -78,6 +79,7 @@ hook_add = '''
     \ 'perl': ['perl'],
     \ 'ruby': ['ruby', 'rubocop'],
     \ 'javascript': ['eslint'],
+    \ 'typescript': ['tslint'],
     \ 'Terraform': ['tflint']
   \ }
   let g:ale_ruby_rubocop_executable = 'bundle'
