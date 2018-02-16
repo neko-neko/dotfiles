@@ -11,6 +11,7 @@ fi
 export ZPLUG_HOME=${HOME}/.zplug
 source ${ZPLUG_HOME}/init.zsh
 
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug 'chrissicool/zsh-256color'
 zplug 'seebi/dircolors-solarized'
 
