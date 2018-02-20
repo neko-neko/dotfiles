@@ -274,12 +274,6 @@ on_ft = ['zsh']
 in_i = 1
 
 [[plugins]]
-repo = 'zchee/deoplete-docker'
-depends = ['deoplete.nvim']
-on_ft = ['dockerfile']
-in_i = 1
-
-[[plugins]]
 repo = 'hashivim/vim-vagrant'
 on_ft = ['Vagrantfile']
 
