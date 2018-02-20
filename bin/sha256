@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+#
+# generate sha256 hash.
+echo -n "$1" | openssl dgst -sha256
