@@ -40,6 +40,7 @@ formulas=(
   tig
   tmux
   tree
+  watchman
 )
 
 brew upgrade
