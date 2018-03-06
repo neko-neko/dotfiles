@@ -65,7 +65,7 @@ set wildmode=list:longest
 " deoplete
 set completeopt+=noinsert
 set completeopt+=noselect
-let g:python3_host_prog=expand('/usr/local/bin/python3')
+let g:python3_host_prog=expand('/usr/local/bin/python')
 let g:python3_host_skip_check=1
 
 "--------------------

@@ -16,3 +16,4 @@ rbenv global 2.4.3
 for gem in ${gems[@]}; do
   gem install ${gem}
 done
+gem update
