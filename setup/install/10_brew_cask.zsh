@@ -11,6 +11,7 @@ casks=(
   1password
   alfred
   atom
+  android-studio
   caffeine
   docker
   firefox

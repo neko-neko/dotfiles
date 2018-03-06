@@ -48,12 +48,17 @@ export PATH=${HOME}/.nodebrew/current/bin:${PATH}
 # ------------------------------
 # Java Settings
 # ------------------------------
-export JAVA_HOME=$(/usr/libexec/java_home)
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 # ------------------------------
 # Lua Settings
 # ------------------------------
 eval $(luarocks path --bin)
+
+# ------------------------------
+# Android Settings
+# ------------------------------
+export ANDROID_SDK_ROOT=/usr/local/share/android-sdk
 
 # ------------------------------
 # fzf Settings
