@@ -31,6 +31,7 @@ formulas=(
   lua
   mas
   neovim
+  nodenv
   nkf
   openssl
   packer

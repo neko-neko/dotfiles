@@ -43,8 +43,7 @@ eval "$(rbenv init - --no-rehash)"
 # ------------------------------
 # node Settings
 # ------------------------------
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+eval "$(nodenv init -)"
 
 # ------------------------------
 # Java Settings
