@@ -23,7 +23,6 @@ casks=(
   karabiner-elements
   licecap
   mysqlworkbench
-  reactotron
   nosleep
   shiftit
   slack

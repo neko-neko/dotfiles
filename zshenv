@@ -43,7 +43,8 @@ eval "$(rbenv init - --no-rehash)"
 # ------------------------------
 # node Settings
 # ------------------------------
-export PATH=${HOME}/.nodebrew/current/bin:${PATH}
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # ------------------------------
 # Java Settings
