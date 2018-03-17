@@ -175,8 +175,8 @@ build = '''
 '''
 hook_source = '''
   let g:prettier#autoformat = 0
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
 '''
+on_ft = ['javascript', 'javascript.jsx', 'typescript', 'typescript.tsx']
 
 [[plugins]]
 repo = 'styled-components/vim-styled-components'
