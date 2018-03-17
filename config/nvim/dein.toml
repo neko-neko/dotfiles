@@ -182,6 +182,32 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'sbdchd/neoformat'
+hook_add = '''
+  let g:neoformat_enabled_javascript = []
+  let s:prettiereslint_path = fnamemodify(finddir('.git', ';') . '/../node_modules/.bin/prettier-eslint', ':p')
+  if len(exepath(s:prettiereslint_path)) > 0
+    let g:neoformat_javascript_prettiereslint = {
+      \ 'exe': s:prettiereslint_path,
+      \ 'args': ['--stdin'],
+      \ 'stdin': 1,
+    \ }
+  let g:neoformat_enabled_javascript += ['prettiereslint']
+  elseif len(exepath('prettier-eslint')) > 0
+    let g:neoformat_javascript_prettiereslint = {
+      \ 'exe': 'prettier-eslint',
+      \ 'args': ['--stdin'],
+      \ 'stdin': 1,
+    \ }
+    let g:neoformat_enabled_javascript += ['prettiereslint']
+  endif
+  augroup fmt
+    autocmd!
+    autocmd BufWritePre *.js,*.jsx Neoformat
+  augroup end
+'''
+
+[[plugins]]
 repo = 'autozimu/LanguageClient-neovim'
 depends = ['deoplete.nvim']
 build = '''
