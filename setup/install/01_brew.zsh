@@ -12,7 +12,6 @@ formulas=(
   binutils
   cmake
   curl
-  cocoapods
   dep
   diffutils
   diff-so-fancy
