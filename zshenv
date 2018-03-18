@@ -61,6 +61,12 @@ eval $(luarocks path --bin)
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+
+# ------------------------------
+# Xcode Settings
+# ------------------------------
+export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 
 # ------------------------------
 # fzf Settings
