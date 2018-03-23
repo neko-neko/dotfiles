@@ -19,8 +19,9 @@ zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting', defer:2
 
-zplug "rimraf/k"
+zplug 'rimraf/k'
 
+zplug 'plugins/extract', from:oh-my-zsh
 zplug 'modules/environment', from:prezto
 zplug 'modules/terminal', from:prezto, frozen:1
 zplug 'modules/editor', from:prezto, frozen:1
