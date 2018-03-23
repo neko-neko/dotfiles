@@ -90,7 +90,6 @@ export PATH=${HOME}/.bin:${PATH}
 # Auto load
 # ------------------------------
 autoload -Uz add-zsh-hook
-autoload -Uz compinit && compinit -u
 autoload fzf-history
 zle -N fzf-history
 
