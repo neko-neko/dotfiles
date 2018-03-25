@@ -28,7 +28,7 @@
 	default = current
 
 [color]
-	ui = true
+	ui = auto
 
 [color "branch"]
 	current = yellow reverse
