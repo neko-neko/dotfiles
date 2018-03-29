@@ -168,6 +168,14 @@ augroup LightLineALE
 augroup END
 
 "--------------------
+"" ripgrep settings:
+"
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --no-heading
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
+"--------------------
 "" Keymap settings:
 "
 let mapleader = "\<Space>"
@@ -184,6 +192,7 @@ noremap <C-e> <Esc>$a
 noremap <C-a> <Esc>^a
 noremap <Leader>b :Buffers<CR>
 noremap <Leader>f :GFiles<CR>
+noremap <Leader>g :GFiles?<CR>
 noremap <Leader>h :History<CR>
 
 nmap <Esc><Esc> :nohlsearch<CR><Esc>

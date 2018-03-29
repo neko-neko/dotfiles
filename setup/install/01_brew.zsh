@@ -36,6 +36,7 @@ formulas=(
   packer
   pandoc
   readline
+  ripgrep
   source-highlight
   terraform
   tig

@@ -6,6 +6,16 @@ repo = 'tomasr/molokai'
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
+hook_source = '''
+  if executable('rg')
+    call denite#custom#var('file_rec', 'command', ['rg', '--files', '--glob', '!.git'])
+    call denite#custom#var('grep', 'command', ['rg', '--threads', '1'])
+    call denite#custom#var('grep', 'recursive_opts', [])
+    call denite#custom#var('grep', 'final_opts', [])
+    call denite#custom#var('grep', 'separator', ['--'])
+    call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
+  endif
+'''
 
 [[plugins]]
 repo = 'Shougo/vimproc.vim'
@@ -231,3 +241,11 @@ repo = '/usr/local/opt/fzf'
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
+hook_add = '''
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+'''
