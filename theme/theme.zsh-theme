@@ -25,13 +25,13 @@ k8s_current_info() {
       cname=${cname%_${region}*}
     done
     
-    echo "%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%}${cname}/${namespace}%{$reset_color%}"
+    echo "%{$fg[cyan]%}${cname}/${namespace}%{$reset_color%}"
   fi
 }
 
 gcp_current_info() {
   local current=$(gcloud config configurations list --format='json' | jq -r '.[] | select(.is_active==true) | .properties.core.project')
-  echo "%{$fg[blue]%}\uE7B2${current}%{$reset_color%}"
+  echo "%{$fg[blue]%}${current}%{$reset_color%}"
 }
 
 +vi-git-untracked() {
