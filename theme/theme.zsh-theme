@@ -30,8 +30,11 @@ k8s_current_info() {
 }
 
 gcp_current_info() {
-  local current=$(gcloud config configurations list --format='json' | jq -r '.[] | select(.is_active==true) | .properties.core.project')
-  echo "%{$fg[blue]%}${current}%{$reset_color%}"
+  local config=$(gcloud config configurations list --format='json')
+  local account=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.account')
+  local project=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.project')
+
+  echo "%{$fg[blue]%}${account}:${project}%{$reset_color%}"
 }
 
 +vi-git-untracked() {
