@@ -11,7 +11,9 @@ pips=(
   psutil
 )
 
+brew install python2
 brew install python3
+brew link python@2
 pip3 install --upgrade pip setuptools wheel
 for pip in ${pips[@]}; do
   pip3 install ${pip}
