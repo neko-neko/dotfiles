@@ -25,7 +25,7 @@ k8s_current_info() {
       cname=${cname%_${region}*}
     done
     
-    echo "%{$fg[cyan]%}${cname}/${namespace}%{$reset_color%}"
+    echo "%{$fg[cyan]%}${cname}:${namespace}%{$reset_color%}"
   fi
 }
 

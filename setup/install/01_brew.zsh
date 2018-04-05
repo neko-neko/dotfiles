@@ -26,6 +26,7 @@ formulas=(
   imagemagick
   jq
   kubectl
+  kubectx
   kubernetes-helm
   lua
   mas

@@ -33,14 +33,22 @@ alias sshf='fzf-ssh-list'
 alias killf='fzf-kill'
 alias chromef='fzf-chrome-history'
 
-alias dockerl='docker logs -f $(docker ps | fzf | cut -d " " -f 1)'
-alias dockere='docker exec -it $(docker ps | fzf | cut -d " " -f 1)'
-
+alias -g D='$(docker ps | fzf | cut -d " " -f 1)'
+alias dockerl='docker logs -f D'
+alias dockere='docker exec -it D'
 
 # ------------------------------
 # kubectl
 # ------------------------------
-alias kubec='kubectl config current-context'
+alias kubensf='kubens $(kubens | fzf)'
+alias kubectxf='kubectx $(kubectx | fzf)'
+
+alias -g P='$(kubectl get pods | fzf | awk "{print \$1}")'
+alias -g D='$(kubectl get deploy | fzf | awk "{print \$1}")'
+alias -g S='$(kubectl get svc | fzf | awk "{print \$1}")'
+alias -g I='$(kubectl get ing | fzf | awk "{print \$1}")'
+alias kubectle='kubectl exec -it P'
+alias kubectll='kubectl logs -f P'
 
 # ------------------------------
 # fasd
