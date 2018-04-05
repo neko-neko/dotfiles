@@ -10,8 +10,28 @@ k8s_current_info() {
     if [[ -z $namespace ]]; then
       namespace='default'
     fi
-    echo "%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%} ${cname}/${namespace} %{$reset_color%}"
+
+    local regions=(
+      "us-west1-a" "us-west1-b"
+      "us-central1-a" "us-central1-b" "us-central1-c" "us-central1-f"
+      "us-east1-b" "us-east1-c" "us-east1-d"
+      "europe-west1-b" "europe-west1-c" "europe-west1-d"
+      "asia-southeast1-a" "asia-southeast1-b"
+      "asia-east1-a" "asia-east1-b" "asia-east1-c"
+      "asia-northeast1-a" "asia-northeast1-b" "asia-northeast1-c"
+    )
+
+    for region in "${regions[@]}"; do
+      cname=${cname%_${region}*}
+    done
+    
+    echo "%{$fg[yellow]%}⎈ %{$reset_color%}%{$fg[cyan]%}${cname}/${namespace}%{$reset_color%}"
   fi
+}
+
+gcp_current_info() {
+  local current=$(gcloud config configurations list --format='json' | jq -r '.[] | select(.is_active==true) | .properties.core.project')
+  echo "%{$fg[blue]%}\uE7B2${current}%{$reset_color%}"
 }
 
 +vi-git-untracked() {
@@ -66,7 +86,7 @@ theme_precmd() {
   local new_line=$'\n'
   local vcs_message=''
   [[ ${vcs_info_msg_0_} != '' ]] && vcs_message="${vcs_info_msg_0_} " || vcs_message=''
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(k8s_current_info)%{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(gcp_current_info) / $(k8s_current_info) %{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
 }
 
 setopt prompt_subst
