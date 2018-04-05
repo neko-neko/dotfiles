@@ -60,7 +60,6 @@ alias f='fasd -f'
 alias sd='fasd -sid'
 alias sf='fasd -sif'
 alias z='"$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1'
-alias zz='fasd_cd -d -i'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
