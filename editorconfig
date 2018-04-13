@@ -32,3 +32,7 @@ indent_style = tab
 # markdown
 [*.md]
 trim_trailing_whitespace = false
+
+# plist
+[*.plist]
+indent_style = tab
