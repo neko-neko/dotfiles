@@ -28,6 +28,7 @@ formulas=(
   kubectl
   kubectx
   kubernetes-helm
+  leiningen
   lua
   mas
   neovim
