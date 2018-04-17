@@ -14,6 +14,7 @@ casks=(
   android-studio
   caffeine
   docker
+  discord
   firefox
   google-cloud-sdk
   google-chrome
