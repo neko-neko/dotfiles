@@ -23,9 +23,9 @@ zplug 'rimraf/k'
 
 zplug 'plugins/extract', from:oh-my-zsh
 zplug 'modules/environment', from:prezto
-zplug 'modules/terminal', from:prezto, frozen:1
-zplug 'modules/editor', from:prezto, frozen:1
-zplug 'modules/directory', from:prezto, frozen:1
+zplug 'modules/terminal', from:prezto
+zplug 'modules/editor', from:prezto
+zplug 'modules/directory', from:prezto
 zplug "${HOME}/.dotfiles/theme", \
   from:local, \
   as:theme
