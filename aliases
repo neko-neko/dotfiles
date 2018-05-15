@@ -43,12 +43,12 @@ alias dockere='docker exec -it D'
 alias kubensf='kubens $(kubens | fzf)'
 alias kubectxf='kubectx $(kubectx | fzf)'
 
-alias -g P='$(kubectl get pods | fzf | awk "{print \$1}")'
-alias -g D='$(kubectl get deploy | fzf | awk "{print \$1}")'
-alias -g S='$(kubectl get svc | fzf | awk "{print \$1}")'
-alias -g I='$(kubectl get ing | fzf | awk "{print \$1}")'
-alias kubectle='kubectl exec -it P'
-alias kubectll='kubectl logs -f P'
+alias -g KP='$(kubectl get pods | fzf | awk "{print \$1}")'
+alias -g KD='$(kubectl get deploy | fzf | awk "{print \$1}")'
+alias -g KS='$(kubectl get svc | fzf | awk "{print \$1}")'
+alias -g KI='$(kubectl get ing | fzf | awk "{print \$1}")'
+alias kubectle='kubectl exec -it KP'
+alias kubectll='kubectl logs -f KP'
 
 # ------------------------------
 # fasd
