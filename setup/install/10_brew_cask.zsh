@@ -29,6 +29,7 @@ casks=(
   slack
   vagrant
   virtualbox
+  zeplin
 )
 
 brew tap ${taps[@]}
