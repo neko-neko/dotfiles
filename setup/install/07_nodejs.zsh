@@ -7,8 +7,8 @@ npms=(
   neovim
 )
 
-ndenv install v10.2.1
-ndenv global v10.2.1
+ndenv install v9.11.1
+ndenv global v9.11.1
 
 if which yarn > /dev/null; then
   brew upgrade yarn
