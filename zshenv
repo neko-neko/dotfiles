@@ -29,21 +29,16 @@ export SAVEHIST=1000000
 export LISTMAX=100
 
 # ------------------------------
+# anyenv Settings
+# ------------------------------
+export PATH="$HOME/.anyenv/bin:$PATH"
+eval "$(anyenv init -)"
+
+# ------------------------------
 # golang Settings
 # ------------------------------
 export GOPATH=${HOME}/.go
 export PATH=${GOPATH}/bin:${PATH}
-
-# ------------------------------
-# ruby Settings
-# ------------------------------
-export PATH=${HOME}/.rbenv/bin:${PATH}
-eval "$(rbenv init - --no-rehash)"
-
-# ------------------------------
-# node Settings
-# ------------------------------
-eval "$(nodenv init -)"
 
 # ------------------------------
 # Java Settings

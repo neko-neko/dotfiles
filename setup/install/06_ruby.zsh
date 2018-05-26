@@ -9,11 +9,8 @@ gems=(
   rcodetools
 )
 
-brew install ruby-build
-brew install rbenv
-rbenv rehash
-rbenv install -s 2.4.3
-rbenv global 2.4.3
+rbenv install -s 2.5.1
+rbenv global 2.5.1
 for gem in ${gems[@]}; do
   gem install ${gem}
 done

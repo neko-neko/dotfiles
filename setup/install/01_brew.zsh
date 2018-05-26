@@ -3,9 +3,6 @@ source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'install brew formulas...'
 
-taps=(
-  wata727/tflint
-)
 formulas=(
   ansible
   autoconf
@@ -32,7 +29,6 @@ formulas=(
   lua
   mas
   neovim
-  nodenv
   nkf
   openssl
   packer
@@ -48,9 +44,6 @@ formulas=(
 )
 
 brew upgrade
-for tap in ${taps[@]}; do
-  brew tap ${tap}
-done
 for formula in ${formulas[@]}; do
   brew install ${formula}
 done

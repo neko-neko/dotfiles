@@ -7,10 +7,15 @@ npms=(
   neovim
 )
 
-nodenv install 8.10.0
-nodenv global 8.10.0
-brew install yarn --without-node
+ndenv install v10.2.1
+ndenv global v10.2.1
+
+if which yarn > /dev/null; then
+  brew upgrade yarn
+else
+  brew install yarn --without-node
+fi
+
 for npm in ${npms[@]}; do
   npm install -g ${npm}
 done
-npm update -g
