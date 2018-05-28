@@ -10,7 +10,6 @@ taps=(
 casks=(
   1password
   alfred
-  atom
   android-studio
   caffeine
   docker
@@ -29,9 +28,9 @@ casks=(
   slack
   vagrant
   virtualbox
+  visual-studio-code
   zeplin
 )
 
 brew tap ${taps[@]}
 brew cask install ${casks[@]}
-apm install sync-settings
