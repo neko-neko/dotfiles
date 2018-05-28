@@ -18,3 +18,4 @@ if [[ ! -e ${HOME}/.anyenv ]]; then
 fi
 anyenv update
 anyenv git pull
+source ${HOME}/.zshenv
