@@ -4,6 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install Ruby and gems...'
 
 gems=(
+  bundler
   'cocoapods --user-install'
   neovim
   rcodetools
