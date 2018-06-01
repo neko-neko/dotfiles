@@ -20,6 +20,9 @@ zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting', defer:2
 
 zplug 'rimraf/k'
+zplug "soimort/translate-shell", \
+    at:stable, as:command, use:"build/*", \
+    hook-build:"make build &> /dev/null"
 
 zplug 'plugins/extract', from:oh-my-zsh
 zplug 'modules/environment', from:prezto
