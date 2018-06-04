@@ -276,6 +276,10 @@ hook_source = '''
 '''
 
 [[plugins]]
+repo = 'davidhalter/jedi-vim'
+on_ft = ['python']
+
+[[plugins]]
 repo = 'zchee/deoplete-zsh'
 depends = ['deoplete.nvim']
 on_ft = ['zsh']
@@ -303,6 +307,10 @@ on_ft = ['json']
 [[plugins]]
 repo = 'stephpy/vim-yaml'
 on_ft = ['yaml']
+
+[[plugins]]
+repo = 'uarun/vim-protobuf'
+on_ft = ['proto']
 
 [[plugins]]
 repo = 'plasticboy/vim-markdown'
