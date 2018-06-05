@@ -194,6 +194,7 @@ hook_add = '''
 [[plugins]]
 repo = 'sbdchd/neoformat'
 hook_add = '''
+  " For javascript
   let g:neoformat_enabled_javascript = []
   let s:prettiereslint_path = fnamemodify(finddir('.git', ';') . '/../node_modules/.bin/prettier-eslint', ':p')
   if len(exepath(s:prettiereslint_path)) > 0
@@ -214,6 +215,24 @@ hook_add = '''
   augroup fmt
     autocmd!
     autocmd BufWritePre *.js,*.jsx Neoformat
+  augroup end
+
+  " For Python
+  let g:neoformat_python_yapf = {
+      \ 'exe': 'yapf',
+      \ 'args' : ['--style=chromium'],
+    \ }
+  let g:neoformat_enabled_python = ['yapf']
+  augroup fmt
+    autocmd!
+    autocmd BufWritePre *.py Neoformat
+  augroup end
+
+  " For golang
+  let g:neoformat_enabled_go = ['goimports', 'gofmt']
+  augroup fmt
+    autocmd!
+    autocmd BufWritePre *.go Neoformat
   augroup end
 '''
 

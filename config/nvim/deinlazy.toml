@@ -148,6 +148,7 @@ build = 'npm install -g tern'
 
 [[plugin]]
 repo = 'carlitux/deoplete-ternjs'
+depends = ['deoplete.nvim']
 on_ft = ['javascript','javascript.jsx']
 on_i = 1
 hook_source = '''
@@ -212,7 +213,7 @@ on_ft = ['ruby']
 repo = 'Shougo/deoplete-rct'
 on_ft = ['ruby']
 in_i = 1
-depends = ['vimproc.vim']
+depends = ['vimproc.vim', 'deoplete.nvim']
 
 [[plugins]]
 repo = 'fatih/vim-go'
@@ -276,8 +277,10 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'davidhalter/jedi-vim'
+repo = 'zchee/deoplete-jedi'
+depends = ['deoplete.nvim']
 on_ft = ['python']
+on_i = 1
 
 [[plugins]]
 repo = 'zchee/deoplete-zsh'
