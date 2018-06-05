@@ -28,11 +28,13 @@ formulas=(
   leiningen
   lua
   mas
+  maven
   neovim
   nkf
   openssl
   packer
   pandoc
+  protobuf
   readline
   ripgrep
   source-highlight
