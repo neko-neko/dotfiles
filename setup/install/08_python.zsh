@@ -8,6 +8,7 @@ pips=(
   csvkit
   neovim
   psutil
+  yapf
 )
 
 brew install python
