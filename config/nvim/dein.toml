@@ -100,7 +100,7 @@ hook_add = '''
 repo = 'itchyny/lightline.vim'
 hook_add = '''
   let g:lightline = {
-    \ 'colorscheme': 'Dracula',
+    \ 'colorscheme': 'darcula',
     \ 'active': {
     \   'left': [ ['mode', 'paste'],
     \             ['fugitive', 'filename', 'gitgutter', 'ale']
@@ -155,7 +155,7 @@ hook_add = '''
 [[plugins]]
 repo = 'kassio/neoterm'
 hook_source = '''
-  let g:neoterm_position = 'horizontal'
+  let g:neoterm_default_mod = 'horizontal'
   let g:neoterm_automap_keys = ',tt'
 '''
 
