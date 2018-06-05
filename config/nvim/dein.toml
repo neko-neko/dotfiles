@@ -212,10 +212,6 @@ hook_add = '''
     \ }
     let g:neoformat_enabled_javascript += ['prettiereslint']
   endif
-  augroup fmt
-    autocmd!
-    autocmd BufWritePre *.js,*.jsx Neoformat
-  augroup end
 
   " For Python
   let g:neoformat_python_yapf = {
@@ -223,16 +219,13 @@ hook_add = '''
       \ 'args' : ['--style=chromium'],
     \ }
   let g:neoformat_enabled_python = ['yapf']
-  augroup fmt
-    autocmd!
-    autocmd BufWritePre *.py Neoformat
-  augroup end
 
   " For golang
   let g:neoformat_enabled_go = ['goimports', 'gofmt']
+
   augroup fmt
     autocmd!
-    autocmd BufWritePre *.go Neoformat
+    autocmd BufWritePre *.js,*.jsx,*.py,*.go Neoformat
   augroup end
 '''
 
