@@ -88,6 +88,7 @@ hook_add = '''
     \ 'php': ['php'],
     \ 'perl': ['perl'],
     \ 'ruby': ['ruby', 'rubocop'],
+    \ 'python': ['flake8'],
     \ 'javascript': ['eslint'],
     \ 'typescript': ['tslint'],
     \ 'Terraform': ['tflint']
