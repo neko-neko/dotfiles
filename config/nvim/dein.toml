@@ -217,7 +217,7 @@ hook_add = '''
   " For Python
   let g:neoformat_python_yapf = {
       \ 'exe': 'yapf',
-      \ 'args' : ['--style=chromium'],
+      \ 'args' : ['--style=pep8'],
     \ }
   let g:neoformat_enabled_python = ['yapf']
 
