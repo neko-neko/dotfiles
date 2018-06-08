@@ -9,6 +9,7 @@ pips=(
   neovim
   psutil
   yapf
+  flake8
 )
 
 brew install python
