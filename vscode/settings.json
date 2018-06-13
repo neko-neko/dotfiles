@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true,
+  "prettier.eslintIntegration": true,
+  "workbench.startupEditor": "newUntitledFile",
+  "explorer.confirmDelete": false
+}
