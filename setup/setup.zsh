@@ -36,7 +36,7 @@ cd ..
 
 # deploy vscode
 if [[ ! -d ${HOME}/Library/Application\ Support/Code/User ]]; then
-  mkdir ${HOME}/Library/Application\ Support/Code/User
+  mkdir -p ${HOME}/Library/Application\ Support/Code/User
 fi
 ln -sfv ${PWD}/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json
 
