@@ -3,6 +3,7 @@
   "editor.renderLineHighlight": "all",
   "editor.cursorBlinking": "expand",
   "prettier.eslintIntegration": true,
+  "python.pythonPath": "python3",
   "workbench.startupEditor": "newUntitledFile",
   "explorer.confirmDelete": false,
   "window.zoomLevel": 0
