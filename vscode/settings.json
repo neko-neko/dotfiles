@@ -1,6 +1,9 @@
 {
   "editor.formatOnSave": true,
+  "editor.renderLineHighlight": "all",
+  "editor.cursorBlinking": "expand",
   "prettier.eslintIntegration": true,
   "workbench.startupEditor": "newUntitledFile",
-  "explorer.confirmDelete": false
+  "explorer.confirmDelete": false,
+  "window.zoomLevel": 0
 }
