@@ -6,10 +6,11 @@ util::info 'install Python...'
 pips=(
   awscli
   csvkit
+  flake8
+  grpcio-tools
   neovim
   psutil
   yapf
-  flake8
 )
 
 brew install python

@@ -7,6 +7,7 @@ libs=(
   github.com/motemen/ghq
   github.com/nsf/gocode
   github.com/davecheney/httpstat
+  github.com/golang/protobuf/protoc-gen-go
 )
 
 brew install go --cross-compile-all
