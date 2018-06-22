@@ -8,6 +8,7 @@ pips=(
   csvkit
   flake8
   grpcio-tools
+  googleapis-common-protos
   neovim
   psutil
   yapf
