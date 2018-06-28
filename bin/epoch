@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+#
+# print epoch time
+# example: epoch 2018-6-28
+date -d "$1" +%s
