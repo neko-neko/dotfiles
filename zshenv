@@ -37,7 +37,7 @@ eval "$(anyenv init -)"
 # ------------------------------
 # golang Settings
 # ------------------------------
-export GOPATH=${HOME}/.go
+export GOPATH=${HOME}/go
 export PATH=${GOPATH}/bin:${PATH}
 
 # ------------------------------
