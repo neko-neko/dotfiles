@@ -83,6 +83,7 @@
 	unmerged = diff --name-only --diff-filter=U
 	subupdate = submodule update --init --recursive
 	subupdate-all = submodule foreach git pull origin master
+	branch-clean = !git branch -d $(git branch --merged | grep -vw $(git rev-parse --abbrev-ref HEAD))
 	pull-requst = !fzf-hub-pull-requests
 	pr = pull-requst
 	prc = !hub pull-request
