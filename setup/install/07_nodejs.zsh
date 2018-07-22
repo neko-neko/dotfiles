@@ -9,8 +9,8 @@ npms=(
   react-native-cli
 )
 
-ndenv install v9.11.1
-ndenv global v9.11.1
+ndenv install v9.11.2
+ndenv global v9.11.2
 
 if which yarn > /dev/null; then
   brew upgrade yarn
