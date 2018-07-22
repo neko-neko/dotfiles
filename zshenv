@@ -51,6 +51,12 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 eval $(luarocks path --bin)
 
 # ------------------------------
+# Python Settings
+# ------------------------------
+export PATH="$HOME/Library/Python/3.7/bin:$PATH"
+
+# ------------------------------
+# ------------------------------
 # Android Settings
 # ------------------------------
 export ANDROID_HOME=$HOME/Library/Android/sdk
