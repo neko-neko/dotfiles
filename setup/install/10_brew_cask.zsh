@@ -5,6 +5,7 @@ util::info 'install brew cask formulas...'
 
 taps=(
   caskroom/cask
+  caskroom/versions
 )
 
 casks=(
@@ -20,6 +21,7 @@ casks=(
   google-japanese-ime
   iterm2
   java
+  java8
   karabiner-elements
   licecap
   mysqlworkbench
