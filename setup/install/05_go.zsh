@@ -8,6 +8,7 @@ libs=(
   github.com/nsf/gocode
   github.com/davecheney/httpstat
   github.com/golang/protobuf/protoc-gen-go
+  github.com/alecthomas/gometalinter
 )
 
 brew install go --cross-compile-all
@@ -15,5 +16,4 @@ for lib in ${libs[@]}; do
   go get -u -v ${lib}
 done
 
-ln -sfv ${GOPATH}/bin/gometalinter.v1 ${GOPATH}/bin/gometalinter
 gometalinter --install --update
