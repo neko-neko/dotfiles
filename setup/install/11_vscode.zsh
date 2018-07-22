@@ -17,6 +17,7 @@ extensions=(
   nonylene.dark-molokai-theme
   peterj.proto
   redhat.vscode-yaml
+  technosophos.vscode-helm
   Tyriar.sort-lines
   vsmobile.vscode-react-native
   yzhang.markdown-all-in-one
