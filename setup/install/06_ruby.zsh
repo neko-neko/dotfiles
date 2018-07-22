@@ -5,7 +5,6 @@ util::info 'install Ruby and gems...'
 
 gems=(
   bundler
-  'cocoapods --user-install'
   neovim
   rcodetools
 )
