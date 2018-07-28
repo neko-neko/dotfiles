@@ -13,6 +13,7 @@ casks=(
   alfred
   android-studio
   caffeine
+  cyberduck
   docker
   discord
   firefox
