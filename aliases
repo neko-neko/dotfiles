@@ -38,6 +38,11 @@ alias dockerl='docker logs -f D'
 alias dockere='docker exec -it D'
 
 # ------------------------------
+# gcloud
+# ------------------------------
+alias gcpp='gcloud config set project'
+
+# ------------------------------
 # kubectl
 # ------------------------------
 alias kubensf='kubens $(kubens | fzf)'
