@@ -352,3 +352,7 @@ on_ft = ['git', 'gitconfig', 'gitrebase', 'gitsendemail']
 [[plugins]]
 repo = 'itkq/fluentd-vim'
 on_ft = ['fluentd']
+
+[[plugins]]
+repo = 'ekalinin/Dockerfile.vim'
+on_ft = ['Dockerfile']
