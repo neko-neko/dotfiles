@@ -27,6 +27,7 @@ formulas=(
   kubernetes-helm
   leiningen
   lua
+  luarocks
   mas
   maven
   neovim
