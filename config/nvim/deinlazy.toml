@@ -216,19 +216,6 @@ in_i = 1
 depends = ['vimproc.vim', 'deoplete.nvim']
 
 [[plugins]]
-repo = 'fatih/vim-go'
-on_ft = 'go'
-hook_source = '''
-  let g:go_highlight_functions = 1
-  let g:go_highlight_methods = 1
-  let g:go_highlight_fields = 1
-  let g:go_highlight_types = 1
-  let g:go_highlight_operators = 1
-  let g:go_highlight_build_constraints = 1
-  let g:go_gocode_unimported_packages = 1
-'''
-
-[[plugins]]
 repo = 'zchee/deoplete-go'
 build = 'make'
 on_ft = 'go'
@@ -236,7 +223,21 @@ in_i = 1
 depends = ['deoplete.nvim']
 hook_source = '''
   let g:deoplete#sources#go#gocode_binary = $GOPATH . '/bin/gocode'
+  let g:deoplete#sources#go#align_class = 1
   let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+  let g:go_highlight_types = 0
+  let g:deoplete#sources#go#package_dot = 0
+  let g:go_highlight_fields = 1
+  let g:go_highlight_variable_declarations = 1
+  let g:go_highlight_variable_assignments = 1
+'''
+
+[[plugins]]
+repo = 'fatih/vim-go'
+on_ft = 'go'
+hook_source = '''
+  let g:go_info_mode='gocode'
+  let g:go_def_mode='godef'
 '''
 
 [[plugins]]
