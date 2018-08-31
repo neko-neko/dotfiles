@@ -184,6 +184,10 @@ repo = 'styled-components/vim-styled-components'
 on_ft = ['javascript', 'javascript.jsx', 'typescript', 'typescript.tsx']
 
 [[plugins]]
+repo = 'posva/vim-vue'
+on_ft = ['vue']
+
+[[plugins]]
 repo = 'leafgarland/typescript-vim'
 on_ft = ['typescript', 'typescript.tsx']
 

@@ -67,6 +67,7 @@ build = '''
   gometalinter --install --update && \
   npm install -g eslint && \
   npm install -g tslint && \
+  npm install -g eslint-plugin-vue && \
   luarocks install luacheck
 '''
 hook_add = '''
