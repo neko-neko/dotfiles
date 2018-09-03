@@ -96,10 +96,6 @@ setopt inc_append_history
 export LESS='-R'
 export LESSOPEN="|/usr/local/bin/src-hilite-lesspipe.sh %s"
 
-# powerline
-# . /usr/local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
-
-
 # ------------------------------
 # pip Settings
 # ------------------------------

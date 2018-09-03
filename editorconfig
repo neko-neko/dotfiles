@@ -18,9 +18,6 @@ trim_trailing_whitespace = true
 [Makefile]
 indent_style = tab
 
-[makefile]
-indent_style = tab
-
 # golang
 [*.go]
 indent_style = tab
