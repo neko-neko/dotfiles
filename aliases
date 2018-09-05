@@ -52,8 +52,11 @@ alias -g KP='$(kubectl get pods | fzf | awk "{print \$1}")'
 alias -g KD='$(kubectl get deploy | fzf | awk "{print \$1}")'
 alias -g KS='$(kubectl get svc | fzf | awk "{print \$1}")'
 alias -g KI='$(kubectl get ing | fzf | awk "{print \$1}")'
+alias -g KJ='$(kubectl get job | fzf | awk "{print \$1}")'
+alias -g KA='$(kubectl get all | awk "! /NAME/" | fzf | awk "{print \$1}")'
 alias kubectle='kubectl exec -it KP'
 alias kubectll='kubectl logs -f KP'
+alias kubectlo='kubectl get KA -o yaml'
 
 # ------------------------------
 # fasd
