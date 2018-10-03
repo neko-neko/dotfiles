@@ -34,6 +34,10 @@ gcp_current_info() {
   local account=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.account')
   local project=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.project')
 
+  if [[ "${account}" = 'null' ]] || [[ "${project}" = 'null' ]]; then
+    return
+  fi
+
   echo "%{$fg[blue]%}${account}:${project}%{$reset_color%}"
 }
 
@@ -48,12 +52,15 @@ gcp_current_info() {
   local ahead behind
   local -a gitstatus
 
-  ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-  (( $ahead )) && gitstatus+=( "%{$fg[green]%}+${ahead}%{$reset_color%}" )
-  behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-  (( $behind )) && gitstatus+=( "%{$fg[red]%}-${behind}%{$reset_color%}" )
+  remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name --abbrev-ref 2> /dev/null)}
+  if [[ -n ${remote} ]] ; then
+    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
+    (( $ahead )) && gitstatus+=( "%{$fg[green]%}+${ahead}%{$reset_color%}" )
+    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
+    (( $behind )) && gitstatus+=( "%{$fg[red]%}-${behind}%{$reset_color%}" )
 
-  hook_com[misc]+=${(j:/:)gitstatus}
+    hook_com[misc]+=${(j:/:)gitstatus}
+  fi
 }
 
 theme_precmd() {
@@ -75,8 +82,7 @@ theme_precmd() {
   zstyle ':vcs_info:git:*' stagedstr "${staged_format}"
   zstyle ':vcs_info:git:*' unstagedstr "${unstaged_format}"
   zstyle ':vcs_info:git:*' actionformats "${branch_format}${action_format}"
-  zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-st
-
+  zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked
   vcs_info
 
   local symbol='$'
@@ -86,10 +92,17 @@ theme_precmd() {
     ;;
   esac
 
+  local gcp_info=$(gcp_current_info)
+  local k8s_info=$(k8s_current_info)
+  local prject_info=''
+  if [[ "${gcp_info}" != '' ]] || [[ "${k8s_info}" != '' ]]; then
+    prject_info="${gcp_info} / ${k8s_info}"
+  fi
+
   local new_line=$'\n'
   local vcs_message=''
   [[ ${vcs_info_msg_0_} != '' ]] && vcs_message="${vcs_info_msg_0_} " || vcs_message=''
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f $(gcp_current_info) / $(k8s_current_info) %{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f ${prject_info} %{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
 }
 
 setopt prompt_subst
