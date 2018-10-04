@@ -95,9 +95,7 @@ theme_precmd() {
   local gcp_info=$(gcp_current_info)
   local k8s_info=$(k8s_current_info)
   local prject_info=''
-  if [[ "${gcp_info}" != '' ]] || [[ "${k8s_info}" != '' ]]; then
-    prject_info="${gcp_info} / ${k8s_info}"
-  fi
+  ([[ "${gcp_info}" != '' ]] || [[ "${k8s_info}" != '' ]]) && prject_info="${gcp_info} / ${k8s_info}" || prject_info=''
 
   local new_line=$'\n'
   local vcs_message=''
