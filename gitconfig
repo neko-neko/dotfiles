@@ -95,6 +95,9 @@
 	root = ~/ghq
 	root = ~/go/src
 
+[github]
+	user = neko-neko
+
 [credential]
 	helper = osxkeychain
 
