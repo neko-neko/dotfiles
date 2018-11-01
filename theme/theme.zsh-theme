@@ -25,7 +25,7 @@ k8s_current_info() {
       cname=${cname%_${region}*}
     done
     
-    echo "%{$fg[cyan]%}${cname}:${namespace}%{$reset_color%}"
+    echo "${cname}:${namespace}"
   fi
 }
 
@@ -38,7 +38,11 @@ gcp_current_info() {
     return
   fi
 
-  echo "%{$fg[blue]%}${account}:${project}%{$reset_color%}"
+  echo "${account}:${project}"
+}
+
+aws_current_profile() {
+  echo "${AWS_PROFILE}"
 }
 
 +vi-git-untracked() {
@@ -68,12 +72,11 @@ theme_precmd() {
     "%F{81}"  # Turquoise
     "%F{166}" # Orange
     "%F{135}" # Purple
-    "%F{161}" # Hotpink
     "%F{118}" # Limegreen
   )
   local branch_format="%{$colors[1]%}%b %f%c%u%m%f"
-  local action_format="%{$colors[5]%}%a%f"
-  local staged_format="%{$colors[5]%}%f"
+  local action_format="%{$colors[4]%}%a%f"
+  local staged_format="%{$colors[4]%}%f"
   local unstaged_format="%{$colors[2]%}%f"
 
   zstyle ':vcs_info:git:*' enable bzr git hg svn
@@ -92,15 +95,13 @@ theme_precmd() {
     ;;
   esac
 
-  local gcp_info=$(gcp_current_info)
-  local k8s_info=$(k8s_current_info)
-  local prject_info=''
-  ([[ "${gcp_info}" != '' ]] || [[ "${k8s_info}" != '' ]]) && prject_info="${gcp_info} / ${k8s_info}" || prject_info=''
-
+  local aws_info="%{$fg[yellow]%}$(aws_current_profile)%{$reset_color%}"
+  local gcp_info="%{$fg[blue]%}$(gcp_current_info)%{$reset_color%}"
+  local k8s_info="%{$fg[cyan]%}$(k8s_current_info)%{$reset_color%}"
   local new_line=$'\n'
   local vcs_message=''
   [[ ${vcs_info_msg_0_} != '' ]] && vcs_message="${vcs_info_msg_0_} " || vcs_message=''
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f ${prject_info} %{$colors[5]%}(%T)%f%{$reset_color%}${new_line} %{$colors[5]%}%~%f ${vcs_message}${symbol} "
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f ${aws_info} / ${gcp_info} / ${k8s_info} %{$colors[4]%}(%T)%f%{$reset_color%}${new_line} %{$colors[4]%}%~%f ${vcs_message}${symbol} "
 }
 
 setopt prompt_subst

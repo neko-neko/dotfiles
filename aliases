@@ -38,6 +38,11 @@ alias dockerl='docker logs -f D'
 alias dockere='docker exec -it D'
 
 # ------------------------------
+# AWS
+# ------------------------------
+alias awsp='export AWS_PROFILE=$(grep "^\[.*\]" ~/.aws/credentials | tr -d "[" | tr -d "]" | fzf)'
+
+# ------------------------------
 # gcloud
 # ------------------------------
 alias gcpp='gcloud config set project'
