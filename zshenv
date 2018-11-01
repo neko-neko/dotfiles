@@ -89,11 +89,6 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_mod
 export PATH=${HOME}/.bin:${PATH}
 
 # ------------------------------
-# AWS CLI
-# ------------------------------
-export AWS_PROFILE="default"
-
-# ------------------------------
 # Auto load
 # ------------------------------
 autoload -Uz add-zsh-hook

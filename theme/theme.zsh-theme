@@ -42,7 +42,7 @@ gcp_current_info() {
 }
 
 aws_current_profile() {
-  echo "${AWS_PROFILE}"
+  echo "${AWS_PROFILE:-default}"
 }
 
 +vi-git-untracked() {
