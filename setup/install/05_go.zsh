@@ -6,7 +6,6 @@ util::info 'install golang and libs...'
 libs=(
   github.com/motemen/ghq
   github.com/mdempsky/gocode
-  github.com/davecheney/httpstat
   github.com/golang/protobuf/protoc-gen-go
   github.com/alecthomas/gometalinter
 )

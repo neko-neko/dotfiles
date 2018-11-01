@@ -25,7 +25,6 @@ formulas=(
   kubectl
   kubectx
   kubernetes-helm
-  leiningen
   lua
   luarocks
   mas
