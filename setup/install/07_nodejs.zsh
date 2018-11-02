@@ -13,7 +13,7 @@ ndenv install v10.13.0
 ndenv global v10.13.0
 
 if which yarn > /dev/null; then
-  brew upgrade yarn
+  brew upgrade yarn --without-node
 else
   brew install yarn --without-node
 fi
