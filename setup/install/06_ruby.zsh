@@ -7,10 +7,11 @@ gems=(
   bundler
   neovim
   rcodetools
+  fastri
 )
 
-rbenv install -s 2.5.1
-rbenv global 2.5.1
+rbenv install -s 2.5.3
+rbenv global 2.5.3
 for gem in ${gems[@]}; do
   gem install ${gem}
 done
