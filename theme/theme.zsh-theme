@@ -96,12 +96,16 @@ theme_precmd() {
   esac
 
   local aws_info="%{$fg[yellow]%}$(aws_current_profile)%{$reset_color%}"
-  local gcp_info="%{$fg[blue]%}$(gcp_current_info)%{$reset_color%}"
-  local k8s_info="%{$fg[cyan]%}$(k8s_current_info)%{$reset_color%}"
+  local gcp_info="$(gcp_current_info)"
+  local k8s_info="$(k8s_current_info)"
   local new_line=$'\n'
   local vcs_message=''
+
   [[ ${vcs_info_msg_0_} != '' ]] && vcs_message="${vcs_info_msg_0_} " || vcs_message=''
-  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f ${aws_info} / ${gcp_info} / ${k8s_info} %{$colors[4]%}(%T)%f%{$reset_color%}${new_line} %{$colors[4]%}%~%f ${vcs_message}${symbol} "
+  [[ ${gcp_info} != '' ]] && gcp_info=" / %{$fg[blue]%}${gcp_info}%{$reset_color%}" || gcp_info=''
+  [[ ${k8s_info} != '' ]] && k8s_info=" / %{$fg[cyan]%}${k8s_info}%{$reset_color%}" || k8s_info=''
+
+  PROMPT="%{$colors[3]%}%n%f at %{$colors[2]%}%m%f ${aws_info}${gcp_info}${k8s_info} %{$colors[4]%}(%T)%f%{$reset_color%}${new_line} %{$colors[4]%}%~%f ${vcs_message}${symbol} "
 }
 
 setopt prompt_subst
