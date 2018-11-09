@@ -3,6 +3,10 @@ source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'install brew formulas...'
 
+taps=(
+  johanhaleby/kubetail
+)
+
 formulas=(
   ansible
   autoconf
@@ -25,6 +29,7 @@ formulas=(
   kubectl
   kubectx
   kubernetes-helm
+  kubetail
   lua
   luarocks
   mas
@@ -46,7 +51,10 @@ formulas=(
 )
 
 brew upgrade
+
+brew tap ${taps[@]}
 for formula in ${formulas[@]}; do
   brew install ${formula}
 done
+
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
