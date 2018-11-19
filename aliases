@@ -50,9 +50,6 @@ alias gcpp='gcloud config set project'
 # ------------------------------
 # kubectl
 # ------------------------------
-alias kubensf='kubens $(kubens | fzf)'
-alias kubectxf='kubectx $(kubectx | fzf)'
-
 alias -g KP='$(kubectl get pods | fzf | awk "{print \$1}")'
 alias -g KD='$(kubectl get deploy | fzf | awk "{print \$1}")'
 alias -g KS='$(kubectl get svc | fzf | awk "{print \$1}")'
