@@ -7,7 +7,5 @@
   "workbench.startupEditor": "newUntitledFile",
   "explorer.confirmDelete": false,
   "window.zoomLevel": 0,
-  "prettier.semi": false,
-  "prettier.singleQuote": true,
   "javascript.updateImportsOnFileMove.enabled": "always"
 }
