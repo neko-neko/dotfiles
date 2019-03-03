@@ -45,7 +45,7 @@ alias awsp='export AWS_PROFILE=$(grep "^\[.*\]" ~/.aws/credentials | tr -d "[" |
 # ------------------------------
 # gcloud
 # ------------------------------
-alias gcpp='gcloud config set project'
+alias gcpp='gcloud config set project $(gcloud projects list | fzf | awk "{print \$1}")'
 
 # ------------------------------
 # kubectl
