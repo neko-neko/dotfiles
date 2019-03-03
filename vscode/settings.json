@@ -7,5 +7,6 @@
   "workbench.startupEditor": "newUntitledFile",
   "explorer.confirmDelete": false,
   "window.zoomLevel": 0,
-  "javascript.updateImportsOnFileMove.enabled": "always"
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "cSpell.language": "en"
 }
