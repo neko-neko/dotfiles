@@ -43,6 +43,7 @@ formulas=(
   readline
   ripgrep
   source-highlight
+  sops
   terraform
   tig
   tmux
