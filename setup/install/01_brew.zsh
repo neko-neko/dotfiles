@@ -8,17 +8,16 @@ taps=(
 )
 
 formulas=(
-  ansible
   autoconf
   binutils
   cmake
   curl
-  dep
   diffutils
   diff-so-fancy
   fasd
   fzf
   gawk
+  gettext
   gibo
   gnupg
   gnutls
@@ -37,14 +36,12 @@ formulas=(
   neovim
   nkf
   openssl
-  packer
   pandoc
   protobuf
   readline
   ripgrep
   source-highlight
   sops
-  terraform
   tig
   tmux
   tree
@@ -59,3 +56,4 @@ for formula in ${formulas[@]}; do
 done
 
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+brew link --force gettext
