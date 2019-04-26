@@ -27,7 +27,6 @@ casks=(
   licecap
   mysqlworkbench
   nosleep
-  shiftit
   slack
   vagrant
   virtualbox
