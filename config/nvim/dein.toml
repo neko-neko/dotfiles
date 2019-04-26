@@ -213,25 +213,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'autozimu/LanguageClient-neovim'
-depends = ['deoplete.nvim']
-build = '''
-  ./install.sh
-  npm install -g typescript typescript-language-server
-'''
-hook_source = '''
-  set hidden
-  let g:LanguageClient_autoStart = 1
-  let g:LanguageClient_serverCommands = {
-    \ 'typescript': ['typescript-language-server', '--stdio'],
-  \ }
-  nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-  nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
-  nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
-'''
-on_ft = ['typescript', 'typescript.tsx']
-
-[[plugins]]
 repo = '/usr/local/opt/fzf'
 
 [[plugins]]

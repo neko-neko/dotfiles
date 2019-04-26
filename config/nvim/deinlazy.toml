@@ -149,44 +149,13 @@ repo = 'vim-scripts/ruby-matchit'
 on_ft = ['ruby']
 
 [[plugins]]
-repo = 'Shougo/deoplete-rct'
-on_ft = ['ruby']
-in_i = 1
-depends = ['vimproc.vim', 'deoplete.nvim']
-
-[[plugins]]
-repo = 'zchee/deoplete-go'
-build = 'make'
-on_ft = 'go'
-in_i = 1
-depends = ['deoplete.nvim']
-hook_source = '''
-  let g:deoplete#sources#go#gocode_binary = $GOPATH . '/bin/gocode'
-  let g:deoplete#sources#go#align_class = 1
-  let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-  let g:go_highlight_types = 0
-  let g:deoplete#sources#go#package_dot = 0
-  let g:go_highlight_fields = 1
-  let g:go_highlight_variable_declarations = 1
-  let g:go_highlight_variable_assignments = 1
-'''
-
-[[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
 hook_source = '''
-  let g:go_info_mode='gocode'
   let g:go_def_mode='godef'
-'''
 
-[[plugins]]
-repo = 'zchee/deoplete-clang'
-on_ft = ['c', 'cpp']
-in_i = 1
-depends = ['deoplete.nvim']
-hook_source = '''
-  let g:deoplete#sources#clang#libclang_path='/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-  let g:deoplete#sources#clang#clang_header='/Library/Developer/CommandLineTools/usr/lib/clang'
+  let g:go_def_mapping_enabled = 0
+  let g:go_doc_keywordprg_enabled = 0
 '''
 
 [[plugins]]
@@ -203,12 +172,6 @@ on_ft = ['php']
 [[plugins]]
 repo = 'vim-perl/vim-perl'
 on_ft = ['pl']
-
-[[plugins]]
-repo = 'zchee/deoplete-jedi'
-depends = ['deoplete.nvim']
-on_ft = ['python']
-on_i = 1
 
 [[plugins]]
 repo = 'zchee/deoplete-zsh'
@@ -251,12 +214,6 @@ hook_source = '''
   let g:vim_markdown_preview_hotkey = '<C-m>'
   let g:vim_markdown_preview_browser = 'Google Chrome'
 '''
-
-[[plugins]]
-repo = 'fszymanski/deoplete-emoji'
-depends = ['deoplete.nvim']
-on_ft = ['markdown']
-in_i = 1
 
 [[plugins]]
 repo = 'spacewander/openresty-vim'
