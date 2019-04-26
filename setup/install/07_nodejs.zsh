@@ -7,6 +7,8 @@ npms=(
   flow-bin
   neovim
   react-native-cli
+  typescript
+  typescript-language-server
 )
 
 ndenv install v12.0.0

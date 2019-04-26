@@ -8,6 +8,7 @@ gems=(
   neovim
   rcodetools
   fastri
+  solargraph
 )
 
 rbenv install -s 2.5.3
