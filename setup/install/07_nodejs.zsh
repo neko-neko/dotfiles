@@ -13,9 +13,9 @@ ndenv install v12.0.0
 ndenv global v12.0.0
 
 if which yarn > /dev/null; then
-  brew upgrade yarn --without-node
+  brew upgrade yarn --ignore-dependencies
 else
-  brew install yarn --without-node
+  brew install yarn --ignore-dependencies
 fi
 
 for npm in ${npms[@]}; do
