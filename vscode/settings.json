@@ -8,5 +8,11 @@
   "explorer.confirmDelete": false,
   "window.zoomLevel": 0,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "cSpell.language": "en"
+  "cSpell.language": "en",
+  "workbench.iconTheme": "vscode-icons",
+  "solargraph.transport": "external",
+  "solargraph.externalServer": {
+    "host": "localhost",
+    "port": 7658
+  }
 }

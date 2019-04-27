@@ -4,23 +4,23 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'configure vscode...'
 
 extensions=(
-  EditorConfig.EditorConfig
-  PeterJausovec.vscode-docker
+  castwide.solargraph
   dbaeumer.vscode-eslint
-  DotJoshJohnson.xml
   esbenp.prettier-vscode
-  flowtype.flow-for-vscode
+  kumar-harsh.graphql-for-vscode
   mauve.terraform
+  ms-kubernetes-tools.vscode-kubernetes-tools
   ms-python.python
-  msjsdiag.debugger-for-chrome
-  naumovs.color-highlight
+  ms-vscode.Go
   nonylene.dark-molokai-theme
-  peterj.proto
+  PeterJausovec.vscode-docker
+  rebornix.ruby
   redhat.vscode-yaml
-  technosophos.vscode-helm
-  Tyriar.sort-lines
+  shardulm94.trailing-spaces
+  vscode-icons-team.vscode-icons
   vsmobile.vscode-react-native
   yzhang.markdown-all-in-one
+  zxh404.vscode-proto3
 )
 
 for extension in ${extensions[@]}; do
