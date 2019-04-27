@@ -213,62 +213,28 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'prabirshrestha/async.vim'
+repo = 'autozimu/LanguageClient-neovim'
+rev = 'next'
+build = 'bash install.sh'
+hook_add = '''
+  let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['tcp://localhost:2089'],
+    \ 'javascript.jsx': ['tcp://localhost:2089'],
+    \ 'typescript': ['tcp://localhost:2089'],
+    \ 'typescript.tsx': ['tcp://localhost:2089'],
+    \ 'ruby': ['tcp://localhost:7658'],
+    \ 'go': ['tcp://localhost:4389'],
+    \ 'python': ['tcp://localhost:2087'],
+    \ }
 
-[[plugins]]
-repo = 'prabirshrestha/vim-lsp'
-hook_add='''
-  if executable('bingo')
-    au User lsp_setup call lsp#register_server({
-      \ 'name': 'bingo',
-      \ 'cmd': {server_info->['bingo', '-mode', 'stdio']},
-      \ 'whitelist': ['go'],
-      \ })
-  endif
-
-  if executable('typescript-language-server')
-    au User lsp_setup call lsp#register_server({
-      \ 'name': 'javascript support using typescript-language-server',
-      \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-      \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
-      \ 'whitelist': ['javascript', 'javascript.jsx'],
-      \ })
-  endif
-
-  if executable('solargraph')
-    au User lsp_setup call lsp#register_server({
-      \ 'name': 'solargraph',
-      \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-      \ 'initialization_options': {"diagnostics": "true"},
-      \ 'whitelist': ['ruby'],
-      \ })
-  endif
-
-  if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-      \ 'name': 'pyls',
-      \ 'cmd': {server_info->['pyls']},
-      \ 'whitelist': ['python'],
-      \ })
-  endif
-
-  let g:lsp_async_completion = 1
+  let g:LanguageClient_rootMarkers = {
+    \ 'javascript': ['package.json'],
+    \ 'typescript': ['package.json'],
+    \ 'ruby': ['Gemfile'],
+    \ 'go': ['go.mod'],
+    \ 'python': ['Pipfile'],
+    \ }
 '''
-
-[[plugins]]
-repo = 'ryanolsonx/vim-lsp-javascript'
-
-[[plugins]]
-repo = 'ryanolsonx/vim-lsp-python'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete.vim'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete-lsp.vim'
-
-[[plugins]]
-repo = 'natebosch/vim-lsc'
 
 [[plugins]]
 repo = '/usr/local/opt/fzf'
