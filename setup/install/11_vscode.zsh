@@ -6,6 +6,7 @@ util::info 'configure vscode...'
 extensions=(
   castwide.solargraph
   dbaeumer.vscode-eslint
+  EditorConfig.EditorConfig
   esbenp.prettier-vscode
   kumar-harsh.graphql-for-vscode
   mauve.terraform
