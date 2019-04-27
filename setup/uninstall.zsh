@@ -10,7 +10,6 @@ readonly UNINSTALL_TARGETS=(
   git_template
   gitmessage
   hushlogin
-  tern-config
   tigrc
   tmux.conf
   zshenv
@@ -18,7 +17,6 @@ readonly UNINSTALL_TARGETS=(
   Library/Preferences/com.googlecode.iterm2.plist
   config/karabiner
   config/nvim
-  config/powerline
   'functions'
 )
 
