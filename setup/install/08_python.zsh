@@ -11,7 +11,6 @@ pips=(
   googleapis-common-protos
   neovim
   yapf
-  python-language-server
 )
 
 brew install python
