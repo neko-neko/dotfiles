@@ -22,6 +22,7 @@ formulas=(
   gnupg
   gnutls
   graphviz
+  grip
   hub
   imagemagick
   jq
