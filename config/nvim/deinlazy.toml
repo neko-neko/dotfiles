@@ -226,3 +226,7 @@ on_ft = ['fluentd']
 [[plugins]]
 repo = 'ekalinin/Dockerfile.vim'
 on_ft = ['Dockerfile']
+
+[[plugins]]
+repo = 'jparise/vim-graphql'
+on_ft = ['graphql']
