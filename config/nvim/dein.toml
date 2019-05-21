@@ -68,7 +68,8 @@ build = '''
   npm install -g eslint && \
   npm install -g tslint && \
   npm install -g eslint-plugin-vue && \
-  luarocks install luacheck
+  luarocks install luacheck && \
+  pip3 install -U flake8
 '''
 hook_add = '''
   " General
