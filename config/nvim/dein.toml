@@ -238,6 +238,9 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'godlygeek/tabular'
+
+[[plugins]]
 repo = '/usr/local/opt/fzf'
 
 [[plugins]]
