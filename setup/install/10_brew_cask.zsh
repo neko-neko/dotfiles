@@ -5,7 +5,6 @@ util::info 'install brew cask formulas...'
 
 taps=(
   caskroom/cask
-  caskroom/versions
 )
 
 casks=(
