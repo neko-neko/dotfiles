@@ -13,5 +13,6 @@
   "solargraph.externalServer": {
     "host": "localhost",
     "port": 7658
-  }
+  },
+  "workbench.iconTheme": "vscode-icons"
 }
