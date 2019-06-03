@@ -8,6 +8,7 @@ if [[ ! -e ${HOME}/.anyenv ]]; then
   source ${HOME}/.zshenv
 
   # install anyenv plugins
+  anyenv install --init
   mkdir -p $(anyenv root)/plugins
   git clone https://github.com/znz/anyenv-update.git $(anyenv root)/plugins/anyenv-update
   git clone https://github.com/znz/anyenv-git.git $(anyenv root)/plugins/anyenv-git
