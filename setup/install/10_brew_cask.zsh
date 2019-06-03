@@ -9,6 +9,7 @@ taps=(
 )
 
 casks=(
+  adoptopenjdk
   1password
   alfred
   android-studio
