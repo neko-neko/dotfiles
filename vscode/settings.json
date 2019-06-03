@@ -9,7 +9,6 @@
   "window.zoomLevel": 0,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "cSpell.language": "en",
-  "workbench.iconTheme": "vscode-icons",
   "solargraph.transport": "external",
   "solargraph.externalServer": {
     "host": "localhost",
