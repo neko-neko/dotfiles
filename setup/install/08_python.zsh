@@ -13,7 +13,7 @@ pips=(
   yapf
 )
 
-brew install python
+brew install python@2
 brew install python3
 pip3 install --upgrade pip setuptools wheel
 for pip in ${pips[@]}; do
