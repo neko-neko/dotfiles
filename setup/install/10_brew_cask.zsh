@@ -23,7 +23,6 @@ casks=(
   google-japanese-ime
   iterm2
   java
-  java8
   karabiner-elements
   licecap
   nosleep

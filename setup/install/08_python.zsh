@@ -19,4 +19,3 @@ pip3 install --upgrade pip setuptools wheel
 for pip in ${pips[@]}; do
   pip3 install --user ${pip}
 done
-pip3 list --outdated | awk '{print $1}' | xargs pip3 install -U
