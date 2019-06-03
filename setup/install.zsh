@@ -11,5 +11,4 @@ done
 # Finallize...
 util::info 'cleanup...'
 brew cleanup
-brew cask cleanup
 util::info 'done!'
