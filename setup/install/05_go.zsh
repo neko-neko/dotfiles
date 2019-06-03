@@ -10,7 +10,7 @@ libs=(
   github.com/saibing/bingo
 )
 
-brew install go --cross-compile-all
+brew install go
 for lib in ${libs[@]}; do
   go get -u -v ${lib}
 done

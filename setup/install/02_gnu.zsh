@@ -15,5 +15,5 @@ formulas=(
 )
 
 for formula in ${formulas[@]}; do
-  brew install ${formula} --with-default-names
+  brew install ${formula}
 done
