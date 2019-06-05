@@ -15,7 +15,7 @@ if [[ ! -e ${HOME}/.anyenv ]]; then
 
   # install *env
   anyenv install rbenv
-  anyenv install ndenv
+  anyenv install nodenv
 fi
 anyenv update
 anyenv git pull

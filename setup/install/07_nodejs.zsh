@@ -10,8 +10,9 @@ npms=(
   typescript
 )
 
-ndenv install v12.0.0
-ndenv global v12.0.0
+nodenv init
+nodenv install 12.0.0
+nodenv global 12.0.0
 
 if which yarn > /dev/null; then
   brew upgrade yarn
