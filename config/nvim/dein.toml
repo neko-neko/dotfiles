@@ -61,10 +61,8 @@ repo = 'w0rp/ale'
 build = '''
   brew install tflint && \
   brew install shellcheck && \
+  brew install golangci/tap/golangci-lint && \
   gem install rubocop && \
-  go get -u gopkg.in/alecthomas/gometalinter.v2 && \
-  ln -sfv ${GOPATH}/bin/gometalinter.v2 ${GOPATH}/bin/gometalinter && \
-  gometalinter --install --update && \
   npm install -g eslint && \
   npm install -g tslint && \
   npm install -g eslint-plugin-vue && \
@@ -86,7 +84,7 @@ hook_add = '''
   let g:ale_linters = {
     \ 'c': ['clang'],
     \ 'c++': ['clang'],
-    \ 'go': ['gometalinter'],
+    \ 'go': ['golangci-lint'],
     \ 'php': ['php'],
     \ 'perl': ['perl'],
     \ 'ruby': ['ruby', 'rubocop'],
