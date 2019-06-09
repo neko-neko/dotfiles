@@ -94,7 +94,6 @@ hook_add = '''
     \ 'Terraform': ['tflint']
   \ }
   let g:ale_ruby_rubocop_executable = 'bundle'
-  let g:ale_go_gometalinter_options = '--fast --enable=staticcheck --enable=gosimple --enable=unused'
 '''
 
 [[plugins]]
@@ -196,11 +195,11 @@ hook_add = '''
 repo = 'sbdchd/neoformat'
 hook_add = '''
   " For Python
-  let g:neoformat_python_yapf = {
-      \ 'exe': 'yapf',
-      \ 'args' : ['--style=pep8'],
-    \ }
   let g:neoformat_enabled_python = ['yapf']
+  let g:neoformat_python_yapf = {
+    \ 'exe': 'yapf',
+    \ 'args' : ['--style=pep8'],
+  \ }
 
   " For golang
   let g:neoformat_enabled_go = ['goimports', 'gofmt']
