@@ -15,5 +15,12 @@
     "port": 7658
   },
   "workbench.iconTheme": "vscode-icons",
-  "go.useLanguageServer": true
+  "go.lintOnSave": "workspace",
+  "go.vetOnSave": "workspace",
+  "go.useLanguageServer": true,
+  "go.toolsEnvVars": {
+    "GO111MODULE": "on"
+  },
+  "go.lintTool": "golangci-lint",
+  "go.formatTool": "goimports"
 }

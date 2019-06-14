@@ -24,6 +24,7 @@ extensions=(
   rebornix.ruby
   redhat.vscode-yaml
   shardulm94.trailing-spaces
+  streetsidesoftware.code-spell-checker
   VisualStudioExptTeam.vscodeintellicode
   vscode-icons-team.vscode-icons
   yzhang.markdown-all-in-one
