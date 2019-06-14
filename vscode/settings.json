@@ -14,5 +14,6 @@
     "host": "localhost",
     "port": 7658
   },
-  "workbench.iconTheme": "vscode-icons"
+  "workbench.iconTheme": "vscode-icons",
+  "go.useLanguageServer": true
 }
