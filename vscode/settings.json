@@ -16,16 +16,42 @@
   },
   "workbench.iconTheme": "vscode-icons",
   "[go]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.snippetSuggestions": "none",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
   },
   "go.lintOnSave": "workspace",
   "go.vetOnSave": "workspace",
-  "go.useLanguageServer": true,
   "go.toolsEnvVars": {
     "GO111MODULE": "on"
   },
   "go.lintTool": "golangci-lint",
   "go.formatTool": "goimports",
+  "go.useLanguageServer": true,
+  "go.alternateTools": {
+    "go-langserver": "golsp"
+  },
+  "gopls": {
+    "usePlaceholders": true
+  },
+  "go.languageServerExperimentalFeatures": {
+    "diagnostics": true,
+    "findReferences": true,
+    "format": true,
+    "autoComplete": true,
+    "rename": true,
+    "goToDefinition": true,
+    "hover": true,
+    "signatureHelp": true,
+    "goToTypeDefinition": true,
+    "goToImplementation": true,
+    "documentSymbols": true,
+    "workspaceSymbols": true,
+    "findReferences": true
+  },
   "editor.suggestSelection": "first",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
 }
