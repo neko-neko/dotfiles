@@ -15,6 +15,9 @@
     "port": 7658
   },
   "workbench.iconTheme": "vscode-icons",
+  "[go]": {
+    "editor.formatOnSave": false
+  },
   "go.lintOnSave": "workspace",
   "go.vetOnSave": "workspace",
   "go.useLanguageServer": true,
@@ -22,5 +25,7 @@
     "GO111MODULE": "on"
   },
   "go.lintTool": "golangci-lint",
-  "go.formatTool": "goimports"
+  "go.formatTool": "goimports",
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
 }
