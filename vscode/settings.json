@@ -2,23 +2,27 @@
   "editor.formatOnSave": true,
   "editor.renderLineHighlight": "all",
   "editor.cursorBlinking": "expand",
-  "prettier.eslintIntegration": true,
-  "python.pythonPath": "python3",
-  "workbench.startupEditor": "newUntitledFile",
+  "editor.wordWrap": "on",
+  "editor.suggestSelection": "first",
+  "breadcrumbs.enabled": true,
   "explorer.confirmDelete": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.useExperimentalGridLayout": true,
   "window.zoomLevel": 0,
-  "javascript.updateImportsOnFileMove.enabled": "always",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "cSpell.language": "en",
+  "python.pythonPath": "python3",
+  "prettier.eslintIntegration": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
   "solargraph.transport": "external",
   "solargraph.externalServer": {
     "host": "localhost",
     "port": 7658
   },
-  "workbench.iconTheme": "vscode-icons",
   "[go]": {
     "editor.formatOnSave": true,
     "editor.snippetSuggestions": "none",
-    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     }
@@ -49,9 +53,6 @@
     "goToTypeDefinition": true,
     "goToImplementation": true,
     "documentSymbols": true,
-    "workspaceSymbols": true,
-    "findReferences": true
-  },
-  "editor.suggestSelection": "first",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
+    "workspaceSymbols": true
+  }
 }
