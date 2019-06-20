@@ -4,14 +4,18 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'configure vscode...'
 
 extensions=(
+  alefragnani.project-manager
   bungcip.better-toml
   castwide.solargraph
   CoenraadS.bracket-pair-colorizer-2
+  DavidAnson.vscode-markdownlint
   dbaeumer.vscode-eslint
   eamodio.gitlens
   EditorConfig.EditorConfig
   esbenp.prettier-vscode
   GitHub.vscode-pull-request-github
+  Gruntfuggly.todo-tree
+  ionutvmi.path-autocomplete
   kumar-harsh.graphql-for-vscode
   mauve.terraform
   ms-kubernetes-tools.vscode-kubernetes-tools
@@ -27,6 +31,7 @@ extensions=(
   streetsidesoftware.code-spell-checker
   VisualStudioExptTeam.vscodeintellicode
   vscode-icons-team.vscode-icons
+  WallabyJs.quokka-vscode
   yzhang.markdown-all-in-one
   zxh404.vscode-proto3
 )
