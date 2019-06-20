@@ -25,6 +25,7 @@ formulas=(
   grip
   hub
   imagemagick
+  istioctl
   jq
   kubectl
   kubectx
