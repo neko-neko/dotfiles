@@ -42,6 +42,7 @@ formulas=(
   protobuf
   readline
   ripgrep
+  shellcheck
   source-highlight
   sops
   tig
