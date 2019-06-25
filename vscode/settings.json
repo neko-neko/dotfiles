@@ -58,5 +58,6 @@
     "documentSymbols": true,
     "workspaceSymbols": true
   },
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "vsicons.dontShowNewVersionMessage": true
 }

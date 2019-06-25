@@ -4,6 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install brew formulas...'
 
 taps=(
+  ktr0731/evans
   johanhaleby/kubetail
 )
 
@@ -14,6 +15,7 @@ formulas=(
   curl
   diffutils
   diff-so-fancy
+  evans
   fasd
   fzf
   gawk
