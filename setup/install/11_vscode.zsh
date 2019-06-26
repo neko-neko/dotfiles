@@ -17,6 +17,7 @@ extensions=(
   GitHub.vscode-pull-request-github
   Gruntfuggly.todo-tree
   ionutvmi.path-autocomplete
+  joelday.docthis
   kumar-harsh.graphql-for-vscode
   mauve.terraform
   ms-azuretools.vscode-docker
