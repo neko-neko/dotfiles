@@ -13,22 +13,24 @@ extensions=(
   eamodio.gitlens
   EditorConfig.EditorConfig
   esbenp.prettier-vscode
+  foxundermoon.shell-format
   GitHub.vscode-pull-request-github
   Gruntfuggly.todo-tree
   ionutvmi.path-autocomplete
   kumar-harsh.graphql-for-vscode
   mauve.terraform
+  ms-azuretools.vscode-docker
   ms-kubernetes-tools.vscode-kubernetes-tools
   ms-python.python
   ms-vscode-remote.remote-containers
   ms-vscode.Go
   ms-vsliveshare.vsliveshare
   nonylene.dark-molokai-theme
-  PeterJausovec.vscode-docker
   rebornix.ruby
   redhat.vscode-yaml
   shardulm94.trailing-spaces
   streetsidesoftware.code-spell-checker
+  timonwong.shellcheck
   VisualStudioExptTeam.vscodeintellicode
   vscode-icons-team.vscode-icons
   WallabyJs.quokka-vscode
