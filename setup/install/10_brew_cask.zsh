@@ -14,7 +14,6 @@ casks=(
   android-studio
   caffeine
   cyberduck
-  dbeaver-community
   docker
   discord
   firefox
@@ -25,7 +24,9 @@ casks=(
   java
   karabiner-elements
   licecap
+  mysqlworkbench
   nosleep
+  pgadmin4
   slack
   vagrant
   virtualbox
