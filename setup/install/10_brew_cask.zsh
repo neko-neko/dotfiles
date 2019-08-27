@@ -25,11 +25,10 @@ casks=(
   java
   karabiner-elements
   licecap
+  mjml
   mysqlworkbench
   nosleep
   slack
-  vagrant
-  virtualbox
   visual-studio-code
   zeplin
 )
