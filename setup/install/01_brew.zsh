@@ -42,6 +42,7 @@ formulas=(
   openssl
   pandoc
   protobuf
+  postgresql
   readline
   ripgrep
   shellcheck
