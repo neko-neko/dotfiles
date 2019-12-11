@@ -8,6 +8,12 @@ alias hub='GITHUB_HOST=$(git config --get remote.origin.url | awk "match($0, /^h
 alias reload='source ~/.zshenv && source ~/.zshrc'
 
 # ------------------------------
+# base64
+# ------------------------------
+alias encode='function __encode(){ echo "$1" | base64 }; __encode'
+alias decode='function __decode(){ echo "$1" | base64 -d }; __decode'
+
+# ------------------------------
 # List
 # ------------------------------
 alias l='ls -1A --color'
