@@ -19,6 +19,7 @@ formulas=(
   fasd
   fzf
   gawk
+  gcc
   gettext
   gibo
   gnupg

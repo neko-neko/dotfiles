@@ -7,7 +7,8 @@
   "editor.scrollBeyondLastLine": false,
   "editor.renderIndentGuides": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true
+    "source.fixAll.tslint": true,
+    "source.fixAll.eslint": true
   },
   "editor.minimap.enabled": true,
   "breadcrumbs.enabled": true,
@@ -23,7 +24,6 @@
   "shellcheck.run": "onSave",
   "shellcheck.executablePath": "shellcheck",
   "python.pythonPath": "python3",
-  "prettier.eslintIntegration": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "solargraph.transport": "external",
   "solargraph.externalServer": {
