@@ -37,11 +37,10 @@ formulas=(
   lua
   luarocks
   mas
-  maven
   neovim
+  nmap
   nkf
   openssl
-  pandoc
   protobuf
   postgresql
   readline
@@ -52,7 +51,6 @@ formulas=(
   tig
   tmux
   tree
-  watchman
 )
 
 brew upgrade
