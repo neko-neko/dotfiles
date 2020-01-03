@@ -211,30 +211,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'autozimu/LanguageClient-neovim'
-rev = 'next'
-build = 'bash install.sh'
-hook_add = '''
-  let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['tcp://localhost:2089'],
-    \ 'javascript.jsx': ['tcp://localhost:2089'],
-    \ 'typescript': ['tcp://localhost:2089'],
-    \ 'typescript.tsx': ['tcp://localhost:2089'],
-    \ 'ruby': ['tcp://localhost:7658'],
-    \ 'go': ['tcp://localhost:4389'],
-    \ 'python': ['tcp://localhost:2087'],
-    \ }
-
-  let g:LanguageClient_rootMarkers = {
-    \ 'javascript': ['package.json'],
-    \ 'typescript': ['package.json'],
-    \ 'ruby': ['Gemfile'],
-    \ 'go': ['go.mod'],
-    \ 'python': ['Pipfile'],
-    \ }
-'''
-
-[[plugins]]
 repo = 'godlygeek/tabular'
 
 [[plugins]]
@@ -250,3 +226,21 @@ hook_add = '''
     \           : fzf#vim#with_preview('right:50%:hidden', '?'),
     \   <bang>0)
 '''
+
+# For vim-lsp
+[[plugins]]
+repo = 'prabirshrestha/async.vim'
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete.vim'
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-lsp.vim'
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+[[plugins]]
+repo = 'mattn/vim-lsp-icons'
+[[plugins]]
+repo = 'hrsh7th/vim-vsnip'
+[[plugins]]
+repo = 'hrsh7th/vim-vsnip-integ'

@@ -67,7 +67,7 @@ set wildmode=list:longest
 " deoplete
 set completeopt+=noinsert
 set completeopt+=noselect
-let g:python3_host_prog=expand('/usr/local/bin/python3')
+let g:python3_host_prog=expand('/usr/bin/python3')
 let g:python3_host_skip_check=1
 
 "--------------------
@@ -203,3 +203,26 @@ nmap <C-t> :TagbarToggle<CR>
 noremap <C-n> :NERDTreeToggle<CR>
 nmap <C-j> :SplitjoinJoin<CR>
 nmap <C-s> :SplitjoinSplit<CR>
+
+"--------------------
+"" LSP settings:
+"
+function! s:on_lsp_buffer_enabled() abort
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+  nmap <buffer> gd <plug>(lsp-definition)
+  nmap <buffer> <f2> <plug>(lsp-rename)
+  inoremap <expr> <cr> pumvisible() ? "\<c-y>\<cr>" : "\<cr>"
+endfunction
+
+augroup lsp_install
+  au!
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_auto_completeopt = 0
+let g:asyncomplete_popup_delay = 200
+let g:lsp_text_edit_enabled = 1

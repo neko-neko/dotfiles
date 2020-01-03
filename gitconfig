@@ -2,9 +2,6 @@
 	name = neko-neko
 	email = seiichi.nishikata456@gmail.com
 
-[init]
-	templatedir = ~/.git_template
-
 [core]
 	editor = nvim
 	ignorecase = false
