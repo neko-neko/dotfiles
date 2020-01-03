@@ -34,6 +34,7 @@ formulas=(
   kubectx
   kubernetes-helm
   kubetail
+  krew
   lua
   luarocks
   mas
