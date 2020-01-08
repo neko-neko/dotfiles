@@ -90,7 +90,7 @@ hook_add = '''
     \ 'ruby': ['ruby', 'rubocop'],
     \ 'python': ['flake8'],
     \ 'javascript': ['eslint'],
-    \ 'typescript': ['tslint'],
+    \ 'typescript': ['eslint'],
     \ 'Terraform': ['tflint']
   \ }
   let g:ale_ruby_rubocop_executable = 'bundle'
