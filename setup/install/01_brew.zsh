@@ -35,6 +35,7 @@ formulas=(
   kubernetes-helm
   kubetail
   krew
+  jesseduffield/lazygit/lazygit
   lua
   luarocks
   mas
@@ -49,7 +50,6 @@ formulas=(
   shellcheck
   source-highlight
   sops
-  tig
   tmux
   tree
 )
