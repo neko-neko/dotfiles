@@ -26,7 +26,7 @@ formulas=(
   gnutls
   graphviz
   grip
-  gh
+  github/gh/gh
   imagemagick
   istioctl
   jq
