@@ -4,15 +4,21 @@
 alias vim='nvim'
 alias grep='grep --color=auto'
 alias history='history 1'
-alias hub='GITHUB_HOST=$(git config --get remote.origin.url | awk "match($0, /^https:\/\/(.+?)\/(.+?)\/(.+?)\.git$/, m) {print m[1]}") hub'
 alias reload='source ~/.zshenv && source ~/.zshrc'
+
+# ------------------------------
+# git
+# ------------------------------
 alias lg='lazygit'
+alias ghi='gh issue view $(gh issue list | fzf | awk "{print \$1}")'
+alias ghp='gh pr view $(gh pr list | fzf | awk "{print \$1}")'
+alias ghpc='gh pr checkout $(gh pr list | fzf | awk "{print \$1}")'
 
 # ------------------------------
 # base64
 # ------------------------------
-alias encode='function __encode(){ echo "$1" | base64 }; __encode'
-alias decode='function __decode(){ echo "$1" | base64 -d }; __decode'
+alias encode='function __encode(){ echo -n "$1" | base64 }; __encode'
+alias decode='function __decode(){ echo -n "$1" | base64 -d }; __decode'
 
 # ------------------------------
 # List
