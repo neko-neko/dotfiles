@@ -26,7 +26,7 @@ formulas=(
   gnutls
   graphviz
   grip
-  hub
+  gh
   imagemagick
   istioctl
   jq
