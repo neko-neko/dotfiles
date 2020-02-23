@@ -3,11 +3,6 @@ source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'install brew formulas...'
 
-taps=(
-  ktr0731/evans
-  johanhaleby/kubetail
-)
-
 formulas=(
   autoconf
   binutils
@@ -15,7 +10,7 @@ formulas=(
   curl
   diffutils
   diff-so-fancy
-  evans
+  ktr0731/evans/evans
   fasd
   fzf
   gawk
@@ -33,9 +28,10 @@ formulas=(
   kubectl
   kubectx
   kubernetes-helm
-  kubetail
+  johanhaleby/kubetail/kubetail
   krew
   jesseduffield/lazygit/lazygit
+  jesseduffield/lazydocker/lazydocker
   lua
   luarocks
   mas
@@ -56,7 +52,6 @@ formulas=(
 
 brew upgrade
 
-brew tap ${taps[@]}
 for formula in ${formulas[@]}; do
   brew install ${formula}
 done
