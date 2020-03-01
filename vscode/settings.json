@@ -70,5 +70,6 @@
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "editor.suggestSelection": "first",
-  "todo-tree.highlights.enabled": true
+  "todo-tree.highlights.enabled": true,
+  "todo-tree.tree.showScanModeButton": false
 }
