@@ -87,6 +87,7 @@
 	issue = !fzf-hub-issues
 	isc = !hub issue create
 	c = !fzf-git-checkout
+	delete = !git branch -D $(git branch | fzf)
 
 [ghq]
 	root = ~/ghq
