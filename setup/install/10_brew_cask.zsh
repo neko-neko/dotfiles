@@ -12,7 +12,6 @@ casks=(
   1password
   alfred
   android-studio
-  caffeine
   cyberduck
   dbeaver-community
   docker
@@ -27,7 +26,6 @@ casks=(
   licecap
   mjml
   mysqlworkbench
-  nosleep
   slack
   visual-studio-code
   zeplin

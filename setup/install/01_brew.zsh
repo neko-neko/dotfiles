@@ -48,6 +48,7 @@ formulas=(
   sops
   tmux
   tree
+  tldr
 )
 
 brew upgrade

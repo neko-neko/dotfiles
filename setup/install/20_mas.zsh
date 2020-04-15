@@ -10,6 +10,8 @@ apps=(
   409183694
   # WinArchiver
   414855915
+  # Amphetamine
+  937984704
 )
 
 brew install mas
