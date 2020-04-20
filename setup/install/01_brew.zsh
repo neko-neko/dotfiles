@@ -8,6 +8,7 @@ formulas=(
   binutils
   cmake
   curl
+  derailed/k9s/k9s
   diffutils
   diff-so-fancy
   ktr0731/evans/evans
