@@ -82,7 +82,11 @@
     ]
   },
   "terraform.languageServer": {
-    "enabled": false,
-    "args": []
-  }
+    "external": true,
+    "args": [
+      "serve"
+    ]
+  },
+"python.jediEnabled": false,
+"python.languageServer": "Microsoft"
 }
