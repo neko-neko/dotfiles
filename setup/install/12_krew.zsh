@@ -8,6 +8,7 @@ plugins=(
   exec-cronjob
   tree
   node-shell
+  score
 )
 
 kubectl krew update
