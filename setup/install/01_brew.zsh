@@ -26,6 +26,7 @@ formulas=(
   imagemagick
   istioctl
   jq
+  boz/repo/kail
   kubectl
   kubectx
   kubernetes-helm
