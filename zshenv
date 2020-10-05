@@ -48,7 +48,7 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 # ------------------------------
 # Python Settings
 # ------------------------------
-export PATH="$HOME/Library/Python/3.7/bin:$PATH"
+export PATH="/usr/local/opt/python@3.7/bin:$PATH"
 
 # ------------------------------
 # krew Settings
