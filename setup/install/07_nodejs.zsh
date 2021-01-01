@@ -4,7 +4,6 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install Node.js...'
 
 npms=(
-  flow-bin
   neovim
   react-native-cli
   typescript

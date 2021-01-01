@@ -52,7 +52,6 @@
 	untracked = cyan
 
 [commit]
-	template = ~/.gitmessage
 	gpgsign = false
 
 [diff]
@@ -62,7 +61,7 @@
 	textconv = hexdump -v -C
 
 [help]
-	autocorrect = 1
+	autocorrect = 0
 
 [merge]
 	log = true
@@ -99,10 +98,11 @@
 [credential]
 	helper = osxkeychain
 
-[include]
-	path = ~/.gitconfig.local
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[include]
+	path = ~/.gitconfig.local

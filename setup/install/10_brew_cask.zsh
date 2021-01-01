@@ -28,7 +28,6 @@ casks=(
   mysqlworkbench
   slack
   visual-studio-code
-  zeplin
 )
 
 brew tap ${taps[@]}

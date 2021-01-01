@@ -22,7 +22,7 @@ formulas=(
   gnutls
   graphviz
   grip
-  github/gh/gh
+  gh
   imagemagick
   istioctl
   jq
@@ -48,7 +48,6 @@ formulas=(
   shellcheck
   source-highlight
   sops
-  tmux
   tree
   tldr
 )
