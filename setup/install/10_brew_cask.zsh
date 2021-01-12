@@ -31,4 +31,4 @@ casks=(
 )
 
 brew tap ${taps[@]}
-brew cask install ${casks[@]}
+brew install --cask ${casks[@]}
