@@ -30,9 +30,9 @@ k8s_current_info() {
 }
 
 gcp_current_info() {
-  local config=$(gcloud config configurations list --format='json')
-  local account=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.account')
-  local project=$(echo ${config} | jq -r '.[] | select(.is_active==true) | .properties.core.project')
+  local config_file=~/.config/gcloud/configurations/config_default
+  local account=$(cat ${config_file} | awk '/account\s=\s.*/ { print $3 }')
+  local project=$(cat ${config_file} | awk '/project\s=\s.*/ { print $3 }')
 
   if [[ "${account}" = 'null' ]] || [[ "${project}" = 'null' ]]; then
     return
