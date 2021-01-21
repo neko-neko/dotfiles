@@ -903,7 +903,7 @@
 			<key>Screen</key>
 			<integer>-2</integer>
 			<key>Scrollback Lines</key>
-			<integer>10000</integer>
+			<integer>0</integer>
 			<key>Scrollback With Status Bar</key>
 			<false/>
 			<key>Scrollback in Alternate Screen</key>

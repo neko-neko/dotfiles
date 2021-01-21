@@ -20,7 +20,6 @@ formulas=(
   gibo
   gnupg
   gnutls
-  graphviz
   grip
   gh
   imagemagick
@@ -48,6 +47,7 @@ formulas=(
   shellcheck
   source-highlight
   sops
+  terminal-notifier
   tree
   tldr
 )

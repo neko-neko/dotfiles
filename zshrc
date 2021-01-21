@@ -17,10 +17,10 @@ zplug 'seebi/dircolors-solarized'
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
-zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+zplug 'zdharma/fast-syntax-highlighting', defer:2
 
 zplug 'rimraf/k'
-zplug "soimort/translate-shell", \
+zplug 'soimort/translate-shell', \
     at:stable, as:command, use:"build/*", \
     hook-build:"make build &> /dev/null"
 
@@ -32,6 +32,8 @@ zplug 'modules/directory', from:prezto
 zplug "${HOME}/.dotfiles/theme", \
   from:local, \
   as:theme
+zplug 't413/zsh-background-notify'
+zplug 'supercrabtree/k'
 
 # prezto
 zstyle ':prezto:module:editor' key-bindings 'emacs'
