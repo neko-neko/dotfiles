@@ -30,9 +30,11 @@ k8s_current_info() {
 }
 
 gcp_current_info() {
-  local config_file=~/.config/gcloud/configurations/config_default
-  local account=$(cat ${config_file} | awk '/account\s=\s.*/ { print $3 }')
-  local project=$(cat ${config_file} | awk '/project\s=\s.*/ { print $3 }')
+  local active_config=$(cat ~/.config/gcloud/active_config)
+  local config_file=~/.config/gcloud/configurations/config_${active_config}
+  local project_and_account=$(cat ${config_file} | grep -e 'project = ' -e 'account = ' | awk -F' = ' '{print $2}')
+  local account=$(echo ${project_and_account} | cut -d$'\n' -f1)
+  local project=$(echo ${project_and_account} | cut -d$'\n' -f2)
 
   if [[ "${account}" = 'null' ]] || [[ "${project}" = 'null' ]]; then
     return
