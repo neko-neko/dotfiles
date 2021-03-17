@@ -40,6 +40,7 @@ colorscheme molokai
 filetype plugin indent on
 set clipboard+=unnamedplus
 set guifont=RictyNerdFontAAEOPL-Regular:h14
+let g:python3_host_prog = '/usr/bin/python3'
 
 " Do not create backup
 set nowritebackup
