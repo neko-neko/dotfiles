@@ -16,7 +16,6 @@
   "workbench.startupEditor": "newUntitledFile",
   "workbench.iconTheme": "vscode-icons",
   "workbench.useExperimentalGridLayout": true,
-  "window.zoomLevel": 0,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "vsicons.dontShowNewVersionMessage": true,
   "cSpell.language": "en",
@@ -53,5 +52,12 @@
     ]
   },
 "python.jediEnabled": false,
-"python.languageServer": "Microsoft"
+"python.languageServer": "Microsoft",
+"go.toolsManagement.autoUpdate": true,
+"workbench.editorAssociations": [
+  {
+    "viewType": "jupyter.notebook.ipynb",
+    "filenamePattern": "*.ipynb"
+  }
+]
 }

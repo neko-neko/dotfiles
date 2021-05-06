@@ -46,19 +46,6 @@ if [[ ! -d ${HOME}/.zplug ]]; then
 fi
 source ${HOME}/.zshrc
 
-# replace zsh
-source ${HOME}/.dotfiles/setup/util.zsh
-util::confirm 'update using zsh path?'
-if [[ $? = 0 ]]; then
-  brew install zsh
-  configured=$(grep -c '/usr/local/bin/zsh' /etc/shells)
-  if [[ $configured = 0 ]]; then
-    sudo sh -c "echo '/usr/local/bin/zsh' >> /etc/shells"
-  fi
-  chsh -s /usr/local/bin/zsh
-  source ${HOME}/.zshrc
-fi
-
 # install...
 FORCE=1
 . ${HOME}/.dotfiles/setup/install.zsh

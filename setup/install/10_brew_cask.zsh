@@ -3,10 +3,6 @@ source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'install brew cask formulas...'
 
-taps=(
-  caskroom/cask
-)
-
 casks=(
   adoptopenjdk
   1password
@@ -30,5 +26,4 @@ casks=(
   visual-studio-code
 )
 
-brew tap ${taps[@]}
 brew install --cask ${casks[@]}
