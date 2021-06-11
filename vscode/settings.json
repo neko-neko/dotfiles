@@ -59,5 +59,6 @@
     "viewType": "jupyter.notebook.ipynb",
     "filenamePattern": "*.ipynb"
   }
-]
+],
+"workbench.editor.untitled.hint": "hidden"
 }
