@@ -1,3 +1,5 @@
+![CI](https://github.com/neko-neko/dotfiles/workflows/CI/badge.svg?branch=master)
+
 # My dotfiles
 my dotfiles
 
