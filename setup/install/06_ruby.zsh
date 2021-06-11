@@ -6,13 +6,10 @@ util::info 'install Ruby and gems...'
 gems=(
   bundler
   neovim
-  rcodetools
-  fastri
-  solargraph
 )
 
-rbenv install -s 2.5.3
-rbenv global 2.5.3
+rbenv install -s 2.7.3
+rbenv global 2.7.3
 for gem in ${gems[@]}; do
   gem install ${gem}
 done

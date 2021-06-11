@@ -17,7 +17,6 @@ casks=(
   google-chrome
   google-japanese-ime
   iterm2
-  java
   karabiner-elements
   licecap
   mjml

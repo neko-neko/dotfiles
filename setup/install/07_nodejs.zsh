@@ -10,8 +10,8 @@ npms=(
 )
 
 nodenv init
-nodenv install 12.0.0
-nodenv global 12.0.0
+nodenv install 14.17.0
+nodenv global 14.17.0
 
 if which yarn > /dev/null; then
   brew upgrade yarn

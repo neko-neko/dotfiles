@@ -31,6 +31,7 @@ formulas=(
   kubernetes-helm
   johanhaleby/kubetail/kubetail
   krew
+  openjdk
   jesseduffield/lazygit/lazygit
   jesseduffield/lazydocker/lazydocker
   lua
