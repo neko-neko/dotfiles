@@ -9,6 +9,7 @@ plugins=(
   tree
   node-shell
   score
+  open-svc
 )
 
 kubectl krew update
