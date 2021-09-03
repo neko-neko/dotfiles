@@ -5,6 +5,7 @@ alias vim='nvim'
 alias grep='grep --color=auto'
 alias history='history 1'
 alias reload='source ~/.zshenv && source ~/.zshrc'
+alias kusa='curl https://github-contributions-api.deno.dev/$(git config user.name).term'
 
 # ------------------------------
 # git
