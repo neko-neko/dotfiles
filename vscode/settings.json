@@ -58,5 +58,6 @@
   "*.ipynb": "jupyter.notebook.ipynb"
 },
 "workbench.editor.untitled.hint": "hidden",
-"GitLive.Issue tracker integration": "Disabled"
+"GitLive.Issue tracker integration": "Disabled",
+"python.defaultInterpreterPath": "python3"
 }
