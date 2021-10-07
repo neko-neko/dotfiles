@@ -52,12 +52,13 @@
     ]
   },
 "python.jediEnabled": false,
-"python.languageServer": "Microsoft",
 "go.toolsManagement.autoUpdate": true,
 "workbench.editorAssociations": {
   "*.ipynb": "jupyter.notebook.ipynb"
 },
 "workbench.editor.untitled.hint": "hidden",
 "GitLive.Issue tracker integration": "Disabled",
-"python.defaultInterpreterPath": "python3"
+"python.defaultInterpreterPath": "python3",
+"python.languageServer": "Microsoft",
+"redhat.telemetry.enabled": true
 }
