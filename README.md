@@ -4,8 +4,9 @@
 my dotfiles
 
 # Installation
-1. Install my dot files:  
-    ```
+1. Install XCode
+2. Install my dot files:  
+    ```sh
     zsh -c "$(curl -s https://raw.githubusercontent.com/neko-neko/dotfiles/master/setup/setup.zsh)"
     ```
 
