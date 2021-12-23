@@ -22,6 +22,7 @@ formulas=(
   gnutls
   grip
   gh
+  ghq
   imagemagick
   istioctl
   jq
