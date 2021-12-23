@@ -4,7 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install font files...'
 
 brew install fontforge
-pip2 install configparser
+pip3 install configparser
 
 # Ricty
 brew tap sanemat/font
