@@ -25,7 +25,7 @@ fontforge -script ./font-patcher ~/Library/Fonts/Ricty\ Regular\ for\ Powerline.
   --powerline \
   --powerlineextra
 \cp -f \
-  ./Ricty\ Regular\ Nerd\ Font\ Plus\ Font\ Awesome\ Plus\ Font\ Awesome\ Extension\ Plus\ Octicons\ Plus\ Pomicons\ Plus\ Font\ Linux.ttf \
+  ./Ricty\ Regular\ Nerd\ Font\ Plus\ Font\ Awesome\ Plus\ Font\ Awesome\ Extension\ Plus\ Octicons\ Plus\ Pomicons\ Plus\ Font\ Logos\ \(Font\ Linux\).ttf \
   ~/Library/Fonts/Ricty\ Regular\ for\ Powerline\ Patched.ttf
 
 fc-cache -vf
