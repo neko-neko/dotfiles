@@ -9,7 +9,7 @@ pip2 install configparser
 # Ricty
 brew tap sanemat/font
 brew install ricty --with-powerline
-\cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
+\cp -f /opt/homebrew/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
 
 # Nerd Fonts
 git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
