@@ -17,7 +17,7 @@ zplug 'seebi/dircolors-solarized'
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
-zplug 'zdharma/fast-syntax-highlighting', defer:2
+zplug 'zdharma-continuum/fast-syntax-highlighting', defer:2
 
 zplug 'rimraf/k'
 zplug 'soimort/translate-shell', \
@@ -25,7 +25,6 @@ zplug 'soimort/translate-shell', \
     hook-build:"make build &> /dev/null"
 
 zplug 'plugins/extract', from:oh-my-zsh
-zplug 'modules/environment', from:prezto
 zplug 'modules/terminal', from:prezto
 zplug 'modules/editor', from:prezto
 zplug 'modules/directory', from:prezto
