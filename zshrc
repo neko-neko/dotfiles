@@ -17,7 +17,8 @@ zplug 'seebi/dircolors-solarized'
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
-zplug 'zdharma-continuum/fast-syntax-highlighting', defer:2
+zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+zplug 'zsh-users/zsh-history-substring-search', defer:3
 
 zplug 'rimraf/k'
 zplug 'soimort/translate-shell', \
