@@ -60,5 +60,6 @@
 "GitLive.Issue tracker integration": "Disabled",
 "python.defaultInterpreterPath": "python3",
 "python.languageServer": "Microsoft",
-"redhat.telemetry.enabled": true
+"redhat.telemetry.enabled": true,
+"security.workspace.trust.untrustedFiles": "open"
 }

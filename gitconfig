@@ -2,6 +2,9 @@
 	name = neko-neko
 	email = seiichi.nishikata456@gmail.com
 
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+
 [core]
 	editor = nvim
 	ignorecase = false
