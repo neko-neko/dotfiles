@@ -9,6 +9,7 @@ plugins=(
   tree
   node-shell
   score
+  stern
   open-svc
 )
 
