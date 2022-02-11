@@ -31,6 +31,7 @@ formulas=(
   kubectx
   kubernetes-helm
   johanhaleby/kubetail/kubetail
+  k9s
   krew
   openjdk
   jesseduffield/lazygit/lazygit

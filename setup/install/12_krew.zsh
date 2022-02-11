@@ -6,7 +6,6 @@ util::info 'configure krew...'
 plugins=(
   exec-as
   exec-cronjob
-  tree
   node-shell
   score
   stern
