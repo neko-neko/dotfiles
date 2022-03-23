@@ -5,6 +5,7 @@ util::info 'configure vscode...'
 
 extensions=(
   alefragnani.project-manager
+  apollographql.vscode-apollo
   bungcip.better-toml
   castwide.solargraph
   CoenraadS.bracket-pair-colorizer-2
@@ -15,26 +16,28 @@ extensions=(
   esbenp.prettier-vscode
   foxundermoon.shell-format
   GitHub.vscode-pull-request-github
+  golang.go
+  GraphQL.vscode-graphql
   Gruntfuggly.todo-tree
+  hashicorp.terraform
   ionutvmi.path-autocomplete
-  joelday.docthis
   kumar-harsh.graphql-for-vscode
-  mauve.terraform
   ms-azuretools.vscode-docker
-  ms-kubernetes-tools.vscode-kubernetes-tools
   ms-python.python
+  ms-python.vscode-pylance
+  ms-toolsai.jupyter
   ms-vscode-remote.remote-containers
-  ms-vscode.Go
   ms-vsliveshare.vsliveshare
   nonylene.dark-molokai-theme
   rebornix.ruby
-  redhat.vscode-yaml
   shardulm94.trailing-spaces
   streetsidesoftware.code-spell-checker
+  stylelint.vscode-stylelint
+  Tim-Koehler.helm-intellisense
   timonwong.shellcheck
   VisualStudioExptTeam.vscodeintellicode
   vscode-icons-team.vscode-icons
-  WallabyJs.quokka-vscode
+  wingrunr21.vscode-ruby
   yzhang.markdown-all-in-one
   zxh404.vscode-proto3
 )
