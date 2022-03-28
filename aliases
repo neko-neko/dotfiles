@@ -47,10 +47,6 @@ alias sshf='fzf-ssh-list'
 alias killf='fzf-kill'
 alias chromef='fzf-chrome-history'
 
-alias -g D='$(docker ps | fzf | cut -d " " -f 1)'
-alias dockerl='docker logs -f D'
-alias dockere='docker exec -it D'
-
 # ------------------------------
 # AWS
 # ------------------------------
@@ -64,7 +60,10 @@ alias gcpp='gcloud config set project $(gcloud projects list | fzf | awk "{print
 # ------------------------------
 # Docker
 # ------------------------------
-alias dc=docker-compose
+alias dc=docker compose
+alias -g D='$(docker ps | fzf | cut -d " " -f 1)'
+alias dockerl='docker logs -f D'
+alias dockere='docker exec -it D'
 
 # ------------------------------
 # kubectl
