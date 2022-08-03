@@ -16,6 +16,7 @@ casks=(
   google-cloud-sdk
   google-chrome
   google-japanese-ime
+  kindle
   iterm2
   karabiner-elements
   licecap
