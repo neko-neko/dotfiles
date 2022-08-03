@@ -5,7 +5,6 @@
   "editor.cursorBlinking": "expand",
   "editor.wordWrap": "on",
   "editor.scrollBeyondLastLine": false,
-  "editor.renderIndentGuides": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true,
     "source.fixAll.eslint": true
@@ -61,5 +60,6 @@
 "python.defaultInterpreterPath": "python3",
 "python.languageServer": "Microsoft",
 "redhat.telemetry.enabled": true,
-"security.workspace.trust.untrustedFiles": "open"
+"security.workspace.trust.untrustedFiles": "open",
+"editor.guides.indentation": true
 }

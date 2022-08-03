@@ -13,6 +13,7 @@ formulas=(
   diff-so-fancy
   ktr0731/evans/evans
   fasd
+  fx
   fzf
   gawk
   gcc
@@ -25,7 +26,6 @@ formulas=(
   ghq
   imagemagick
   istioctl
-  jq
   boz/repo/kail
   kubectl
   kubectx
