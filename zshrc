@@ -107,6 +107,7 @@ eval "$(pip3 completion --zsh)"
 # ------------------------------
 source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
 source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # ------------------------------
 # Key bindings
