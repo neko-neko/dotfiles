@@ -58,7 +58,7 @@
 "workbench.editor.untitled.hint": "hidden",
 "GitLive.Issue tracker integration": "Disabled",
 "python.defaultInterpreterPath": "python3",
-"python.languageServer": "Microsoft",
+"python.languageServer": "Default",
 "redhat.telemetry.enabled": true,
 "security.workspace.trust.untrustedFiles": "open",
 "editor.guides.indentation": true
