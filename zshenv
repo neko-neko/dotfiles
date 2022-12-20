@@ -74,8 +74,8 @@ export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 # ------------------------------
 export FZF_DEFAULT_OPTS='
   --reverse
-  --inline-info
   --ansi
+  --no-info
   --multi
   --height 60%
   --color fg:252,bg:233,hl:67,fg+:252,bg+:235,hl+:81
