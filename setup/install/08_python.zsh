@@ -9,7 +9,7 @@ pips=(
   flake8
   grpcio-tools
   googleapis-common-protos
-  neovim
+  pynvim
   yapf
 )
 
