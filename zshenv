@@ -65,11 +65,6 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/emulator
 
 # ------------------------------
-# Xcode Settings
-# ------------------------------
-export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-
-# ------------------------------
 # fzf Settings
 # ------------------------------
 export FZF_DEFAULT_OPTS='
