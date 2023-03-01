@@ -24,6 +24,7 @@ formulas=(
   grip
   gh
   ghq
+  git
   imagemagick
   istioctl
   boz/repo/kail
