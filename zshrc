@@ -125,6 +125,3 @@ source ${HOME}/.aliases
 if [[ -f ${HOME}/.zshrc.local ]]; then
   source ${HOME}/.zshrc.local
 fi
-if [[ -f ${HOME}/.aliases.local ]]; then
-  source ${HOME}/.aliases.local
-fi
