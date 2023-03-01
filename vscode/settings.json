@@ -61,5 +61,8 @@
 "python.languageServer": "Default",
 "redhat.telemetry.enabled": true,
 "security.workspace.trust.untrustedFiles": "open",
-"editor.guides.indentation": true
+"editor.guides.indentation": true,
+"[python]": {
+  "editor.formatOnType": true
+}
 }
