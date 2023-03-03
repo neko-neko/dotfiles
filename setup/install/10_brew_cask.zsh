@@ -17,13 +17,13 @@ casks=(
   google-chrome
   google-japanese-ime
   kindle
-  iterm2
   karabiner-elements
   licecap
   mjml
   mysqlworkbench
   slack
   visual-studio-code
+  wez/wezterm/wezterm
 )
 
 brew install --cask ${casks[@]}
