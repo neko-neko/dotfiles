@@ -76,10 +76,10 @@ theme_precmd() {
     "%F{135}" # Purple
     "%F{118}" # Limegreen
   )
-  local branch_format="%{$colors[1]%}%b %f%c%u%m%f"
+  local branch_format="%{$colors[1]%} %b %f%c%u%m%f"
   local action_format="%{$colors[4]%}%a%f"
-  local staged_format="%{$colors[4]%}%f"
-  local unstaged_format="%{$colors[2]%}%f"
+  local staged_format="%{$colors[4]%} %f"
+  local unstaged_format="%{$colors[2]%} %f"
 
   zstyle ':vcs_info:git:*' enable bzr git hg svn
   zstyle ':vcs_info:git:*' check-for-changes true
