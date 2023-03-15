@@ -18,6 +18,7 @@ local config = {
     top = 0,
     bottom = 0,
   },
+  native_macos_fullscreen_mode = true,
   tab_bar_at_bottom = true,
   -- colors
   color_scheme = 'nordfox',
