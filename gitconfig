@@ -3,6 +3,7 @@
 	name = neko-neko
 	email = seiichi.nishikata456@gmail.com
 
+
 [user]
 	signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqDGFeQ/xG1woOmTgJbEGteZbYP3FMZezrb3URwcZAcJHf85+2E5aLYHiJLx0qsctBrUmHd3dChoTAm9gNNdHKP1DBALg9XCirwk1XeQpuweA7IiLJIIPqdmEneQt/hx22QWOkXR0glvMnoyAd/Yg+C5Q2mzD2qtKnPSN61IneX8lLf1pNloqj3kNVSEN+qy/nU8vm8PfG/GRzPsZWGCwaOa6CLmn+4+V51udALIQNAcWgQRAcj+VfbPczS7YJdxI8gk22FAD0NhPh1g5iu0f7gIpZqLHEu3RqwfoDnPCu/2rmhknKfTAlYNgm7ue7u/QOgSVJYFrEAf2OeBwFmZTQk+vh4Hj02u7B1iUCN4YUcjjmKF067trmRhvZIbWztg1rkKf8Z12MQteA5gV9agdh4+g7/oxXcfVB7GrZ2ndsqEncdxslBhO9Lb2FhJWtqPgcfxOseeLrB6xJJH+fed0R/9DeYBYdtqpQ7s5Xapu2ks8CDCH9sNnVHpOyqED5XR8=
 
@@ -110,6 +111,11 @@
 
 [github]
 	user = neko-neko
+
+[diff-so-fancy]
+	stripLeadingSymbols = false
+[interactive]
+	diffFilter = diff-so-fancy --patch
 
 [include]
 	path = ~/.gitconfig.local
