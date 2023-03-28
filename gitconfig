@@ -1,4 +1,3 @@
-
 [user]
 	name = neko-neko
 	email = seiichi.nishikata456@gmail.com
@@ -21,7 +20,7 @@
 	ignorecase = false
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
-	pager = diff-so-fancy | less --tabs=2 -RFX
+	pager = delta
 
 [apply]
 	whitespace = fix
@@ -45,20 +44,6 @@
 	current = yellow reverse
 	local = yellow
 	remote = green
-
-[color "diff"]
-	meta = 227
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	commit = 227 bold
-	whitespace = red reverse
-
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
 
 [color "status"]
 	added = yellow
@@ -105,17 +90,23 @@
 	process = git-lfs filter-process
 	required = true
 
+[interactive]
+	diffFilter = delta --color-only --features=interactive
+
+[delta]
+	decorations = true
+	line-numbers = true
+	side-by-side = true
+
+[delta "interactive"]
+	keep-plus-minus-markers = true
+
 [ghq]
 	root = ~/ghq
 	root = ~/go/src
 
 [github]
 	user = neko-neko
-
-[diff-so-fancy]
-	stripLeadingSymbols = false
-[interactive]
-	diffFilter = diff-so-fancy --patch
 
 [include]
 	path = ~/.gitconfig.local
