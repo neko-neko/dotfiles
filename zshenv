@@ -16,6 +16,7 @@ export XDG_DATA_HOME=${HOME}/.local/share
 
 setopt no_global_rcs
 
+eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:/usr/local/opt/openssl/bin:/usr/local/bin:/usr/local/sbin:${PATH}
 export MANPATH=/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}
 export FPATH=${HOME}/.functions:${FPATH}

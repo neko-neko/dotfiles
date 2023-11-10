@@ -55,7 +55,6 @@
 "workbench.editorAssociations": {
   "*.ipynb": "jupyter.notebook.ipynb"
 },
-"workbench.editor.untitled.hint": "hidden",
 "GitLive.Issue tracker integration": "Disabled",
 "python.defaultInterpreterPath": "python3",
 "python.languageServer": "Default",
@@ -64,5 +63,6 @@
 "editor.guides.indentation": true,
 "[python]": {
   "editor.formatOnType": true
-}
+},
+"workbench.editor.empty.hint": "hidden"
 }
