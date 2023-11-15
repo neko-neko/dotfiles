@@ -1,0 +1,65 @@
+add_newline = false
+
+format = """
+$username\
+$hostname\
+$localip\
+$shlvl\
+$singularity\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$aws\
+$gcloud\
+$kubernetes\
+$docker_context\
+$sudo\
+$time\
+$cmd_duration\
+$line_break\
+$jobs\
+$battery\
+$status\
+$os\
+$container\
+$shell\
+$character"""
+
+[character]
+error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold green)"
+
+[directory]
+truncation_length = 100
+truncate_to_repo = false
+truncation_symbol = "…/"
+
+[time]
+disabled = false
+format = '/ [\[$time\]]($style) '
+style = "yellow"
+time_format = '%T'
+
+[aws]
+format = '/ [$symbol ($profile) (\($region\) )]($style) '
+symbol = "󰸏"
+disabled = false
+
+[gcloud]
+format = '/ [$symbol $account(@$domain) (\($project\))]($style) '
+symbol = "󱇶"
+disabled = false
+
+[kubernetes]
+format = '/ [$symbol $cluster \($namespace\)](dimmed green) '
+symbol = "󱃾 "
+disabled = false
+
+[docker_context]
+format = "/ [$symbol$context]($style) "
+
+[git_branch]
+symbol = " "

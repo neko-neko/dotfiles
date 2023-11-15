@@ -39,30 +39,26 @@
     "enabled": true,
     "liveIndexing": false,
     "delay": 500,
-    "exclude": [
-      ".terraform/**/*",
-      "**/.terraform/**/*"
-    ]
+    "exclude": [".terraform/**/*", "**/.terraform/**/*"]
   },
   "terraform.languageServer": {
     "external": true,
-    "args": [
-      "serve"
-    ]
+    "args": ["serve"]
   },
-"python.jediEnabled": false,
-"go.toolsManagement.autoUpdate": true,
-"workbench.editorAssociations": {
-  "*.ipynb": "jupyter.notebook.ipynb"
-},
-"GitLive.Issue tracker integration": "Disabled",
-"python.defaultInterpreterPath": "python3",
-"python.languageServer": "Default",
-"redhat.telemetry.enabled": true,
-"security.workspace.trust.untrustedFiles": "open",
-"editor.guides.indentation": true,
-"[python]": {
-  "editor.formatOnType": true
-},
-"workbench.editor.empty.hint": "hidden"
+  "python.jediEnabled": false,
+  "go.toolsManagement.autoUpdate": true,
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "GitLive.Issue tracker integration": "Disabled",
+  "python.defaultInterpreterPath": "python3",
+  "python.languageServer": "Default",
+  "redhat.telemetry.enabled": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.guides.indentation": true,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "workbench.editor.empty.hint": "hidden",
+  "git.openRepositoryInParentFolders": "never"
 }

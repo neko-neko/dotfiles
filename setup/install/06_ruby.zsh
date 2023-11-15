@@ -8,8 +8,8 @@ gems=(
   neovim
 )
 
-rbenv install -s 2.7.3
-rbenv global 2.7.3
+rbenv install 3.2.2
+rbenv global 3.2.2
 for gem in ${gems[@]}; do
   gem install ${gem}
 done

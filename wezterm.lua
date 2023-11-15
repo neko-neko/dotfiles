@@ -23,14 +23,14 @@ local config = {
   -- colors
   color_scheme = 'nordfox',
   font = wezterm.font_with_fallback({
+    "Hack Nerd Font",
     "JetBrains Mono",
-    "Noto Color Emoji",
-    "Symbols Nerd Font Mono",
   }),
   -- keys
   keys = {
     { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
     { key = 'RightArrow', mods = 'SUPER', action = act.ActivateTabRelative(1) },
+    { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
   },
 }
 return config

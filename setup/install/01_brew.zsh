@@ -4,10 +4,12 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install brew formulas...'
 
 formulas=(
+  awscli
   autoconf
   binutils
   cmake
   curl
+  cocoapods
   derailed/k9s/k9s
   diffutils
   diff-so-fancy
@@ -15,6 +17,7 @@ formulas=(
   fasd
   fx
   fzf
+  flutter
   gawk
   gcc
   gettext
@@ -48,6 +51,7 @@ formulas=(
   postgresql
   readline
   ripgrep
+  starship
   shellcheck
   source-highlight
   sops

@@ -29,9 +29,6 @@ zplug 'plugins/extract', from:oh-my-zsh
 zplug 'modules/terminal', from:prezto
 zplug 'modules/editor', from:prezto
 zplug 'modules/directory', from:prezto
-zplug "${HOME}/.dotfiles/theme", \
-  from:local, \
-  as:theme
 zplug 't413/zsh-background-notify'
 zplug 'supercrabtree/k'
 
@@ -118,6 +115,11 @@ bindkey '^r' fzf-history
 # Load aliases
 # ------------------------------
 source ${HOME}/.aliases
+
+# ------------------------------
+# Starship Theme
+# ------------------------------
+eval "$(starship init zsh)"
 
 # ------------------------------
 # Custom local files
