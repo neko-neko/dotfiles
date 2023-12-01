@@ -28,6 +28,7 @@ formulas=(
   gh
   ghq
   git
+  git-delta
   imagemagick
   istioctl
   boz/repo/kail

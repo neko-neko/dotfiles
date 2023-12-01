@@ -1,5 +1,4 @@
 {
-  "editor.formatOnSave": true,
   "eslint.autoFixOnSave": true,
   "editor.renderLineHighlight": "all",
   "editor.cursorBlinking": "expand",
@@ -60,5 +59,6 @@
     "editor.formatOnType": true
   },
   "workbench.editor.empty.hint": "hidden",
-  "git.openRepositoryInParentFolders": "never"
+  "git.openRepositoryInParentFolders": "never",
+  "editor.formatOnSave": true
 }
