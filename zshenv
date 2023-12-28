@@ -50,6 +50,7 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 # Python Settings
 # ------------------------------
 export PATH="/usr/bin/python3:$PATH"
+source "$HOME/.rye/env"
 
 # ------------------------------
 # krew Settings

@@ -5,8 +5,8 @@
   "editor.wordWrap": "on",
   "editor.scrollBeyondLastLine": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true,
-    "source.fixAll.eslint": true
+    "source.fixAll.tslint": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "editor.minimap.enabled": true,
   "breadcrumbs.enabled": true,
@@ -51,7 +51,7 @@
   },
   "GitLive.Issue tracker integration": "Disabled",
   "python.defaultInterpreterPath": "python3",
-  "python.languageServer": "Default",
+  "python.languageServer": "Pylance",
   "redhat.telemetry.enabled": true,
   "security.workspace.trust.untrustedFiles": "open",
   "editor.guides.indentation": true,
@@ -60,5 +60,11 @@
   },
   "workbench.editor.empty.hint": "hidden",
   "git.openRepositoryInParentFolders": "never",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "python.analysis.autoFormatStrings": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.pytestParameters": true,
+  "python.analysis.inlayHints.variableTypes": true
 }
