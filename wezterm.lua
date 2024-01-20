@@ -9,7 +9,7 @@ wezterm.on("gui-startup", function()
 end)
 
 local config = {
-  check_for_updates = false,
+  check_for_updates = true,
   use_ime = true,
   -- window
   window_padding = {

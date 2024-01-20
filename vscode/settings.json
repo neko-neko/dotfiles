@@ -66,5 +66,17 @@
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.pytestParameters": true,
-  "python.analysis.inlayHints.variableTypes": true
+  "python.analysis.inlayHints.variableTypes": true,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "dart.openDevTools": "flutter",
+  "dart.flutterSdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/",
+  "dart.sdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/bin/cache/dart-sdk"
 }

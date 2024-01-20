@@ -52,6 +52,7 @@ formulas=(
   postgresql
   readline
   ripgrep
+  rye
   starship
   shellcheck
   source-highlight
