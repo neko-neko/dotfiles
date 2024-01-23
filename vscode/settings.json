@@ -78,5 +78,9 @@
   },
   "dart.openDevTools": "flutter",
   "dart.flutterSdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/",
-  "dart.sdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/bin/cache/dart-sdk"
+  "dart.sdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/bin/cache/dart-sdk",
+  "mypy.runUsingActiveInterpreter": true,
+  "python.venvFolders": [
+    "${workspaceFolder}/.venv"
+  ]
 }
