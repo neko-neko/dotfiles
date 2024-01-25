@@ -17,8 +17,23 @@ export XDG_DATA_HOME=${HOME}/.local/share
 setopt no_global_rcs
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:/opt/homebrew/opt/gnu-indent/libexec/gnubin:/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/opt/gnu-which/libexec/gnubin:/usr/local/opt/openssl/bin:/opt/homebrew/opt/mysql-client/bin:/usr/local/bin:/usr/local/sbin:${PATH}
+export PATH=/usr/local/bin:/usr/local/sbin:${PATH}
+export PATH=/usr/local/opt/openssl/bin:${PATH}
+export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
+
+# GNU
+export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/gnu-indent/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/gnu-which/libexec/gnubin:${PATH}
+
 export MANPATH=/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/gnu-sed/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/gnu-indent/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/gnu-tar/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/gnu-which/libexec/gnuman:${MANPATH}
+
 export FPATH=${HOME}/.functions:${FPATH}
 
 # ------------------------------
