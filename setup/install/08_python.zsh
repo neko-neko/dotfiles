@@ -6,11 +6,9 @@ util::info 'install Python...'
 pips=(
   awscli
   csvkit
-  flake8
   grpcio-tools
   googleapis-common-protos
   pynvim
-  yapf
 )
 
 brew install python3

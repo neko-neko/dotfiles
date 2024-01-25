@@ -5,6 +5,7 @@ util::info 'install brew cask formulas...'
 
 casks=(
   android-studio
+  caffeine
   cyberduck
   dbeaver-community
   docker

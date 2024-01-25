@@ -59,7 +59,6 @@ formulas=(
   sops
   terminal-notifier
   tree
-  tldr
 )
 
 brew upgrade

@@ -5,7 +5,6 @@ util::info 'install Node.js...'
 
 npms=(
   neovim
-  react-native-cli
   typescript
 )
 
