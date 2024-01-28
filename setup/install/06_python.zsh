@@ -6,8 +6,6 @@ util::info 'install Python...'
 pips=(
   awscli
   csvkit
-  grpcio-tools
-  googleapis-common-protos
   pynvim
 )
 

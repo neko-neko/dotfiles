@@ -23,16 +23,20 @@ export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
 
 # GNU
 export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/findutils/libexec/gnubin:$PATH
 export PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-indent/libexec/gnubin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-which/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/grep/libexec/gnubin:${PATH}
 
 export MANPATH=/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/findutils/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-sed/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-indent/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-tar/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-which/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/grep/libexec/gnuman:${PATH}
 
 export FPATH=${HOME}/.functions:${FPATH}
 
