@@ -34,3 +34,11 @@ util::confirm() {
 
   return 4
 }
+
+util::is_ci() {
+  if [[ -n "${CI}" && "${CI}" == "true" ]]; then
+    return 0
+  fi
+
+  return 1
+}
