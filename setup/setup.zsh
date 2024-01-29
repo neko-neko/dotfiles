@@ -40,12 +40,6 @@ if [[ ! -d ${HOME}/Library/Application\ Support/Code/User ]]; then
 fi
 ln -sfv ${PWD}/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json
 
-# download zplug
-if [[ ! -d ${HOME}/.zplug ]]; then
-  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-fi
-source ${HOME}/.zshrc
-
 # install...
 FORCE=1
 . ${HOME}/.dotfiles/setup/install.zsh

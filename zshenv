@@ -38,7 +38,9 @@ export MANPATH=/opt/homebrew/opt/gnu-tar/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-which/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/grep/libexec/gnuman:${PATH}
 
-export FPATH=${HOME}/.functions:${FPATH}
+export FPATH=/opt/homebrew/share/zsh/site-functions:${HOME}/.functions:${FPATH}
+autoload -Uz compinit
+compinit
 
 # ------------------------------
 # History Settings

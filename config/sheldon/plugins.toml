@@ -1,0 +1,41 @@
+shell = "zsh"
+
+[plugins.zsh-256color]
+github = "chrissicool/zsh-256color"
+
+[plugins.dircolors-solarized]
+github = "seebi/dircolors-solarized"
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+
+[plugins.zsh-history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+
+[plugins.extract]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/extract"]
+
+[plugins.prezto-terminal]
+github = "sorin-ionescu/prezto"
+use = ["modules/terminal"]
+
+[plugins.prezto-editor]
+github = "sorin-ionescu/prezto"
+use = ["modules/editor"]
+
+[plugins.prezto-directory]
+github = "sorin-ionescu/prezto"
+use = ["modules/directory"]
+
+[plugins.zsh-background-notify]
+github = "t413/zsh-background-notify"
+
+[plugins.k-super]
+github = "supercrabtree/k"

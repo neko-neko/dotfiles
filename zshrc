@@ -6,32 +6,13 @@ if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
 fi
 
 # ------------------------------
-# Read zplug
+# sheldon
 # ------------------------------
-export ZPLUG_HOME=${HOME}/.zplug
-source ${ZPLUG_HOME}/init.zsh
+eval "$(sheldon source)"
 
-zplug 'zplug/zplug', hook-build:'zplug --self-manage'
-zplug 'chrissicool/zsh-256color'
-zplug 'seebi/dircolors-solarized'
-
-zplug 'zsh-users/zsh-autosuggestions'
-zplug 'zsh-users/zsh-completions'
-zplug 'zsh-users/zsh-syntax-highlighting', defer:2
-zplug 'zsh-users/zsh-history-substring-search', defer:3
-
-zplug 'rimraf/k'
-zplug 'soimort/translate-shell', \
-    at:stable, as:command, use:"build/*", \
-    hook-build:"make build &> /dev/null"
-
-zplug 'plugins/extract', from:oh-my-zsh
-zplug 'modules/terminal', from:prezto
-zplug 'modules/editor', from:prezto
-zplug 'modules/directory', from:prezto
-zplug 't413/zsh-background-notify'
-zplug 'supercrabtree/k'
-
+# ------------------------------
+# ztyle
+# ------------------------------
 # prezto
 zstyle ':prezto:module:editor' key-bindings 'emacs'
 zstyle ':prezto:module:editor' dot-expansion 'yes'
@@ -40,13 +21,8 @@ zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
 zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
-zplug load
-
-# ------------------------------
-# ztyle
-# ------------------------------
 # color
-eval $(dircolors ${ZPLUG_HOME}/repos/seebi/dircolors-solarized/dircolors.ansi-dark)
+eval $(dircolors ${XDG_DATA_HOME}/sheldon/repos/github.com/seebi/dircolors-solarized/dircolors.ansi-dark)
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # completion

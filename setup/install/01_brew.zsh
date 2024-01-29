@@ -53,6 +53,7 @@ formulas=(
   rye
   starship
   shellcheck
+  sheldon
   source-highlight
   sops
   terminal-notifier
