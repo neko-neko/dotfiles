@@ -4,42 +4,24 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'configure vscode...'
 
 extensions=(
-  alefragnani.project-manager
-  apollographql.vscode-apollo
-  bungcip.better-toml
-  castwide.solargraph
-  CoenraadS.bracket-pair-colorizer-2
-  DavidAnson.vscode-markdownlint
+  FaroSystemAppender constructor
+  anysphere.pyright
+  Dart-Code.dart-code
+  Dart-Code.flutter
   dbaeumer.vscode-eslint
   eamodio.gitlens
   EditorConfig.EditorConfig
   esbenp.prettier-vscode
-  foxundermoon.shell-format
-  GitHub.vscode-pull-request-github
   golang.go
-  GraphQL.vscode-graphql
-  Gruntfuggly.todo-tree
-  hashicorp.terraform
-  ionutvmi.path-autocomplete
-  kumar-harsh.graphql-for-vscode
+  idleberg.nsis
   ms-azuretools.vscode-docker
+  MS-CEINTL.vscode-language-pack-ja
+  ms-kubernetes-tools.vscode-kubernetes-tools
   ms-python.python
   ms-python.vscode-pylance
-  ms-toolsai.jupyter
-  ms-vscode-remote.remote-containers
-  ms-vsliveshare.vsliveshare
-  nonylene.dark-molokai-theme
-  rebornix.ruby
-  shardulm94.trailing-spaces
-  streetsidesoftware.code-spell-checker
-  stylelint.vscode-stylelint
-  Tim-Koehler.helm-intellisense
-  timonwong.shellcheck
-  VisualStudioExptTeam.vscodeintellicode
-  vscode-icons-team.vscode-icons
-  wingrunr21.vscode-ruby
-  yzhang.markdown-all-in-one
-  zxh404.vscode-proto3
+  redhat.vscode-yaml
+  tamasfe.even-better-toml
+  XadillaX.viml
 )
 
 for extension in ${extensions[@]}; do
