@@ -14,7 +14,6 @@ formulas=(
   diffutils
   diff-so-fancy
   ktr0731/evans/evans
-  fasd
   fx
   fzf
   flutter
@@ -43,7 +42,6 @@ formulas=(
   jesseduffield/lazydocker/lazydocker
   lua
   luarocks
-  mas
   neovim
   nmap
   nkf

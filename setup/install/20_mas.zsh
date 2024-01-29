@@ -12,6 +12,11 @@ apps=(
   414855915
 )
 
+if [[ -n "${CI}" && "${CI}" == "true" ]]; then
+  echo "CI is set to 'true'. Skip the script."
+  exit 0
+fi
+
 brew install mas
 for app in ${apps[@]}; do
   mas install ${app}

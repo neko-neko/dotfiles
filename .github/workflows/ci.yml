@@ -12,4 +12,4 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install dotfiles
-        run: ./setup/setup.zsh
+        run: CI=true ./setup/setup.zsh

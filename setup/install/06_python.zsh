@@ -4,7 +4,6 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install Python...'
 
 pips=(
-  awscli
   csvkit
   pynvim
 )

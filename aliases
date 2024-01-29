@@ -78,17 +78,6 @@ alias kubectle='kubectl exec -it KP'
 alias kubectll='kubectl stern $(kubectl get deploy | fzf | awk "{print \$1}")'
 alias kubectlo='kubectl get KA -o yaml'
 
-# ------------------------------
-# fasd
-# ------------------------------
-alias a='fasd -a'
-alias s='fasd -si'
-alias d='fasd -d'
-alias f='fasd -f'
-alias sd='fasd -sid'
-alias sf='fasd -sif'
-alias z='"$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1'
-
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
   source ${HOME}/.aliases.local
