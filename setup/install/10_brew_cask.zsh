@@ -15,6 +15,8 @@ casks=(
   google-chrome
   karabiner-elements
   licecap
+  notion
+  notion-calendar
   raycast
   slack
   visual-studio-code
