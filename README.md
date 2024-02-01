@@ -1,4 +1,4 @@
-![CI](https://github.com/neko-neko/dotfiles/workflows/CI/badge.svg?branch=master)
+[![CI](https://github.com/neko-neko/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/neko-neko/dotfiles/actions/workflows/ci.yml)
 
 # My dotfiles
 my dotfiles
