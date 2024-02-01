@@ -42,6 +42,7 @@ formulas=(
   jesseduffield/lazydocker/lazydocker
   lua
   luarocks
+  mise
   neovim
   nmap
   nkf

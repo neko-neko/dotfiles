@@ -51,10 +51,9 @@ export SAVEHIST=1000000
 export LISTMAX=100
 
 # ------------------------------
-# anyenv Settings
+# mise Settings
 # ------------------------------
-export PATH="$HOME/.anyenv/bin:$PATH"
-eval "$(anyenv init -)"
+eval "$(mise activate zsh)"
 
 # ------------------------------
 # golang Settings
