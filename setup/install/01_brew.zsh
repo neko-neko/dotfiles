@@ -4,59 +4,57 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install brew formulas...'
 
 formulas=(
-  awscli
   autoconf
+  awscli
   binutils
+  boz/repo/kail
   cmake
-  curl
   cocoapods
+  curl
   derailed/k9s/k9s
-  diffutils
   diff-so-fancy
-  ktr0731/evans/evans
+  diffutils
+  flutter
   fx
   fzf
-  flutter
   gawk
   gcc
-  gettext
+  gh
+  ghq
   gibo
+  git
+  git-delta
   gnupg
   gnutls
   grip
-  gh
-  ghq
-  git
-  git-delta
   imagemagick
   istioctl
-  boz/repo/kail
-  kubectl
-  kubectx
-  kubernetes-helm
+  jesseduffield/lazydocker/lazydocker
+  jesseduffield/lazygit/lazygit
   johanhaleby/kubetail/kubetail
   k9s
   krew
-  openjdk
-  jesseduffield/lazygit/lazygit
-  jesseduffield/lazydocker/lazydocker
-  lua
-  luarocks
+  ktr0731/evans/evans
+  kubectl
+  kubectx
+  kubernetes-helm
+  libpq
   mise
   neovim
-  nmap
   nkf
+  nmap
+  openjdk
   openssl
-  protobuf
   postgresql
+  protobuf
   readline
   ripgrep
   rye
-  starship
-  shellcheck
   sheldon
-  source-highlight
+  shellcheck
   sops
+  source-highlight
+  starship
   terminal-notifier
   tree
 )
@@ -66,6 +64,3 @@ brew upgrade
 for formula in ${formulas[@]}; do
   brew install ${formula}
 done
-
-brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-brew link --force gettext

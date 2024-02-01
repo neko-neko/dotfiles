@@ -20,6 +20,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH=/usr/local/bin:/usr/local/sbin:${PATH}
 export PATH=/usr/local/opt/openssl/bin:${PATH}
 export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
+export PATH=/opt/homebrew/opt/libpq/bin/:${PATH}
 
 # GNU
 export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}
