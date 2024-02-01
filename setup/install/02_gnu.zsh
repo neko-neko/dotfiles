@@ -4,6 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install gnu tools...'
 
 formulas=(
+  binutils
   coreutils
   findutils
   gnu-indent

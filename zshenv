@@ -24,7 +24,8 @@ export PATH=/opt/homebrew/opt/libpq/bin/:${PATH}
 
 # GNU
 export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/findutils/libexec/gnubin:$PATH
+export PATH=/opt/homebrew/opt/findutils/libexec/gnubin:${PATH}
+export PATH=/opt/homebrew/opt/binutils/bin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-indent/libexec/gnubin:${PATH}
 export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:${PATH}
@@ -33,6 +34,7 @@ export PATH=/opt/homebrew/opt/grep/libexec/gnubin:${PATH}
 
 export MANPATH=/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/findutils/libexec/gnuman:${MANPATH}
+export MANPATH=/opt/homebrew/opt/binutils/share/man:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-sed/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-indent/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/gnu-tar/libexec/gnuman:${MANPATH}

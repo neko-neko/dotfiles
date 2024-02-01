@@ -6,7 +6,6 @@ util::info 'install brew formulas...'
 formulas=(
   autoconf
   awscli
-  binutils
   boz/repo/kail
   cmake
   cocoapods
