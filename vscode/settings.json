@@ -80,7 +80,7 @@
   "dart.flutterSdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/",
   "dart.sdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/bin/cache/dart-sdk",
   "mypy.runUsingActiveInterpreter": true,
-  "python.venvFolders": [
-    "${workspaceFolder}/.venv"
-  ]
+  "python.venvFolders": ["${workspaceFolder}/.venv"],
+  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+  "lldb.launch.expressions": "native"
 }

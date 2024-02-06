@@ -19,6 +19,7 @@ setopt no_global_rcs
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH=/usr/local/bin:/usr/local/sbin:${PATH}
 export PATH=/usr/local/opt/openssl/bin:${PATH}
+export PATH=/opt/homebrew/opt/curl/bin:${PATH}
 export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
 export PATH=/opt/homebrew/opt/libpq/bin/:${PATH}
 
