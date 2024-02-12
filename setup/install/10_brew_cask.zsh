@@ -27,4 +27,5 @@ brew install --cask ${casks[@]}
 
 # font
 brew tap homebrew/cask-fonts
-brew install --cask font-hack-nerd-font
+brew install font-hack-nerd-font
+brew install font-monaspace
