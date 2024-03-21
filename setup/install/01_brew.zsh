@@ -23,6 +23,7 @@ formulas=(
   gibo
   git
   git-delta
+  git-lfs
   gnupg
   gnutls
   grip
