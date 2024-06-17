@@ -91,6 +91,12 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/emulator
 
 # ------------------------------
+# ------------------------------
+# Dart Settings
+# ------------------------------
+export PATH="$HOME/.pub-cache/bin:$PATH"
+
+# ------------------------------
 # fzf Settings
 # ------------------------------
 export FZF_DEFAULT_OPTS='
@@ -103,6 +109,7 @@ export FZF_DEFAULT_OPTS='
   --color info:144,prompt:161,spinner:135,pointer:135,marker:118
 '
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules}/*"'
+eval "$(fzf --zsh)"
 
 # ------------------------------
 # scripts

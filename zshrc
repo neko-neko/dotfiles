@@ -103,3 +103,9 @@ eval "$(starship init zsh)"
 if [[ -f ${HOME}/.zshrc.local ]]; then
   source ${HOME}/.zshrc.local
 fi
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/nishikataseiichi/.config/.dart-cli-completion/zsh-config.zsh ]] && . /Users/nishikataseiichi/.config/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+

@@ -84,5 +84,7 @@
   "mypy.runUsingActiveInterpreter": true,
   "python.venvFolders": ["${workspaceFolder}/.venv"],
   "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
-  "lldb.launch.expressions": "native"
+  "lldb.launch.expressions": "native",
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true
 }
