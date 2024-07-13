@@ -5,8 +5,8 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export TZ=Asia/Tokyo
 
-export EDITOR=nvim
-export VISUAL=nvim
+export EDITOR=hx
+export VISUAL=hx
 export PAGER=less
 export SHELL=zsh
 
