@@ -43,7 +43,6 @@ formulas=(
   openssl
   postgresql
   protobuf
-  quantonganh/tap/helix-wezterm
   readline
   ripgrep
   rye
