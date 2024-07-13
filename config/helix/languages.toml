@@ -1,0 +1,9 @@
+[[language]]
+name = "hcl"
+language-servers = ["terraform-ls"]
+language-id = "terraform"
+
+[[language]]
+name = "tfvars"
+language-servers = ["terraform-ls"]
+language-id = "terraform-vars"

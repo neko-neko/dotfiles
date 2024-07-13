@@ -2,6 +2,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'configure vscode...'
+source ~/.zshenv && source ~/.zshrc
 
 extensions=(
   FaroSystemAppender constructor

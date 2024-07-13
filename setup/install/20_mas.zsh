@@ -2,6 +2,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'install App Store apps...'
+source ~/.zshenv && source ~/.zshrc
 
 apps=(
   # LINE

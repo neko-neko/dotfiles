@@ -1,0 +1,47 @@
+theme = "molokai"
+
+[editor]
+rulers = [80, 120]
+cursorline = true
+cursorcolumn = true
+bufferline = "always"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.soft-wrap]
+enable = true
+
+[editor.whitespace.render]
+space = "all"
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+space = " "
+nbsp = "⍽"
+tab = "→"
+newline = "⏎"
+tabpad = "·"
+
+[editor.statusline]
+left = ["mode", "spinner", "diagnostics"]
+center = ["file-name", "separator", "version-control", "separator"]
+right = ["position", "position-percentage", "total-line-numbers"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.indent-guides]
+render = true
+character = "╎"
+skip-levels = 1
+
+[editor.file-picker]
+hidden = false

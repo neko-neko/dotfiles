@@ -2,6 +2,7 @@
 source ${HOME}/.dotfiles/setup/util.zsh
 
 util::info 'configure krew...'
+source ~/.zshenv && source ~/.zshrc
 
 plugins=(
   exec-as
