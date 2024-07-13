@@ -37,7 +37,6 @@ formulas=(
   kubernetes-helm
   libpq
   mise
-  neovim
   nkf
   nmap
   openjdk

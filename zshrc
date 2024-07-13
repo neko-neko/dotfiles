@@ -83,6 +83,11 @@ source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # ------------------------------
+# Dart Settings
+# ------------------------------
+[[ -f ${HOME}/.config/.dart-cli-completion/zsh-config.zsh ]] && . ${HOME}/.config/.dart-cli-completion/zsh-config.zsh || true
+
+# ------------------------------
 # Key bindings
 # ------------------------------
 bindkey '^r' fzf-history
@@ -103,9 +108,3 @@ eval "$(starship init zsh)"
 if [[ -f ${HOME}/.zshrc.local ]]; then
   source ${HOME}/.zshrc.local
 fi
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/nishikataseiichi/.config/.dart-cli-completion/zsh-config.zsh ]] && . /Users/nishikataseiichi/.config/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
