@@ -8,6 +8,7 @@ formulas=(
   dockerfile-language-server
   hashicorp/tap/terraform-ls
   solargraph
+  taplo
   vscode-langservers-extracted
   yaml-language-server
 )
