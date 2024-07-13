@@ -11,10 +11,8 @@ formulas=(
   cocoapods
   curl
   derailed/k9s/k9s
-  diff-so-fancy
   diffutils
   flutter
-  fx
   fzf
   gawk
   gcc
@@ -24,13 +22,12 @@ formulas=(
   git
   git-delta
   git-lfs
+  gitui
   gnupg
   gnutls
   grip
   imagemagick
   istioctl
-  jesseduffield/lazydocker/lazydocker
-  jesseduffield/lazygit/lazygit
   johanhaleby/kubetail/kubetail
   k9s
   krew
