@@ -22,7 +22,6 @@ formulas=(
   git
   git-delta
   git-lfs
-  gitui
   gnupg
   gnutls
   grip
@@ -35,6 +34,7 @@ formulas=(
   kubectl
   kubectx
   kubernetes-helm
+  lazygit
   libpq
   mise
   nkf
@@ -43,6 +43,7 @@ formulas=(
   openssl
   postgresql
   protobuf
+  quantonganh/tap/helix-wezterm
   readline
   ripgrep
   rye

@@ -9,7 +9,7 @@ alias reload='source ~/.zshenv && source ~/.zshrc'
 # ------------------------------
 # git
 # ------------------------------
-alias lg='gitui'
+alias lg='lazygit'
 alias ghi='gh issue view $(gh issue list | fzf | awk "{print \$1}")'
 alias ghp='gh pr view $(gh pr list | fzf | awk "{print \$1}")'
 alias ghpc='gh pr checkout $(gh pr list | fzf | awk "{print \$1}")'
