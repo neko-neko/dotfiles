@@ -1,1 +1,4 @@
+[tools]
+java = "17"
+node = "18"
 
