@@ -66,21 +66,13 @@
 	st = status
 	amend = commit --amend
 	fixcommit = commit --fixup
-	precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
 	graph = log --graph -10 --branches --remotes --tags  --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
 	history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
 	discard = checkout --
-	remotes = remote -v
-	nevermind = !git reset --hard HEAD && git clean -d -f
-	unmerged = diff --name-only --diff-filter=U
 	subupdate = submodule update --init --recursive
 	subupdate-all = submodule foreach git pull origin master
-	branch-clean = !git branch -d $(git branch --merged | grep -vw $(git rev-parse --abbrev-ref HEAD))
 	pull-requst = !fzf-hub-pull-requests
 	pr = pull-requst
-	prc = !hub pull-request
-	issue = !fzf-hub-issues
-	isc = !hub issue create
 	c = !fzf-git-checkout
 	delete = !git branch -D $(git branch | fzf)
 

@@ -89,5 +89,6 @@
   "dart.previewFlutterUiGuidesCustomTracking": true,
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  }
+  },
+  "editor.inlineSuggest.suppressSuggestions": true
 }
