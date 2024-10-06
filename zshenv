@@ -77,6 +77,11 @@ export PATH="/usr/bin/python3:$PATH"
 source "$HOME/.rye/env"
 
 # ------------------------------
+# Ruby Settings
+# ------------------------------
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# ------------------------------
 # krew Settings
 # ------------------------------
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

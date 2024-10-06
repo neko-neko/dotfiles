@@ -1,4 +1,4 @@
 [tools]
 java = "17"
-node = "18.17.0"
+node = "20"
 
