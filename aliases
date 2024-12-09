@@ -63,6 +63,7 @@ alias dc='docker compose'
 alias -g D='$(docker ps | fzf | cut -d " " -f 1)'
 alias dockerl='docker logs -f D'
 alias dockere='docker exec -it D'
+alias dvrm='docker volume ls --format "{{.Name}}" | fzf --multi --preview "docker volume inspect {}" --preview-window=right:60% | xargs -r docker volume rm'
 
 # ------------------------------
 # kubectl
