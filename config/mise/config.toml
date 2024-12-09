@@ -1,4 +1,6 @@
 [tools]
 java = "17"
 node = "20"
+terraform = "latest"
+python = "3.11"
 
