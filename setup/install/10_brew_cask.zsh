@@ -6,6 +6,8 @@ util::info 'install brew cask formulas...'
 casks=(
   android-studio
   caffeine
+  cursor
+  claude
   cyberduck
   dbeaver-community
   docker
@@ -19,7 +21,6 @@ casks=(
   notion-calendar
   raycast
   slack
-  visual-studio-code
   wez/wezterm/wezterm
 )
 
