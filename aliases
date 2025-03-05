@@ -79,6 +79,11 @@ alias kubectll='kubectl stern $(kubectl get deploy | fzf | awk "{print \$1}")'
 alias kubectlo='kubectl get KA -o yaml'
 
 # ------------------------------
+# 1Password
+# ------------------------------
+alias signin='eval $(op signin)'
+
+# ------------------------------
 # MCP
 # ------------------------------
 alias mcp_figma='npx -y figma-developer-mcp --figma-api-key=$(op read "op://West Shoulder/Figma/APIKey")'
