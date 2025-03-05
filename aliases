@@ -78,6 +78,11 @@ alias kubectle='kubectl exec -it KP'
 alias kubectll='kubectl stern $(kubectl get deploy | fzf | awk "{print \$1}")'
 alias kubectlo='kubectl get KA -o yaml'
 
+# ------------------------------
+# MCP
+# ------------------------------
+alias mcp_figma='npx -y figma-developer-mcp --figma-api-key=$(op read "op://West Shoulder/Figma/APIKey")'
+
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
   source ${HOME}/.aliases.local

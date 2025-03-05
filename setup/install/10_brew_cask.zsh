@@ -4,6 +4,7 @@ source ${HOME}/.dotfiles/setup/util.zsh
 util::info 'install brew cask formulas...'
 
 casks=(
+  1password-cli
   android-studio
   caffeine
   cursor
