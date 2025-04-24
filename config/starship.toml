@@ -38,12 +38,6 @@ truncation_length = 100
 truncate_to_repo = false
 truncation_symbol = "…/"
 
-[time]
-disabled = false
-format = '/ [\[$time\]]($style) '
-style = "yellow"
-time_format = '%T'
-
 [python]
 format = '/ [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 
