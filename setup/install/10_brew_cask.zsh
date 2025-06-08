@@ -7,6 +7,7 @@ casks=(
   1password-cli
   android-studio
   caffeine
+  chatgpt
   cursor
   claude
   cyberduck
@@ -16,10 +17,13 @@ casks=(
   firefox
   google-cloud-sdk
   google-chrome
+  jordanbaird-ice
   karabiner-elements
   licecap
   notion
   notion-calendar
+  notion-mail
+  obsidian
   raycast
   slack
   wez/wezterm/wezterm

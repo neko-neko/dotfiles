@@ -5,3 +5,6 @@ terraform = "latest"
 python = "3.13"
 rust = "latest"
 
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]
+

@@ -1,108 +1,127 @@
 [user]
-	name = neko-neko
-	email = seiichi.nishikata456@gmail.com
-
+name = neko-neko
+email = seiichi.nishikata456@gmail.com
 
 [user]
-	signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqDGFeQ/xG1woOmTgJbEGteZbYP3FMZezrb3URwcZAcJHf85+2E5aLYHiJLx0qsctBrUmHd3dChoTAm9gNNdHKP1DBALg9XCirwk1XeQpuweA7IiLJIIPqdmEneQt/hx22QWOkXR0glvMnoyAd/Yg+C5Q2mzD2qtKnPSN61IneX8lLf1pNloqj3kNVSEN+qy/nU8vm8PfG/GRzPsZWGCwaOa6CLmn+4+V51udALIQNAcWgQRAcj+VfbPczS7YJdxI8gk22FAD0NhPh1g5iu0f7gIpZqLHEu3RqwfoDnPCu/2rmhknKfTAlYNgm7ue7u/QOgSVJYFrEAf2OeBwFmZTQk+vh4Hj02u7B1iUCN4YUcjjmKF067trmRhvZIbWztg1rkKf8Z12MQteA5gV9agdh4+g7/oxXcfVB7GrZ2ndsqEncdxslBhO9Lb2FhJWtqPgcfxOseeLrB6xJJH+fed0R/9DeYBYdtqpQ7s5Xapu2ks8CDCH9sNnVHpOyqED5XR8=
+signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqDGFeQ/xG1woOmTgJbEGteZbYP3FMZezrb3URwcZAcJHf85+2E5aLYHiJLx0qsctBrUmHd3dChoTAm9gNNdHKP1DBALg9XCirwk1XeQpuweA7IiLJIIPqdmEneQt/hx22QWOkXR0glvMnoyAd/Yg+C5Q2mzD2qtKnPSN61IneX8lLf1pNloqj3kNVSEN+qy/nU8vm8PfG/GRzPsZWGCwaOa6CLmn+4+V51udALIQNAcWgQRAcj+VfbPczS7YJdxI8gk22FAD0NhPh1g5iu0f7gIpZqLHEu3RqwfoDnPCu/2rmhknKfTAlYNgm7ue7u/QOgSVJYFrEAf2OeBwFmZTQk+vh4Hj02u7B1iUCN4YUcjjmKF067trmRhvZIbWztg1rkKf8Z12MQteA5gV9agdh4+g7/oxXcfVB7GrZ2ndsqEncdxslBhO9Lb2FhJWtqPgcfxOseeLrB6xJJH+fed0R/9DeYBYdtqpQ7s5Xapu2ks8CDCH9sNnVHpOyqED5XR8=
 
 [gpg]
-	format = ssh
+format = ssh
 
 [gpg "ssh"]
-	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 
 [checkout]
-	defaultRemote=origin
+defaultRemote=origin
 
 [commit]
-	gpgsign = true
+gpgsign = true
 
 [core]
-	editor = hx
-	ignorecase = false
-	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-	excludesfile = ~/.gitignore_global
-	pager = delta
-	autoCRLF = false
+editor = hx
+ignorecase = false
+whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+excludesfile = ~/.gitignore_global
+pager = delta
+autoCRLF = false
 
 [apply]
-	whitespace = fix
+whitespace = fix
 
 [branch]
-	autosetuprebase = always
+autosetuprebase = always
 
 [fetch]
-	prune = true
+prune = true
 
 [pull]
-	rebase = true
+rebase = true
 
 [push]
-	default = current
+default = current
 
 [color]
-	ui = auto
+ui = auto
 
 [color "branch"]
-	current = yellow reverse
-	local = yellow
-	remote = green
+current = yellow reverse
+local = yellow
+remote = green
 
 [color "status"]
-	added = yellow
-	changed = green
-	untracked = cyan
+added = yellow
+changed = green
+untracked = cyan
 
 [diff]
-	renames = copies
+renames = copies
 
 [diff "bin"]
-	textconv = hexdump -v -C
+textconv = hexdump -v -C
 
 [help]
-	autocorrect = 0
+autocorrect = 0
 
 [merge]
-	log = true
+log = true
 
 [alias]
-	st = status
-	amend = commit --amend
-	fixcommit = commit --fixup
-	graph = log --graph -10 --branches --remotes --tags  --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
-	history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
-	discard = checkout --
-	subupdate = submodule update --init --recursive
-	subupdate-all = submodule foreach git pull origin master
-	pull-requst = !fzf-hub-pull-requests
-	pr = pull-requst
-	c = !fzf-git-checkout
-	delete = !git branch -D $(git branch | fzf)
+st = status
+amend = commit --amend
+fixcommit = commit --fixup
+graph = log --graph -10 --branches --remotes --tags --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
+history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
+discard = checkout --
+subupdate = submodule update --init --recursive
+subupdate-all = submodule foreach git pull origin master
+pull-requst = !fzf-hub-pull-requests
+pr = pull-requst
+c = !fzf-git-checkout
+delete = !git branch -D $(git branch | fzf)
+code = "!f() { \
+  dir=$(ghq list --full-path | fzf --prompt='code> ' \
+	--preview 'ls -a {} | head'); \
+  [ -z \"$dir\" ] && exit 0; \
+  code \"$dir\"; }; f"
+wt = "!f() { \
+		NAME=$1; BASE=${2:-main}; \
+		DIR=\"../wt-${NAME}\"; \
+		git worktree add -B \"${NAME}\" \"$DIR\" \"$BASE\" && \
+		echo \"opened $DIR\"; }; f"
+wtls = "!f() { \
+  git worktree list --porcelain | awk '/worktree/ {print $2}' \
+  | fzf --prompt='worktree> ' --preview 'ls -a {}'; }; f"
+rmwt = "!f() { \
+		TARGET=$(git worktree list | awk '{print $1}' | fzf); \
+		[ -n \"$TARGET\" ] && git worktree remove \"$TARGET\"; }; f"
+wtrepo = "!f() { \
+  dir=$(ghq list --full-path | fzf --prompt='wt> ' --preview 'ls -a {}'); \
+  [ -z \"$dir\" ] && exit 0; \
+  cd \"$dir\" && shift && git wt \"$@\"; }; f"
 
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
 
 [interactive]
-	diffFilter = delta --color-only --features=interactive
+diffFilter = delta --color-only --features=interactive
 
 [delta]
-	decorations = true
-	line-numbers = true
-	side-by-side = true
+decorations = true
+line-numbers = true
+side-by-side = true
 
 [delta "interactive"]
-	keep-plus-minus-markers = true
+keep-plus-minus-markers = true
 
 [ghq]
-	root = ~/ghq
-	root = ~/go/src
+root = ~/ghq
+root = ~/go/src
 
 [github]
-	user = neko-neko
+user = neko-neko
 
 [include]
-	path = ~/.gitconfig.local
+path = ~/.gitconfig.local
