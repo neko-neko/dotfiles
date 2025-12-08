@@ -17,30 +17,30 @@ export XDG_DATA_HOME=${HOME}/.local/share
 setopt no_global_rcs
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH=/opt/homebrew/opt/curl/bin:${PATH}
-export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
-export PATH=/opt/homebrew/opt/libpq/bin/:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/curl/bin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/mysql-client/bin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/libpq/bin/:${PATH}
 
 # GNU
-export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/findutils/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/binutils/bin:${PATH}
-export PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/gnu-indent/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/gnu-which/libexec/gnubin:${PATH}
-export PATH=/opt/homebrew/opt/grep/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/findutils/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/binutils/bin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/gnu-indent/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/gnu-tar/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/gnu-which/libexec/gnubin:${PATH}
+export PATH=${HOMEBREW_PREFIX}/opt/grep/libexec/gnubin:${PATH}
 
-export MANPATH=/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/findutils/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/binutils/share/man:${MANPATH}
-export MANPATH=/opt/homebrew/opt/gnu-sed/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/gnu-indent/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/gnu-tar/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/gnu-which/libexec/gnuman:${MANPATH}
-export MANPATH=/opt/homebrew/opt/grep/libexec/gnuman:${PATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/findutils/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/binutils/share/man:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-indent/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-tar/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-which/libexec/gnuman:${MANPATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/grep/libexec/gnuman:${PATH}
 
-export FPATH=/opt/homebrew/share/zsh/site-functions:${HOME}/.functions:${FPATH}
+export FPATH=${HOMEBREW_PREFIX}/share/zsh/site-functions:${HOME}/.functions:${FPATH}
 
 # ------------------------------
 # History Settings

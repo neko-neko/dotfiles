@@ -73,7 +73,7 @@ setopt extended_history
 setopt inc_append_history
 
 export LESS='-R'
-export LESSOPEN="|/opt/homebrew/bin/src-hilite-lesspipe.sh %s"
+export LESSOPEN="|${HOMEBREW_PREFIX}/bin/src-hilite-lesspipe.sh %s"
 
 # ------------------------------
 # pip Settings
@@ -83,8 +83,8 @@ export LESSOPEN="|/opt/homebrew/bin/src-hilite-lesspipe.sh %s"
 # ------------------------------
 # GCP Settings
 # ------------------------------
-source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
-source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+source ${HOMEBREW_PREFIX}/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
+source ${HOMEBREW_PREFIX}/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # ------------------------------
