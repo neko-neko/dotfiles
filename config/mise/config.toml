@@ -7,6 +7,7 @@ rust = "1.91"
 ruby = "3.2.9"
 flutter = "3.38"
 go = "1.25"
+shellcheck = "0.11"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby", "python", "go", "node"]

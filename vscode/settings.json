@@ -1,95 +1,153 @@
 {
+  // ----------------------------------------------------------------------
+  // Editor & UI
+  // ----------------------------------------------------------------------
   "editor.fontFamily": "Monaspace Neon",
   "editor.fontLigatures": true,
-  "eslint.autoFixOnSave": true,
   "editor.renderLineHighlight": "all",
   "editor.cursorBlinking": "expand",
   "editor.wordWrap": "on",
   "editor.scrollBeyondLastLine": false,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": "explicit",
-    "source.fixAll.eslint": "explicit"
-  },
   "editor.minimap.enabled": true,
+  "editor.guides.indentation": true,
+  "editor.suggestSelection": "first",
+  "editor.inlineSuggest.suppressSuggestions": true,
   "breadcrumbs.enabled": true,
-  "explorer.confirmDelete": false,
   "workbench.startupEditor": "newUntitledFile",
   "workbench.iconTheme": "vscode-icons",
-  "workbench.useExperimentalGridLayout": true,
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.editor.empty.hint": "hidden",
   "vsicons.dontShowNewVersionMessage": true,
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+  // ----------------------------------------------------------------------
+  // Explorer & Files
+  // ----------------------------------------------------------------------
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "security.workspace.trust.untrustedFiles": "open",
+
+  // ----------------------------------------------------------------------
+  // Formatting & Linting
+  // ----------------------------------------------------------------------
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
   "cSpell.language": "en",
+
+  // ----------------------------------------------------------------------
+  // Git
+  // ----------------------------------------------------------------------
+  "git.openRepositoryInParentFolders": "never",
+  "GitLive.Issue tracker integration": "Disabled",
+
+  // ----------------------------------------------------------------------
+  // Shell Script (ShellCheck)
+  // ----------------------------------------------------------------------
   "shellcheck.enable": true,
   "shellcheck.run": "onSave",
-  "shellcheck.executablePath": "shellcheck",
-  "python.pythonPath": "python3",
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "solargraph.transport": "external",
-  "solargraph.externalServer": {
-    "host": "localhost",
-    "port": 7658
-  },
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "editor.suggestSelection": "first",
-  "todo-tree.highlights.enabled": true,
-  "todo-tree.tree.showScanModeButton": false,
-  "terraform.indexing": {
-    "enabled": true,
-    "liveIndexing": false,
-    "delay": 500,
-    "exclude": [".terraform/**/*", "**/.terraform/**/*"]
-  },
-  "terraform.languageServer": {
-    "external": true,
-    "args": ["serve"]
-  },
-  "python.jediEnabled": false,
-  "go.toolsManagement.autoUpdate": true,
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter.notebook.ipynb"
-  },
-  "GitLive.Issue tracker integration": "Disabled",
+  // "shellcheck.executablePath": "shellcheck", // Handled by mise (PATH)
+
+  // ----------------------------------------------------------------------
+  // Python
+  // ----------------------------------------------------------------------
   "python.defaultInterpreterPath": "python3",
   "python.languageServer": "Pylance",
-  "redhat.telemetry.enabled": true,
-  "security.workspace.trust.untrustedFiles": "open",
-  "editor.guides.indentation": true,
-  "[python]": {
-    "editor.formatOnType": true
-  },
-  "workbench.editor.empty.hint": "hidden",
-  "git.openRepositoryInParentFolders": "never",
-  "editor.formatOnSave": true,
+  "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.typeCheckingMode": "basic",
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.pytestParameters": true,
   "python.analysis.inlayHints.variableTypes": true,
+  "python.venvFolders": [
+    "${workspaceFolder}/.venv"
+  ],
+  "mypy.runUsingActiveInterpreter": true,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+
+  // ----------------------------------------------------------------------
+  // JavaScript / TypeScript
+  // ----------------------------------------------------------------------
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  // ----------------------------------------------------------------------
+  // Dart / Flutter
+  // ----------------------------------------------------------------------
+  "dart.openDevTools": "flutter",
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
-    "editor.rulers": [80],
+    "editor.rulers": [
+      80
+    ],
     "editor.selectionHighlight": false,
     "editor.suggestSelection": "first",
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
   },
-  "dart.openDevTools": "flutter",
-  "dart.flutterSdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/",
-  "dart.sdkPath": "/opt/homebrew/Caskroom/flutter/3.16.7/flutter/bin/cache/dart-sdk",
-  "mypy.runUsingActiveInterpreter": true,
-  "python.venvFolders": ["${workspaceFolder}/.venv"],
-  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
-  "lldb.launch.expressions": "native",
-  "dart.previewFlutterUiGuides": true,
-  "dart.previewFlutterUiGuidesCustomTracking": true,
+
+  // ----------------------------------------------------------------------
+  // Terraform
+  // ----------------------------------------------------------------------
+  "terraform.indexing": {
+    "enabled": true,
+    "liveIndexing": false,
+    "delay": 500,
+    "exclude": [
+      ".terraform/**/*",
+      "**/.terraform/**/*"
+    ]
+  },
+  "terraform.languageServer": {
+    "external": true,
+    "args": [
+      "serve"
+    ]
+  },
+
+  // ----------------------------------------------------------------------
+  // Ruby
+  // ----------------------------------------------------------------------
+  "solargraph.transport": "external",
+  "solargraph.externalServer": {
+    "host": "localhost",
+    "port": 7658
+  },
+
+  // ----------------------------------------------------------------------
+  // Go
+  // ----------------------------------------------------------------------
+  "go.toolsManagement.autoUpdate": true,
+
+  // ----------------------------------------------------------------------
+  // Docker
+  // ----------------------------------------------------------------------
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+
+  // ----------------------------------------------------------------------
+  // YAML
+  // ----------------------------------------------------------------------
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "editor.inlineSuggest.suppressSuggestions": true,
-  "explorer.confirmDragAndDrop": false
+
+  // ----------------------------------------------------------------------
+  // Debugging
+  // ----------------------------------------------------------------------
+  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+  "lldb.launch.expressions": "native",
+
+  // ----------------------------------------------------------------------
+  // Extensions
+  // ----------------------------------------------------------------------
+  "todo-tree.highlights.enabled": true,
+  "todo-tree.tree.showScanModeButton": false,
+  "redhat.telemetry.enabled": true
 }
