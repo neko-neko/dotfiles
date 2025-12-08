@@ -54,94 +54,95 @@ local function rename_workspace(window, pane, line)
   end
 end
 
-local config = {
-  check_for_updates = true,
-  use_ime = true,
-  audible_bell = 'SystemBeep',
-  -- window
-  window_padding = {
-    left = 0,
-    right = 0,
-    top = 0,
-    bottom = 0,
+local config = wezterm.config_builder()
+config.check_for_updates = true
+config.use_ime = true
+config.audible_bell = 'SystemBeep'
+
+-- window
+config.window_padding = {
+  left = 0,
+  right = 0,
+  top = 0,
+  bottom = 0,
+}
+config.native_macos_fullscreen_mode = true
+config.tab_bar_at_bottom = true
+
+-- colors
+config.color_scheme = 'nordfox'
+
+-- keys
+config.keys = {
+  { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
+  { key = 'RightArrow', mods = 'SUPER', action = act.ActivateTabRelative(1) },
+  { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendString('\n') },
+  { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
+
+  -- Switch to workspace
+  {
+    mods = 'SUPER',
+    key = 's',
+    action = wezterm.action_callback(workspace_switcher),
   },
-  native_macos_fullscreen_mode = true,
-  tab_bar_at_bottom = true,
 
-  -- colors
-  color_scheme = 'nordfox',
-
-  -- keys
-  keys = {
-    { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
-    { key = 'RightArrow', mods = 'SUPER', action = act.ActivateTabRelative(1) },
-    { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendString('\n') },
-    { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
-
-    -- Switch to workspace
-    {
-      mods = 'SUPER',
-      key = 's',
-      action = wezterm.action_callback(workspace_switcher),
-    },
-
-    -- Create new workspace
-    {
-      mods = 'SUPER|SHIFT',
-      key = 'n',
-      action = act.PromptInputLine {
-        description = "(wezterm) Create new workspace:",
-        action = wezterm.action_callback(create_workspace),
-      },
-    },
-
-    -- Rename workspace
-    {
-      mods = 'SUPER|SHIFT',
-      key = 'r',
-      action = act.PromptInputLine {
-        description = '(wezterm) Rename workspace:',
-        action = wezterm.action_callback(rename_workspace),
-      },
+  -- Create new workspace
+  {
+    mods = 'SUPER|SHIFT',
+    key = 'n',
+    action = act.PromptInputLine {
+      description = "(wezterm) Create new workspace:",
+      action = wezterm.action_callback(create_workspace),
     },
   },
 
-  -- font
-  font = wezterm.font_with_fallback({
-    family='Monaspace Neon',
-    harfbuzz_features={ 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08' },
-    stretch='UltraCondensed',
-  }),
-
-  font_rules = {
-    { -- Italic
-      intensity = 'Normal',
-      italic = true,
-      font = wezterm.font({
-        -- family="Monaspace Radon",  -- script style
-        family='Monaspace Xenon', -- courier-like
-        style = 'Italic',
-      })
-    },
-    { -- Bold
-      intensity = 'Bold',
-      italic = false,
-      font = wezterm.font({
-        family='Monaspace Krypton',
-        family='Monaspace Krypton',
-        -- weight='ExtraBold',
-        weight='Bold',
-      })
-    },
-    { -- Bold Italic
-      intensity = 'Bold',
-      italic = true,
-      font = wezterm.font({
-        family='Monaspace Xenon',
-        style='Italic',
-        weight='Bold',
-      })
+  -- Rename workspace
+  {
+    mods = 'SUPER|SHIFT',
+    key = 'r',
+    action = act.PromptInputLine {
+      description = '(wezterm) Rename workspace:',
+      action = wezterm.action_callback(rename_workspace),
     },
   },
 }
+
+-- font
+config.font = wezterm.font_with_fallback({
+  family='Monaspace Neon',
+  harfbuzz_features={ 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08' },
+  stretch='UltraCondensed',
+})
+
+config.font_rules = {
+  { -- Italic
+    intensity = 'Normal',
+    italic = true,
+    font = wezterm.font({
+      -- family="Monaspace Radon",  -- script style
+      family='Monaspace Xenon', -- courier-like
+      style = 'Italic',
+    })
+  },
+  { -- Bold
+    intensity = 'Bold',
+    italic = false,
+    font = wezterm.font({
+      family='Monaspace Krypton',
+      family='Monaspace Krypton',
+      -- weight='ExtraBold',
+      weight='Bold',
+    })
+  },
+  { -- Bold Italic
+    intensity = 'Bold',
+    italic = true,
+    font = wezterm.font({
+      family='Monaspace Xenon',
+      style='Italic',
+      weight='Bold',
+    })
+  },
+}
+
 return config
