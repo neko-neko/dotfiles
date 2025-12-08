@@ -69,7 +69,6 @@ brew 'sops'
 # Languages & Runtimes
 brew 'cocoapods'
 brew 'mise'
-brew 'openjdk'
 brew 'postgresql'
 brew 'protobuf'
 
@@ -80,6 +79,10 @@ brew 'solargraph'
 brew 'taplo'
 brew 'vscode-langservers-extracted'
 brew 'yaml-language-server'
+
+# AI
+brew 'copilot-cli'
+brew 'ollama'
 
 # Other
 brew 'grip'
