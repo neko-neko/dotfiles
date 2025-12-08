@@ -79,13 +79,15 @@ brew 'taplo'
 brew 'vscode-langservers-extracted'
 brew 'yaml-language-server'
 
+# Alternatives to classic CLI
+brew 'bottom' # top
+brew 'q' # dig
+
 # AI
 brew 'copilot-cli'
 brew 'ollama'
 
 # Other
-brew 'grip'
-brew 'imagemagick'
 brew 'nmap'
 
 # Casks

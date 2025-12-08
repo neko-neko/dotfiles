@@ -85,6 +85,11 @@ alias kubectlo='kubectl get KA -o yaml'
 alias signin='eval $(op signin)'
 
 # ------------------------------
+# Alternatives to classic CLI
+# ------------------------------
+alias top='btm'
+
+# ------------------------------
 # AI Helper
 # ------------------------------
 alias copilot='copilot --allow-all-paths'
