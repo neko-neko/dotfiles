@@ -1,8 +1,13 @@
 #!/bin/zsh
 source ${HOME}/.dotfiles/setup/util.zsh
 
-for script in $(\ls ${HOME}/.dotfiles/setup/install); do   
-  util::confirm "install ${script}?"
+util::confirm "install packages from Brewfile?"
+if [[ $? = 0 ]]; then
+  brew bundle --file ${HOME}/.dotfiles/Brewfile
+fi
+
+for script in $(\ls ${HOME}/.dotfiles/setup/install); do
+  util::confirm "run setup script ${script}?"
   if [[ $? = 0 ]]; then
     . ${HOME}/.dotfiles/setup/install/${script}
   fi
