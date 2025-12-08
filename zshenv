@@ -56,17 +56,6 @@ export LISTMAX=100
 eval "$(mise activate zsh --shims)"
 
 # ------------------------------
-# golang Settings
-# ------------------------------
-export GOPATH=${HOME}/go
-export PATH=${GOPATH}/bin:${PATH}
-
-# ------------------------------
-# Java Settings
-# ------------------------------
-export JAVA_HOME=$(/usr/libexec/java_home)
-
-# ------------------------------
 # krew Settings
 # ------------------------------
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

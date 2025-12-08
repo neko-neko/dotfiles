@@ -1,11 +1,12 @@
 [tools]
 java = "17"
 node = "24"
-terraform = "latest"
+terraform = "1.14"
 python = "3.13"
-rust = "latest"
+rust = "1.91"
 ruby = "3.2.9"
-flutter = "3.38.0"
+flutter = "3.38"
+go = "1.25"
 
 [settings]
-idiomatic_version_file_enable_tools = ["ruby"]
+idiomatic_version_file_enable_tools = ["ruby", "python", "go", "node"]
