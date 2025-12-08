@@ -6,11 +6,6 @@ if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
 fi
 
 # ------------------------------
-# sheldon
-# ------------------------------
-eval "$(sheldon source)"
-
-# ------------------------------
 # ztyle
 # ------------------------------
 # prezto
@@ -32,6 +27,11 @@ zstyle ':completion:*:default' menu select=2
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*' use-cache yes
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# ------------------------------
+# sheldon
+# ------------------------------
+eval "$(sheldon source)"
 
 autoload -Uz compinit
 compinit

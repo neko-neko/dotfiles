@@ -20,19 +20,19 @@ github = "zsh-users/zsh-history-substring-search"
 
 [plugins.extract]
 github = "ohmyzsh/ohmyzsh"
-use = ["plugins/extract"]
+dir = "plugins/extract"
 
 [plugins.prezto-terminal]
 github = "sorin-ionescu/prezto"
-use = ["modules/terminal"]
+dir = "modules/terminal"
 
 [plugins.prezto-editor]
 github = "sorin-ionescu/prezto"
-use = ["modules/editor"]
+dir = "modules/editor"
 
 [plugins.prezto-directory]
 github = "sorin-ionescu/prezto"
-use = ["modules/directory"]
+dir = "modules/directory"
 
 [plugins.zsh-background-notify]
 github = "t413/zsh-background-notify"
