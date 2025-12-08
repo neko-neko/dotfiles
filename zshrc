@@ -93,11 +93,6 @@ source ${HOMEBREW_PREFIX}/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # ------------------------------
-# Dart Settings
-# ------------------------------
-[[ -f ${HOME}/.config/.dart-cli-completion/zsh-config.zsh ]] && . ${HOME}/.config/.dart-cli-completion/zsh-config.zsh || true
-
-# ------------------------------
 # fzf Settings
 # ------------------------------
 eval "$(fzf --zsh)"
