@@ -53,7 +53,7 @@ export LISTMAX=100
 # ------------------------------
 # mise Settings
 # ------------------------------
-eval "$(mise activate zsh)"
+eval "$(mise activate zsh --shims)"
 
 # ------------------------------
 # golang Settings

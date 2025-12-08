@@ -76,6 +76,11 @@ export LESS='-R'
 export LESSOPEN="|${HOMEBREW_PREFIX}/bin/src-hilite-lesspipe.sh %s"
 
 # ------------------------------
+# mise Settings
+# ------------------------------
+eval "$(mise activate zsh)"
+
+# ------------------------------
 # pip Settings
 # ------------------------------
 # eval "$(pip3 completion --zsh)"
