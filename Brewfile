@@ -44,7 +44,6 @@ brew 'ripgrep'
 brew 'sheldon'
 brew 'shellcheck'
 brew 'starship'
-brew 'terminal-notifier'
 
 # Git & Version Control
 brew 'gh'

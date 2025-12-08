@@ -22,10 +22,6 @@ github = "zsh-users/zsh-history-substring-search"
 github = "ohmyzsh/ohmyzsh"
 dir = "plugins/extract"
 
-[plugins.prezto-terminal]
-github = "sorin-ionescu/prezto"
-dir = "modules/terminal"
-
 [plugins.prezto-editor]
 github = "sorin-ionescu/prezto"
 dir = "modules/editor"
@@ -33,9 +29,6 @@ dir = "modules/editor"
 [plugins.prezto-directory]
 github = "sorin-ionescu/prezto"
 dir = "modules/directory"
-
-[plugins.zsh-background-notify]
-github = "t413/zsh-background-notify"
 
 [plugins.k-super]
 github = "supercrabtree/k"

@@ -11,10 +11,6 @@ fi
 # prezto
 zstyle ':prezto:module:editor' key-bindings 'emacs'
 zstyle ':prezto:module:editor' dot-expansion 'yes'
-zstyle ':prezto:module:terminal' auto-title 'yes'
-zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
-zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
-zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
 # color
 eval $(dircolors ${XDG_DATA_HOME}/sheldon/repos/github.com/seebi/dircolors-solarized/dircolors.ansi-dark)

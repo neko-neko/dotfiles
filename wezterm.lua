@@ -8,9 +8,56 @@ wezterm.on("gui-startup", function()
   window:gui_window():toggle_fullscreen()
 end)
 
+---------------------------------------------------------------
+-- Workspace Management
+---------------------------------------------------------------
+local function workspace_switcher(window, pane)
+  local workspaces = {}
+  for i, name in ipairs(wezterm.mux.get_workspace_names()) do
+    table.insert(workspaces, {
+      id = name,
+      label = string.format("%d. %s", i, name),
+    })
+  end
+  local current = wezterm.mux.get_active_workspace()
+  window:perform_action(act.InputSelector {
+    action = wezterm.action_callback(function (_, _, id, label)
+      if not id and not label then
+        wezterm.log_info "Workspace selection canceled"
+      else
+        window:perform_action(act.SwitchToWorkspace { name = id }, pane)
+      end
+    end),
+    title = "Select workspace",
+    choices = workspaces,
+    fuzzy = true,
+  }, pane)
+end
+
+local function create_workspace(window, pane, line)
+  if line then
+    window:perform_action(
+      act.SwitchToWorkspace {
+        name = line,
+      },
+      pane
+    )
+  end
+end
+
+local function rename_workspace(window, pane, line)
+  if line then
+    wezterm.mux.rename_workspace(
+      wezterm.mux.get_active_workspace(),
+      line
+    )
+  end
+end
+
 local config = {
   check_for_updates = true,
   use_ime = true,
+  audible_bell = 'SystemBeep',
   -- window
   window_padding = {
     left = 0,
@@ -28,34 +75,14 @@ local config = {
   keys = {
     { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
     { key = 'RightArrow', mods = 'SUPER', action = act.ActivateTabRelative(1) },
+    { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendString('\n') },
     { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
 
     -- Switch to workspace
     {
       mods = 'SUPER',
       key = 's',
-      action = wezterm.action_callback(function(window, pane)
-        local workspaces = {}
-        for i, name in ipairs(wezterm.mux.get_workspace_names()) do
-          table.insert(workspaces, {
-            id = name,
-            label = string.format("%d. %s", i, name),
-          })
-        end
-        local current = wezterm.mux.get_active_workspace()
-        window:perform_action(act.InputSelector {
-          action = wezterm.action_callback(function (_, _, id, label)
-            if not id and not label then
-              wezterm.log_info "Workspace selection canceled"
-            else
-              window:perform_action(act.SwitchToWorkspace { name = id }, pane)
-            end
-          end),
-          title = "Select workspace",
-          choices = workspaces,
-          fuzzy = true,
-        }, pane)
-      end),
+      action = wezterm.action_callback(workspace_switcher),
     },
 
     -- Create new workspace
@@ -64,16 +91,7 @@ local config = {
       key = 'n',
       action = act.PromptInputLine {
         description = "(wezterm) Create new workspace:",
-        action = wezterm.action_callback(function(window, pane, line)
-          if line then
-            window:perform_action(
-              act.SwitchToWorkspace {
-                name = line,
-              },
-              pane
-            )
-          end
-        end),
+        action = wezterm.action_callback(create_workspace),
       },
     },
 
@@ -83,14 +101,7 @@ local config = {
       key = 'r',
       action = act.PromptInputLine {
         description = '(wezterm) Rename workspace:',
-        action = wezterm.action_callback(function(window, pane, line)
-          if line then
-            wezterm.mux.rename_workspace(
-              wezterm.mux.get_active_workspace(),
-              line
-            )
-          end
-        end),
+        action = wezterm.action_callback(rename_workspace),
       },
     },
   },
