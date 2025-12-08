@@ -1,13 +1,11 @@
 tap "boz/repo"
 tap "derailed/k9s"
 tap "hashicorp/tap"
-tap "homebrew/cask-fonts"
 tap "johanhaleby/kubetail"
 tap "ktr0731/evans"
 tap "wez/wezterm"
 
 # Taps for tools
-brew "kail"
 brew "kubetail"
 brew "evans"
 brew "terraform-ls"
@@ -117,9 +115,11 @@ cask "font-hack-nerd-font"
 cask "font-monaspace"
 
 # Mas
-mas "LINE", id: 539883307
-mas "Keynote", id: 409183694
-mas "WinArchiver", id: 414855915
+if ENV["CI"] != "true"
+  mas "LINE", id: 539883307
+  mas "Keynote", id: 409183694
+  mas "WinArchiver", id: 414855915
+end
 
 # VSCode Extensions
 vscode "anysphere.pyright"
