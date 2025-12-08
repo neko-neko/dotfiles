@@ -20,6 +20,7 @@ alias ghi='gh issue view $(gh issue list | fzf | awk "{print \$1}")'
 alias ghp='gh pr view $(gh pr list | fzf | awk "{print \$1}")'
 alias ghpc='gh pr checkout $(gh pr list | fzf | awk "{print \$1}")'
 alias wtc='cd $(git wtls)'
+alias gcmj='gcm -l ja'
 
 # ------------------------------
 # base64
@@ -89,6 +90,11 @@ alias kubectlo='kubectl get KA -o yaml'
 # 1Password
 # ------------------------------
 alias signin='eval $(op signin)'
+
+# ------------------------------
+# AI Helper
+# ------------------------------
+alias gcm='gcm'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then

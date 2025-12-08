@@ -1,0 +1,88 @@
+#!/usr/bin/env zsh
+
+# ステージングされている変更があるか確認
+if git diff --cached --quiet; then
+  echo "No staged changes to commit."
+  exit 1
+fi
+
+# 変更内容を取得
+diff_content=$(git diff --cached)
+
+# コミットメッセージの言語を指定
+lang_instruction="Output ONLY the commit messages block. No explanations."
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -l|--language)
+      if [[ "$2" == "ja" || "$2" == "japanese" ]]; then
+        lang_instruction="Output ONLY the commit messages block in Japanese. No explanations."
+        shift
+      fi
+      ;;
+    *) ;;
+  esac
+  shift
+done
+
+# copilotへのプロンプト
+prompt="
+Generate 3 distinct git commit messages for the following changes.
+$lang_instruction
+Separate each message with a delimiter '---'.
+
+Format:
+<type>: <subject>
+
+<detail>
+
+Changes:
+$diff_content
+"
+
+# copilotで生成
+raw_output=$(copilot --prompt "$prompt" --silent 2>/dev/null)
+
+# マークダウンのコードブロック(```)を除去
+raw_output=$(echo "$raw_output" | sed 's/^```.*$//g' | sed 's/^```$//g')
+
+if [ -z "$raw_output" ]; then
+  echo "Failed to generate commit messages."
+  exit 1
+fi
+
+# 候補を一時ファイルに保存
+tmp_candidates=$(mktemp)
+echo "$raw_output" | awk -v RS='---' 'NF {print $0; print "---"}' > "$tmp_candidates"
+
+# Subject行だけを抽出して選択肢にする
+subjects=$(grep -E "^[a-z]+:" "$tmp_candidates")
+
+if [ -z "$subjects" ]; then
+  # フォーマットが崩れている場合のフォールバック
+  selected=$(echo "$raw_output" | gum choose --header "Select a commit message")
+  final_msg="$selected"
+else
+  # Subjectを選択
+  selected_subject=$(echo "$subjects" | gum choose --header "Select a commit message summary")
+
+  if [ -z "$selected_subject" ]; then
+    echo "Commit canceled."
+    rm "$tmp_candidates"
+    exit 0
+  fi
+
+  # 選択されたSubjectに対応する全文を取得
+  final_msg=$(awk -v RS='---' -v pattern="$selected_subject" '$0 ~ pattern {gsub(/^\n/, "", $0); print $0; exit}' "$tmp_candidates")
+fi
+
+rm "$tmp_candidates"
+
+# 最終確認・編集
+final_msg=$(echo "$final_msg" | gum write --header "Edit commit message" --width 80)
+
+if [ -z "$final_msg" ]; then
+  echo "Commit canceled."
+  exit 0
+fi
+
+git commit -m "$final_msg"

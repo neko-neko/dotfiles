@@ -12,6 +12,7 @@ brew "kubetail"
 brew "evans"
 brew "terraform-ls"
 cask "wezterm"
+brew "gum"
 
 # GNU & Utilities
 brew "autoconf"
@@ -40,7 +41,6 @@ brew "tree"
 brew "wget"
 
 # Shell & Terminal
-brew "direnv"
 brew "fzf"
 brew "ripgrep"
 brew "sheldon"
@@ -94,7 +94,6 @@ cask "android-studio"
 cask "caffeine"
 cask "chatgpt"
 cask "claude"
-cask "copilot-cli"
 cask "cursor"
 cask "cyberduck"
 cask "dbeaver-community"
@@ -140,4 +139,3 @@ vscode "ms-python.vscode-pylance"
 vscode "redhat.vscode-yaml"
 vscode "tamasfe.even-better-toml"
 vscode "XadillaX.viml"
-
