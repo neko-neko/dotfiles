@@ -1,10 +1,10 @@
 [tools]
 java = "17"
-node = "20"
+node = "24"
 terraform = "latest"
 python = "3.13"
 rust = "latest"
+ruby = "3.2.9"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
-
