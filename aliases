@@ -95,6 +95,7 @@ alias top='btm'
 alias copilot='copilot --allow-all-paths'
 alias gcm='gcm'
 alias gcmj='gcm -l ja'
+alias '??'='ollama run llama3-japanese <<<"{{query}}"'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
