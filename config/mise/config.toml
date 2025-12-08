@@ -5,6 +5,7 @@ terraform = "latest"
 python = "3.13"
 rust = "latest"
 ruby = "3.2.9"
+flutter = "3.38.0"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
