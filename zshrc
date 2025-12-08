@@ -115,6 +115,13 @@ source ${HOME}/.aliases
 eval "$(starship init zsh)"
 
 # ------------------------------
+# direnv hook
+# ------------------------------
+if type direnv > /dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
+# ------------------------------
 # Custom local files
 # ------------------------------
 if [[ -f ${HOME}/.zshrc.local ]]; then

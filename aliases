@@ -7,6 +7,12 @@ alias history='history 1'
 alias reload='source ~/.zshenv && source ~/.zshrc'
 
 # ------------------------------
+# LLM & AI Tools
+# ------------------------------
+alias copilot='copilot --allow-all-paths'
+alias '??'='copilot -i shell'
+
+# ------------------------------
 # git
 # ------------------------------
 alias lg='lazygit'
@@ -83,11 +89,6 @@ alias kubectlo='kubectl get KA -o yaml'
 # 1Password
 # ------------------------------
 alias signin='eval $(op signin)'
-
-# ------------------------------
-# MCP
-# ------------------------------
-alias mcp_figma='npx -y figma-developer-mcp --figma-api-key=$(op read "op://West Shoulder/Figma/APIKey")'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
