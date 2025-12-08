@@ -81,12 +81,6 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/emulator
 
 # ------------------------------
-# ------------------------------
-# Dart Settings
-# ------------------------------
-export PATH="$HOME/.pub-cache/bin:$PATH"
-
-# ------------------------------
 # fzf Settings
 # ------------------------------
 export FZF_DEFAULT_OPTS='
