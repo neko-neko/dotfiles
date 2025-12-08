@@ -29,6 +29,70 @@ local config = {
     { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
     { key = 'RightArrow', mods = 'SUPER', action = act.ActivateTabRelative(1) },
     { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
+
+    -- Switch to workspace
+    {
+      mods = 'SUPER',
+      key = 's',
+      action = wezterm.action_callback(function(window, pane)
+        local workspaces = {}
+        for i, name in ipairs(wezterm.mux.get_workspace_names()) do
+          table.insert(workspaces, {
+            id = name,
+            label = string.format("%d. %s", i, name),
+          })
+        end
+        local current = wezterm.mux.get_active_workspace()
+        window:perform_action(act.InputSelector {
+          action = wezterm.action_callback(function (_, _, id, label)
+            if not id and not label then
+              wezterm.log_info "Workspace selection canceled"
+            else
+              window:perform_action(act.SwitchToWorkspace { name = id }, pane)
+            end
+          end),
+          title = "Select workspace",
+          choices = workspaces,
+          fuzzy = true,
+        }, pane)
+      end),
+    },
+
+    -- Create new workspace
+    {
+      mods = 'SUPER|SHIFT',
+      key = 'n',
+      action = act.PromptInputLine {
+        description = "(wezterm) Create new workspace:",
+        action = wezterm.action_callback(function(window, pane, line)
+          if line then
+            window:perform_action(
+              act.SwitchToWorkspace {
+                name = line,
+              },
+              pane
+            )
+          end
+        end),
+      },
+    },
+
+    -- Rename workspace
+    {
+      mods = 'SUPER|SHIFT',
+      key = 'r',
+      action = act.PromptInputLine {
+        description = '(wezterm) Rename workspace:',
+        action = wezterm.action_callback(function(window, pane, line)
+          if line then
+            wezterm.mux.rename_workspace(
+              wezterm.mux.get_active_workspace(),
+              line
+            )
+          end
+        end),
+      },
+    },
   },
 
   -- font
