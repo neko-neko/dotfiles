@@ -33,6 +33,11 @@ zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*' use-cache yes
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
+autoload -Uz compinit
+compinit
+
+autoload -Uz add-zsh-hook
+
 # ------------------------------
 # General Settings
 # ------------------------------
@@ -68,12 +73,12 @@ setopt extended_history
 setopt inc_append_history
 
 export LESS='-R'
-export LESSOPEN="|/usr/local/bin/src-hilite-lesspipe.sh %s"
+export LESSOPEN="|/opt/homebrew/bin/src-hilite-lesspipe.sh %s"
 
 # ------------------------------
 # pip Settings
 # ------------------------------
-eval "$(pip3 completion --zsh)"
+# eval "$(pip3 completion --zsh)"
 
 # ------------------------------
 # GCP Settings
@@ -86,6 +91,13 @@ export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 # Dart Settings
 # ------------------------------
 [[ -f ${HOME}/.config/.dart-cli-completion/zsh-config.zsh ]] && . ${HOME}/.config/.dart-cli-completion/zsh-config.zsh || true
+
+# ------------------------------
+# fzf Settings
+# ------------------------------
+eval "$(fzf --zsh)"
+autoload fzf-history
+zle -N fzf-history
 
 # ------------------------------
 # Key bindings

@@ -17,8 +17,6 @@ export XDG_DATA_HOME=${HOME}/.local/share
 setopt no_global_rcs
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH=/usr/local/bin:/usr/local/sbin:${PATH}
-export PATH=/usr/local/opt/openssl/bin:${PATH}
 export PATH=/opt/homebrew/opt/curl/bin:${PATH}
 export PATH=/opt/homebrew/opt/mysql-client/bin:${PATH}
 export PATH=/opt/homebrew/opt/libpq/bin/:${PATH}
@@ -43,8 +41,6 @@ export MANPATH=/opt/homebrew/opt/gnu-which/libexec/gnuman:${MANPATH}
 export MANPATH=/opt/homebrew/opt/grep/libexec/gnuman:${PATH}
 
 export FPATH=/opt/homebrew/share/zsh/site-functions:${HOME}/.functions:${FPATH}
-autoload -Uz compinit
-compinit
 
 # ------------------------------
 # History Settings
@@ -69,17 +65,6 @@ export PATH=${GOPATH}/bin:${PATH}
 # Java Settings
 # ------------------------------
 export JAVA_HOME=$(/usr/libexec/java_home)
-
-# ------------------------------
-# Python Settings
-# ------------------------------
-export PATH="/usr/bin/python3:$PATH"
-source "$HOME/.rye/env"
-
-# ------------------------------
-# Ruby Settings
-# ------------------------------
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
 # ------------------------------
 # krew Settings
@@ -114,19 +99,11 @@ export FZF_DEFAULT_OPTS='
   --color info:144,prompt:161,spinner:135,pointer:135,marker:118
 '
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules}/*"'
-eval "$(fzf --zsh)"
 
 # ------------------------------
 # scripts
 # ------------------------------
 export PATH=${HOME}/.bin:${PATH}
-
-# ------------------------------
-# Auto load
-# ------------------------------
-autoload -Uz add-zsh-hook
-autoload fzf-history
-zle -N fzf-history
 
 # ------------------------------
 # Custom local files
