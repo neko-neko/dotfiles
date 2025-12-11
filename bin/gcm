@@ -6,11 +6,13 @@ if git diff --cached --quiet; then
   exit 1
 fi
 
+# デフォルト設定
+model="llama3"
+lang_instruction="Output ONLY the commit messages block. No explanations."
+
 # 変更内容を取得
 diff_content=$(git diff --cached)
 
-# コミットメッセージの言語を指定
-lang_instruction="Output ONLY the commit messages block. No explanations."
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     -l|--language)
@@ -19,12 +21,18 @@ while [[ "$#" -gt 0 ]]; do
         shift
       fi
       ;;
+    -m|--model)
+      if [[ -n "$2" ]]; then
+        model="$2"
+        shift
+      fi
+      ;;
     *) ;;
   esac
   shift
 done
 
-# copilotへのプロンプト
+# LLMへのプロンプト
 prompt="
 Generate 3 distinct git commit messages for the following changes.
 $lang_instruction
@@ -39,8 +47,8 @@ Changes:
 $diff_content
 "
 
-# copilotで生成
-raw_output=$(copilot --prompt "$prompt" --silent 2>/dev/null)
+# ollamaで生成
+raw_output=$(ollama run "$model" "$prompt")
 
 # マークダウンのコードブロック(```)を除去
 raw_output=$(echo "$raw_output" | sed 's/^```.*$//g' | sed 's/^```$//g')
@@ -52,10 +60,19 @@ fi
 
 # 候補を一時ファイルに保存
 tmp_candidates=$(mktemp)
-echo "$raw_output" | awk -v RS='---' 'NF {print $0; print "---"}' > "$tmp_candidates"
+echo "$raw_output" | awk -v RS='---' '
+  {
+    gsub(/^[[:space:]]+/, "", $0);
+    gsub(/[[:space:]]+$/, "", $0);
+  }
+  NF {
+    print $0;
+    print "---";
+  }
+' > "$tmp_candidates"
 
 # Subject行だけを抽出して選択肢にする
-subjects=$(grep -E "^[a-z]+:" "$tmp_candidates")
+subjects=$(grep -E "^[a-zA-Z]+(\(.*\))?!?: .+$" "$tmp_candidates" | grep -vE "^(Changes|Format|Output|Subject):")
 
 if [ -z "$subjects" ]; then
   # フォーマットが崩れている場合のフォールバック
