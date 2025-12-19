@@ -123,5 +123,8 @@ root = ~/go/src
 [github]
 user = neko-neko
 
+[init]
+defaultBranch = main
+
 [include]
 path = ~/.gitconfig.local
