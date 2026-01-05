@@ -61,13 +61,17 @@ eval "$(mise activate zsh --shims)"
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # ------------------------------
-# ------------------------------
 # Android Settings
 # ------------------------------
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/emulator
+
+# ------------------------------
+# uv
+# ------------------------------
+export PATH="${HOME}/.local/share/../bin:$PATH"
 
 # ------------------------------
 # fzf Settings
