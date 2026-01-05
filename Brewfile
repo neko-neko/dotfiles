@@ -89,6 +89,7 @@ brew 'ollama'
 
 # Other
 brew 'nmap'
+brew 'orbstack'
 
 # Casks
 cask '1password-cli'
