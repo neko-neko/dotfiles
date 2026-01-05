@@ -45,7 +45,6 @@ alias repob='open https://$(ghq list | fzf)'
 alias vimf='fzf-git-ls-files'
 alias sshf='fzf-ssh-list'
 alias killf='fzf-kill'
-alias chromef='fzf-chrome-history'
 
 # ------------------------------
 # AWS
@@ -67,6 +66,7 @@ alias dockere='docker exec -it D'
 alias dvrm='docker volume ls --format "{{.Name}}" | fzf --multi --preview "docker volume inspect {}" --preview-window=right:60% | xargs -r docker volume rm'
 alias docker-context='docker context use orbstack'
 alias docker-contextd='docker context use desktop-linux'
+alias docker-debug='orb debug D'
 
 # ------------------------------
 # kubectl
