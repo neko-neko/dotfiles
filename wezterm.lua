@@ -72,6 +72,9 @@ config.tab_bar_at_bottom = true
 -- colors
 config.color_scheme = 'nordfox'
 
+-- font
+config.font = wezterm.font("Monaspace Neon")
+
 -- keys
 config.keys = {
   { key = 'LeftArrow',  mods = 'SUPER', action = act.ActivateTabRelative(-1) },
