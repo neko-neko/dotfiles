@@ -82,6 +82,7 @@ brew 'yaml-language-server'
 # Alternatives to classic CLI
 brew 'bottom' # top
 brew 'q' # dig
+brew 'bat' # cat
 
 # AI
 brew 'copilot-cli'

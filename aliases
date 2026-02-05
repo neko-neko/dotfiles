@@ -90,14 +90,7 @@ alias signin='eval $(op signin)'
 # Alternatives to classic CLI
 # ------------------------------
 alias top='btm'
-
-# ------------------------------
-# AI Helper
-# ------------------------------
-alias copilot='copilot --allow-all-paths'
-alias gcm='gcm'
-alias gcmj='gcm -l ja'
-alias '??'='ollama run llama3-japanese <<<"{{query}}"'
+alias cat='bat'
 
 # Custom local file
 if [[ -f ${HOME}/.aliases.local ]]; then
