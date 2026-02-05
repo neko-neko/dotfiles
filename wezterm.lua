@@ -73,7 +73,11 @@ config.tab_bar_at_bottom = true
 config.color_scheme = 'nordfox'
 
 -- font
-config.font = wezterm.font("Monaspace Neon")
+config.font = wezterm.font_with_fallback({
+  { family = "Monaspace Neon", harfbuzz_features = { "calt", "liga", "dlig" } },
+  "Hiragino Sans",
+  "Noto Sans JP",
+})
 
 -- keys
 config.keys = {
