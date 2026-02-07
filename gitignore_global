@@ -30,6 +30,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.claude_settings.json
-.auto-claude
-.auto-claude-security.json
+# Claude
+.worktrees
