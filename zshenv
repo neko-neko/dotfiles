@@ -1,6 +1,8 @@
 # ------------------------------
 # General Settings
 # ------------------------------
+typeset -U path PATH manpath MANPATH fpath FPATH
+
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export TZ=Asia/Tokyo
@@ -38,7 +40,7 @@ export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnuman:${MANPATH}
 export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-indent/libexec/gnuman:${MANPATH}
 export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-tar/libexec/gnuman:${MANPATH}
 export MANPATH=${HOMEBREW_PREFIX}/opt/gnu-which/libexec/gnuman:${MANPATH}
-export MANPATH=${HOMEBREW_PREFIX}/opt/grep/libexec/gnuman:${PATH}
+export MANPATH=${HOMEBREW_PREFIX}/opt/grep/libexec/gnuman:${MANPATH}
 
 export FPATH=${HOMEBREW_PREFIX}/share/zsh/site-functions:${HOME}/.functions:${FPATH}
 
@@ -71,7 +73,7 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 # ------------------------------
 # uv
 # ------------------------------
-export PATH="${HOME}/.local/share/../bin:$PATH"
+export PATH="${HOME}/.local/bin:$PATH"
 
 # ------------------------------
 # fzf Settings
