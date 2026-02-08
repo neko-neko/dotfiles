@@ -65,10 +65,9 @@ brew 'vips'
 brew 'wget'
 
 # Shell & Terminal
+brew 'ast-grep'
 brew 'direnv'
 brew 'fzf'
-brew 'helix'
-brew 'ripgrep'
 brew 'sheldon'
 brew 'starship'
 
@@ -124,12 +123,12 @@ brew 'dockerfile-language-server'
 brew 'yaml-language-server'
 
 # Alternatives to classic CLI
-brew 'ast-grep'
 brew 'bat' # cat
 brew 'bottom' # top
 brew 'fx' # jq viewer
 brew 'jq'
 brew 'q' # dig
+brew 'ripgrep' # grep
 brew 'tldr' # man
 
 # Other

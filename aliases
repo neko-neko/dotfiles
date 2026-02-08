@@ -81,22 +81,24 @@ alias kubectll='kubectl stern $(kubectl get deploy | fzf | awk "{print \$1}")'
 alias kubectlo='kubectl get KA -o yaml'
 
 # ------------------------------
-# 1Password
-# ------------------------------
-alias signin='eval $(op signin)'
-
-# ------------------------------
-# Claude Code
-# ------------------------------
-alias claude-mem='bun "${HOME}/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
-
-# ------------------------------
 # Alternatives to classic CLI
 # ------------------------------
 alias top='btm'
 alias cat='bat'
 
-# Custom local file
+# ------------------------------
+# 1Password
+# ------------------------------
+alias signin='eval $(op signin)'
+
+# ------------------------------
+# claude code
+# ------------------------------
+alias claude-mem='bun "${HOME}/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
+
+# ------------------------------
+# Override
+# ------------------------------
 if [[ -f ${HOME}/.aliases.local ]]; then
   source ${HOME}/.aliases.local
 fi
