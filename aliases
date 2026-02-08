@@ -4,7 +4,7 @@
 alias vim='hx'
 alias grep='grep --color=auto'
 alias history='history 1'
-alias reload='source ~/.zshenv && source ~/.zshrc'
+alias reload='rm -f ~/.zcompdump(N) ~/.zcompdump.zwc(N) && source ~/.zshenv && source ~/.zshrc'
 
 # ------------------------------
 # git

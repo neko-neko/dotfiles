@@ -30,7 +30,11 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 eval "$(sheldon source)"
 
 autoload -Uz compinit
-compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 autoload -Uz add-zsh-hook
 
