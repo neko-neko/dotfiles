@@ -84,10 +84,6 @@ brew 'bottom' # top
 brew 'q' # dig
 brew 'bat' # cat
 
-# AI
-brew 'copilot-cli'
-brew 'ollama'
-
 # Other
 brew 'nmap'
 brew 'orbstack'

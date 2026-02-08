@@ -83,21 +83,6 @@ code = "!f() { \
 	--preview 'ls -a {} | head'); \
   [ -z \"$dir\" ] && exit 0; \
   code \"$dir\"; }; f"
-wt = "!f() { \
-		NAME=$1; BASE=${2:-main}; \
-		DIR=\"../wt-${NAME}\"; \
-		git worktree add -B \"${NAME}\" \"$DIR\" \"$BASE\" && \
-		echo \"opened $DIR\"; }; f"
-wtls = "!f() { \
-  git worktree list --porcelain | awk '/worktree/ {print $2}' \
-  | fzf --prompt='worktree> ' --preview 'ls -a {}'; }; f"
-rmwt = "!f() { \
-		TARGET=$(git worktree list | awk '{print $1}' | fzf); \
-		[ -n \"$TARGET\" ] && git worktree remove \"$TARGET\"; }; f"
-wtrepo = "!f() { \
-  dir=$(ghq list --full-path | fzf --prompt='wt> ' --preview 'ls -a {}'); \
-  [ -z \"$dir\" ] && exit 0; \
-  cd \"$dir\" && shift && git wt \"$@\"; }; f"
 
 [filter "lfs"]
 clean = git-lfs clean -- %f
