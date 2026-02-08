@@ -1,115 +1,137 @@
+# ====================
+# Identity & Signing
+# ====================
 [user]
-name = neko-neko
-email = seiichi.nishikata456@gmail.com
-
-[user]
-signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqDGFeQ/xG1woOmTgJbEGteZbYP3FMZezrb3URwcZAcJHf85+2E5aLYHiJLx0qsctBrUmHd3dChoTAm9gNNdHKP1DBALg9XCirwk1XeQpuweA7IiLJIIPqdmEneQt/hx22QWOkXR0glvMnoyAd/Yg+C5Q2mzD2qtKnPSN61IneX8lLf1pNloqj3kNVSEN+qy/nU8vm8PfG/GRzPsZWGCwaOa6CLmn+4+V51udALIQNAcWgQRAcj+VfbPczS7YJdxI8gk22FAD0NhPh1g5iu0f7gIpZqLHEu3RqwfoDnPCu/2rmhknKfTAlYNgm7ue7u/QOgSVJYFrEAf2OeBwFmZTQk+vh4Hj02u7B1iUCN4YUcjjmKF067trmRhvZIbWztg1rkKf8Z12MQteA5gV9agdh4+g7/oxXcfVB7GrZ2ndsqEncdxslBhO9Lb2FhJWtqPgcfxOseeLrB6xJJH+fed0R/9DeYBYdtqpQ7s5Xapu2ks8CDCH9sNnVHpOyqED5XR8=
-
-[gpg]
-format = ssh
-
-[gpg "ssh"]
-program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-
-[checkout]
-defaultRemote=origin
-
-[commit]
-gpgsign = true
-
-[core]
-editor = hx
-ignorecase = false
-whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-excludesfile = ~/.gitignore_global
-pager = delta
-autoCRLF = false
-
-[apply]
-whitespace = fix
-
-[branch]
-autosetuprebase = always
-
-[fetch]
-prune = true
-
-[pull]
-rebase = true
-
-[push]
-default = current
-
-[color]
-ui = auto
-
-[color "branch"]
-current = yellow reverse
-local = yellow
-remote = green
-
-[color "status"]
-added = yellow
-changed = green
-untracked = cyan
-
-[diff]
-renames = copies
-
-[diff "bin"]
-textconv = hexdump -v -C
-
-[help]
-autocorrect = 0
-
-[merge]
-log = true
-
-[alias]
-st = status
-amend = commit --amend
-fixcommit = commit --fixup
-graph = log --graph -10 --branches --remotes --tags --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
-history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
-discard = checkout --
-subupdate = submodule update --init --recursive
-subupdate-all = submodule foreach git pull origin master
-pull-requst = !fzf-hub-pull-requests
-pr = pull-requst
-c = !fzf-git-checkout
-delete = !git branch -D $(git branch | fzf)
-code = "!f() { \
-  dir=$(ghq list --full-path | fzf --prompt='code> ' \
-	--preview 'ls -a {} | head'); \
-  [ -z \"$dir\" ] && exit 0; \
-  code \"$dir\"; }; f"
-
-[filter "lfs"]
-clean = git-lfs clean -- %f
-smudge = git-lfs smudge -- %f
-process = git-lfs filter-process
-required = true
-
-[interactive]
-diffFilter = delta --color-only --features=interactive
-
-[delta]
-decorations = true
-line-numbers = true
-side-by-side = true
-
-[delta "interactive"]
-keep-plus-minus-markers = true
-
-[ghq]
-root = ~/ghq
-root = ~/go/src
+	name = neko-neko
+	email = seiichi.nishikata456@gmail.com
+	signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqDGFeQ/xG1woOmTgJbEGteZbYP3FMZezrb3URwcZAcJHf85+2E5aLYHiJLx0qsctBrUmHd3dChoTAm9gNNdHKP1DBALg9XCirwk1XeQpuweA7IiLJIIPqdmEneQt/hx22QWOkXR0glvMnoyAd/Yg+C5Q2mzD2qtKnPSN61IneX8lLf1pNloqj3kNVSEN+qy/nU8vm8PfG/GRzPsZWGCwaOa6CLmn+4+V51udALIQNAcWgQRAcj+VfbPczS7YJdxI8gk22FAD0NhPh1g5iu0f7gIpZqLHEu3RqwfoDnPCu/2rmhknKfTAlYNgm7ue7u/QOgSVJYFrEAf2OeBwFmZTQk+vh4Hj02u7B1iUCN4YUcjjmKF067trmRhvZIbWztg1rkKf8Z12MQteA5gV9agdh4+g7/oxXcfVB7GrZ2ndsqEncdxslBhO9Lb2FhJWtqPgcfxOseeLrB6xJJH+fed0R/9DeYBYdtqpQ7s5Xapu2ks8CDCH9sNnVHpOyqED5XR8=
 
 [github]
-user = neko-neko
+	user = neko-neko
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+	gpgsign = true
+
+# ====================
+# Core
+# ====================
+[core]
+	editor = hx
+	ignorecase = false
+	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+	excludesfile = ~/.gitignore_global
+	pager = delta
+	autoCRLF = false
 
 [init]
-defaultBranch = main
+	defaultBranch = main
 
+[help]
+	autocorrect = 0
+
+# ====================
+# Workflow
+# ====================
+[apply]
+	whitespace = fix
+
+[branch]
+	autosetuprebase = always
+
+[checkout]
+	defaultRemote = origin
+
+[fetch]
+	prune = true
+
+[merge]
+	log = true
+
+[pull]
+	rebase = true
+
+[push]
+	default = current
+
+# ====================
+# Diff & Delta
+# ====================
+[diff]
+	renames = copies
+
+[diff "bin"]
+	textconv = hexdump -v -C
+
+[interactive]
+	diffFilter = delta --color-only --features=interactive
+
+[delta]
+	decorations = true
+	line-numbers = true
+	side-by-side = true
+
+[delta "interactive"]
+	keep-plus-minus-markers = true
+
+# ====================
+# Color
+# ====================
+[color]
+	ui = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+# ====================
+# Alias
+# ====================
+[alias]
+	st = status
+	amend = commit --amend
+	fixcommit = commit --fixup
+	graph = log --graph -10 --branches --remotes --tags --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
+	history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
+	discard = checkout --
+	subupdate = submodule update --init --recursive
+	subupdate-all = submodule foreach git pull origin master
+	pull-requst = !fzf-hub-pull-requests
+	pr = pull-requst
+	c = !fzf-git-checkout
+	delete = !git branch -D $(git branch | fzf)
+	code = "!f() { \
+	  dir=$(ghq list --full-path | fzf --prompt='code> ' \
+		--preview 'ls -a {} | head'); \
+	  [ -z \"$dir\" ] && exit 0; \
+	  code \"$dir\"; }; f"
+
+# ====================
+# Tools
+# ====================
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[ghq]
+	root = ~/ghq
+	root = ~/go/src
+
+# ===================
+# Override
+# ===================
 [include]
-path = ~/.gitconfig.local
+	path = ~/.gitconfig.local
