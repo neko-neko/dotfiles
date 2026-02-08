@@ -4,7 +4,7 @@ local act = wezterm.action
 
 -- toggle full-screeen on startup
 wezterm.on("gui-startup", function()
-  local tab, pane, window = mux.spawn_window(cmd or {})
+  local tab, pane, window = mux.spawn_window({})
   window:gui_window():toggle_fullscreen()
 end)
 
@@ -73,6 +73,7 @@ config.tab_bar_at_bottom = true
 config.color_scheme = 'nordfox'
 
 -- font
+config.font_size = 12.0
 config.font = wezterm.font_with_fallback({
   { family = "Monaspace Neon", harfbuzz_features = { "calt", "liga", "dlig" } },
   "Hiragino Sans",
