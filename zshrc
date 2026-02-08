@@ -115,6 +115,13 @@ source ${HOME}/.aliases
 eval "$(starship init zsh)"
 
 # ------------------------------
+# WezTerm Shell Integration
+# ------------------------------
+if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
+  source "/Applications/WezTerm.app/Contents/Resources/wezterm.sh" 2>/dev/null
+fi
+
+# ------------------------------
 # direnv hook
 # ------------------------------
 if type direnv > /dev/null; then

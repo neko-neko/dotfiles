@@ -54,10 +54,35 @@ local function rename_workspace(window, pane, line)
   end
 end
 
+---------------------------------------------------------------
+-- Tab Title: show "process: dir" (e.g. "claude: my-project")
+---------------------------------------------------------------
+local function basename(s)
+  return string.gsub(s, '(.*[/\\])(.*)', '%2')
+end
+
+wezterm.on('format-tab-title', function(tab)
+  local pane = tab.active_pane
+  local cwd = pane.current_working_directory
+  local proc = basename(pane.foreground_process_name) or ''
+  local dir = ''
+  if cwd then
+    local path = type(cwd) == 'userdata' and cwd.file_path or tostring(cwd):gsub('file://[^/]*', '')
+    dir = path:match('([^/]+)/?$') or path
+  end
+  if proc ~= '' and dir ~= '' then
+    return string.format(' %s: %s ', proc, dir)
+  elseif dir ~= '' then
+    return string.format(' %s ', dir)
+  end
+  return string.format(' %s ', pane.title)
+end)
+
 local config = wezterm.config_builder()
 config.check_for_updates = true
 config.use_ime = true
 config.audible_bell = 'SystemBeep'
+config.scrollback_lines = 10000
 
 -- window
 config.window_padding = {
@@ -103,6 +128,10 @@ config.keys = {
       action = wezterm.action_callback(create_workspace),
     },
   },
+
+  -- Scroll to previous/next prompt (requires shell integration)
+  { key = 'UpArrow', mods = 'SUPER|SHIFT', action = act.ScrollToPrompt(-1) },
+  { key = 'DownArrow', mods = 'SUPER|SHIFT', action = act.ScrollToPrompt(1) },
 
   -- Rename workspace
   {
