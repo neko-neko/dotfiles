@@ -33,7 +33,7 @@
 	defaultBranch = main
 
 [help]
-	autocorrect = 0
+	autocorrect = prompt
 
 # ====================
 # Workflow
@@ -58,6 +58,10 @@
 
 [push]
 	default = current
+	autoSetupRemote = true
+
+[rerere]
+	enabled = true
 
 # ====================
 # Diff & Delta
@@ -104,18 +108,17 @@
 	fixcommit = commit --fixup
 	graph = log --graph -10 --branches --remotes --tags --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
 	history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
-	discard = checkout --
 	subupdate = submodule update --init --recursive
-	subupdate-all = submodule foreach git pull origin master
-	pull-requst = !fzf-hub-pull-requests
-	pr = pull-requst
+	subupdate-all = submodule foreach git pull origin HEAD
+	pull-request = !fzf-hub-pull-requests
+	pr = pull-request
 	c = !fzf-git-checkout
-	delete = !git branch -D $(git branch | fzf)
-	code = "!f() { \
-	  dir=$(ghq list --full-path | fzf --prompt='code> ' \
+	delete = !git branch -d $(git branch | fzf)
+	cursor = "!f() { \
+	  dir=$(ghq list --full-path | fzf --prompt='cursor> ' \
 		--preview 'ls -a {} | head'); \
 	  [ -z \"$dir\" ] && exit 0; \
-	  code \"$dir\"; }; f"
+	  cursor \"$dir\"; }; f"
 
 # ====================
 # Tools
