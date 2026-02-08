@@ -69,7 +69,6 @@ brew 'direnv'
 brew 'fzf'
 brew 'helix'
 brew 'ripgrep'
-brew 'shellcheck'
 brew 'sheldon'
 brew 'starship'
 
