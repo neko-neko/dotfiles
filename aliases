@@ -94,7 +94,7 @@ alias signin='eval $(op signin)'
 # ------------------------------
 # claude code
 # ------------------------------
-alias claude-mem='bun "${HOME}/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
+alias gcm='git diff --cached --diff-algorithm=minimal | claude -p "この差分に対する簡潔なコミットメッセージを1行で生成してください。Conventional Commits形式（feat:, fix:, refactor:等）で、本文は日本語、50文字以内。メッセージのみ出力し、それ以外は何も出力しないでください。" | xargs -0 git commit -m'
 
 # ------------------------------
 # Override

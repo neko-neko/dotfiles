@@ -1,0 +1,226 @@
+#!/bin/bash
+set -euo pipefail
+
+readonly LOG_PREFIX="[claude-handover]"
+readonly MAX_MARKDOWN_BYTES=102400  # 100KB
+readonly MIN_JSONL_LINES=10
+
+log() {
+  echo "${LOG_PREFIX} $*" >&2
+}
+
+die() {
+  log "ERROR: $*"
+  exit 0  # hooks をブロックしない
+}
+
+# ---------------------------------------------------------------------------
+# 引数
+# ---------------------------------------------------------------------------
+TRIGGER="${1:-}"
+if [[ -z "$TRIGGER" ]]; then
+  die "usage: claude-handover <pre-compact|session-end>"
+fi
+if [[ "$TRIGGER" != "pre-compact" && "$TRIGGER" != "session-end" ]]; then
+  die "unknown trigger: ${TRIGGER}"
+fi
+
+# ---------------------------------------------------------------------------
+# 1. stdin から JSON を読み取り
+# ---------------------------------------------------------------------------
+STDIN_JSON="$(cat)"
+if [[ -z "$STDIN_JSON" ]]; then
+  die "no JSON received on stdin"
+fi
+
+SESSION_ID="$(echo "$STDIN_JSON" | jq -r '.session_id // empty')"
+TRANSCRIPT_PATH="$(echo "$STDIN_JSON" | jq -r '.transcript_path // empty')"
+
+if [[ -z "$SESSION_ID" ]]; then
+  die "session_id not found in stdin JSON"
+fi
+if [[ -z "$TRANSCRIPT_PATH" ]]; then
+  die "transcript_path not found in stdin JSON"
+fi
+
+# ---------------------------------------------------------------------------
+# 2. Guard clauses
+# ---------------------------------------------------------------------------
+if [[ -z "${CLAUDE_PROJECT_DIR:-}" ]]; then
+  die "CLAUDE_PROJECT_DIR is not set"
+fi
+
+if [[ ! -f "$TRANSCRIPT_PATH" ]]; then
+  die "transcript file does not exist: ${TRANSCRIPT_PATH}"
+fi
+
+LINE_COUNT="$(wc -l < "$TRANSCRIPT_PATH" | tr -d ' ')"
+if [[ "$LINE_COUNT" -lt "$MIN_JSONL_LINES" ]]; then
+  log "transcript too short (${LINE_COUNT} lines < ${MIN_JSONL_LINES}), skipping"
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# 3. JSONL を軽量 Markdown に変換
+# ---------------------------------------------------------------------------
+read -r -d '' JQ_FILTER << 'JQEOF' || true
+select(.type == "user" or .type == "assistant") |
+if .type == "user" then
+  (if (.message.content | type) == "string" then .message.content
+   else (.message.content // [] | map(select(.type == "text") | .text) | join("\n"))
+   end) as $text |
+  if ($text | length) > 0 then
+    "## User\n" + $text + "\n"
+  else empty end
+elif .type == "assistant" then
+  (if (.message.content | type) == "string" then .message.content
+   else (.message.content // [] | map(select(.type == "text") | .text) | join("\n"))
+   end) as $text |
+  (if (.message.content | type) == "string" then ""
+   else (.message.content // [] | map(select(.type == "thinking") | .thinking) | join("\n"))
+   end) as $thinking |
+  (
+    if ($text | length) > 0 then "## Assistant\n" + $text + "\n" else "" end
+  ) + (
+    if ($thinking | length) > 0 then "## Thinking\n" + $thinking + "\n" else "" end
+  ) |
+  if (. | length) > 0 then . else empty end
+else empty end
+JQEOF
+
+CONVERTED_LOG="$(jq -r "$JQ_FILTER" "$TRANSCRIPT_PATH" 2>/dev/null)" || die "jq failed to parse transcript"
+
+if [[ -z "$CONVERTED_LOG" ]]; then
+  die "converted log is empty"
+fi
+
+# 100KB 超の場合は末尾から切り出し
+BYTE_SIZE="${#CONVERTED_LOG}"
+if [[ "$BYTE_SIZE" -gt "$MAX_MARKDOWN_BYTES" ]]; then
+  log "converted log too large (${BYTE_SIZE} bytes), truncating to last ${MAX_MARKDOWN_BYTES} bytes"
+  CONVERTED_LOG="${CONVERTED_LOG: -$MAX_MARKDOWN_BYTES}"
+fi
+
+# ---------------------------------------------------------------------------
+# 4. claude -p でサマリー生成
+# ---------------------------------------------------------------------------
+CURRENT_TIME="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+read -r -d '' SUMMARY_PROMPT << PROMPTEOF || true
+以下はClaude Codeセッションのチャットログです。このセッションの内容を以下のフォーマットでハンドオーバー文書として要約してください。
+
+フォーマット:
+# Session Handover
+> Generated: ${CURRENT_TIME}
+> Session: ${SESSION_ID}
+
+## 作業内容
+- 完了したタスクと未完了のタスク
+
+## 未完了タスク
+- 次にやるべきこと（優先順位付き）
+
+## 決定事項
+- 方針とその理由
+
+## 問題と解決策
+- 遭遇した問題とその解決方法
+
+## 教訓・注意点
+- 今後注意すべきポイント
+
+## 重要ファイル
+- 変更・参照した主要ファイルのパスと役割
+
+制約:
+- 200行以内
+- コードブロックは含めず、ファイルパス:行番号で参照
+- チャットログの事実のみ記述、推測しない
+- 日本語で出力
+PROMPTEOF
+
+log "generating summary via claude -p (trigger=${TRIGGER})..."
+SUMMARY="$(echo "$CONVERTED_LOG" | claude -p --model sonnet --system-prompt "$SUMMARY_PROMPT" 2>/dev/null)" || die "claude -p failed for summary generation"
+
+if [[ -z "$SUMMARY" ]]; then
+  die "generated summary is empty"
+fi
+
+# ---------------------------------------------------------------------------
+# 5. handover.md 書き出し
+# ---------------------------------------------------------------------------
+HANDOVER_DIR="${CLAUDE_PROJECT_DIR}/.claude"
+HANDOVER_PATH="${HANDOVER_DIR}/handover.md"
+
+mkdir -p "$HANDOVER_DIR"
+echo "$SUMMARY" > "$HANDOVER_PATH"
+log "handover.md written to ${HANDOVER_PATH}"
+
+# ---------------------------------------------------------------------------
+# 6. (session-end のみ) MEMORY.md 更新
+# ---------------------------------------------------------------------------
+if [[ "$TRIGGER" == "session-end" ]]; then
+  # encoded-project-path: / と . を - に置換（Claude Code の実際のエンコーディングに合わせる）
+  ENCODED_PATH="${CLAUDE_PROJECT_DIR//[\/.]/-}"
+  MEMORY_DIR="${HOME}/.claude/projects/${ENCODED_PATH}/memory"
+  MEMORY_PATH="${MEMORY_DIR}/MEMORY.md"
+
+  EXISTING_MEMORY=""
+  if [[ -f "$MEMORY_PATH" ]]; then
+    EXISTING_MEMORY="$(cat "$MEMORY_PATH")"
+  fi
+
+  read -r -d '' MEMORY_SYSTEM_PROMPT << 'MSEOF' || true
+あなたはプロジェクト横断で再利用可能な知見を抽出するアシスタントです。
+
+以下のルールに従ってください:
+- セッションのハンドオーバー文書から、他のプロジェクトや将来のセッションでも役立つ汎用的な知見・パターン・注意点のみを抽出
+- プロジェクト固有の詳細（具体的なファイルパス、タスクの進捗など）は含めない
+- 既存の MEMORY.md の内容と重複する知見は出力しない
+- 新しい知見がなければ「追記なし」とだけ出力
+- 出力は箇条書きの Markdown 形式
+- 日本語で出力
+MSEOF
+
+  MEMORY_USER_PROMPT="## 既存の MEMORY.md
+${EXISTING_MEMORY:-（なし）}
+
+## 今回のハンドオーバー文書
+${SUMMARY}"
+
+  log "extracting reusable knowledge for MEMORY.md..."
+  MEMORY_ADDITION="$(echo "$MEMORY_USER_PROMPT" | claude -p --model sonnet --system-prompt "$MEMORY_SYSTEM_PROMPT" 2>/dev/null)" || {
+    log "WARNING: claude -p failed for MEMORY.md update, skipping"
+    MEMORY_ADDITION=""
+  }
+
+  if [[ -n "$MEMORY_ADDITION" && "$MEMORY_ADDITION" != "追記なし" ]]; then
+    mkdir -p "$MEMORY_DIR"
+    if [[ -n "$EXISTING_MEMORY" ]]; then
+      printf "\n%s\n" "$MEMORY_ADDITION" >> "$MEMORY_PATH"
+    else
+      echo "$MEMORY_ADDITION" > "$MEMORY_PATH"
+    fi
+    log "MEMORY.md updated at ${MEMORY_PATH}"
+  else
+    log "no new knowledge to add to MEMORY.md"
+  fi
+
+  # ---------------------------------------------------------------------------
+  # 7. (session-end のみ) WezTerm 新セッション起動
+  # ---------------------------------------------------------------------------
+  if command -v wezterm &>/dev/null && [[ -f "$HANDOVER_PATH" ]]; then
+    log "spawning new Claude session in WezTerm..."
+    wezterm cli spawn --cwd "$CLAUDE_PROJECT_DIR" -- bash -c "claude -r \"${SESSION_ID}\"" 2>/dev/null || {
+      log "WARNING: wezterm cli spawn failed"
+    }
+  else
+    if ! command -v wezterm &>/dev/null; then
+      log "wezterm cli not available, skipping session spawn"
+    else
+      log "handover.md not found, skipping session spawn"
+    fi
+  fi
+fi
+
+log "done (trigger=${TRIGGER})"
