@@ -25,3 +25,15 @@
 
  - 完了タスクの要約・整理はユーザーに指摘される前に行うこと
  - セッション開始時に `.claude/handover.md` が存在する場合は最初に読み込むこと
+
+## Handover Protocol
+
+- `continue from handover` や handover.md への言及があった場合、まず前回の変更がコミット済みか `git log` で確認してから作業を開始すること
+- 全タスク完了済み（status: ALL_COMPLETE）なら即座にその旨を報告し、コードベースの探索を始めないこと
+- handover 文書には必ず以下を含めること:
+  - 具体的なファイルパス
+  - タスクID（T1, T2, ...）
+  - ブロッカー（あれば）
+  - コミット SHA（完了タスク）
+- セッション開始時に `.claude/project-state.json` が存在する場合は最初に読み込むこと
+- `.claude/handover.md` は `.claude/project-state.json` から自動生成されたビューであり、直接編集しないこと

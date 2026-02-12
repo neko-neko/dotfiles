@@ -1,12 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-readonly LOG_PREFIX="[claude-handover]"
+readonly HANDOVER_LOG_PREFIX="[claude-handover]"
 readonly MAX_MARKDOWN_BYTES=102400  # 100KB
 readonly MIN_JSONL_LINES=10
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/claude-handover-lib.sh"
+
 log() {
-  echo "${LOG_PREFIX} $*" >&2
+  echo "${HANDOVER_LOG_PREFIX} $*" >&2
 }
 
 die() {
@@ -61,24 +64,47 @@ if [[ "$LINE_COUNT" -lt "$MIN_JSONL_LINES" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 3. JSONL を軽量 Markdown に変換
+# 3. Setup paths
+# ---------------------------------------------------------------------------
+CLAUDE_DIR="${CLAUDE_PROJECT_DIR}/.claude"
+STATE_FILE="${CLAUDE_DIR}/project-state.json"
+HANDOVER_PATH="${CLAUDE_DIR}/handover.md"
+mkdir -p "$CLAUDE_DIR"
+
+# ---------------------------------------------------------------------------
+# 4. session-end: check if state has changed (skip if unchanged)
+# ---------------------------------------------------------------------------
+if [[ "$TRIGGER" == "session-end" && -f "$STATE_FILE" ]]; then
+  if ! has_state_changed "$STATE_FILE"; then
+    log "project-state.json unchanged since session start, skipping update"
+    # Still proceed to MEMORY.md update and session spawn
+    # but skip the expensive transcript processing
+    goto_session_end_tasks=true
+  fi
+fi
+
+if [[ "${goto_session_end_tasks:-false}" != "true" ]]; then
+
+# ---------------------------------------------------------------------------
+# 5. JSONL を軽量 Markdown に変換 (BUG FIX: .message が null のケースに対応)
 # ---------------------------------------------------------------------------
 read -r -d '' JQ_FILTER << 'JQEOF' || true
 select(.type == "user" or .type == "assistant") |
+select(.message != null) |
 if .type == "user" then
   (if (.message.content | type) == "string" then .message.content
-   else (.message.content // [] | map(select(.type == "text") | .text) | join("\n"))
-   end) as $text |
+   elif (.message.content | type) == "array" then (.message.content | map(select(.type == "text") | .text) | join("\n"))
+   else "" end) as $text |
   if ($text | length) > 0 then
     "## User\n" + $text + "\n"
   else empty end
 elif .type == "assistant" then
   (if (.message.content | type) == "string" then .message.content
-   else (.message.content // [] | map(select(.type == "text") | .text) | join("\n"))
-   end) as $text |
-  (if (.message.content | type) == "string" then ""
-   else (.message.content // [] | map(select(.type == "thinking") | .thinking) | join("\n"))
-   end) as $thinking |
+   elif (.message.content | type) == "array" then (.message.content | map(select(.type == "text") | .text) | join("\n"))
+   else "" end) as $text |
+  (if (.message.content | type) == "array" then
+     (.message.content | map(select(.type == "thinking") | .thinking) | join("\n"))
+   else "" end) as $thinking |
   (
     if ($text | length) > 0 then "## Assistant\n" + $text + "\n" else "" end
   ) + (
@@ -102,67 +128,138 @@ if [[ "$BYTE_SIZE" -gt "$MAX_MARKDOWN_BYTES" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 4. claude -p でサマリー生成
+# 6. claude -p で project-state.json 生成
 # ---------------------------------------------------------------------------
 CURRENT_TIME="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
+# 既存の project-state.json があればマージ用に読み込む
+EXISTING_STATE=""
+if [[ -f "$STATE_FILE" ]] && validate_project_state "$STATE_FILE" 2>/dev/null; then
+  EXISTING_STATE="$(cat "$STATE_FILE")"
+fi
+
 read -r -d '' SUMMARY_PROMPT << PROMPTEOF || true
-以下はClaude Codeセッションのチャットログです。このセッションの内容を以下のフォーマットでハンドオーバー文書として要約してください。
+以下はClaude Codeセッションのチャットログです。このセッションの内容をproject-state.json形式で出力してください。
 
-フォーマット:
-# Session Handover
-> Generated: ${CURRENT_TIME}
-> Session: ${SESSION_ID}
+出力は以下のJSONスキーマに厳密に従うこと（JSONのみ出力、他のテキストは不要）:
 
-## 作業内容
-- 完了したタスクと未完了のタスク
+{
+  "version": 2,
+  "generated_at": "${CURRENT_TIME}",
+  "session_id": "${SESSION_ID}",
+  "status": "READY または ALL_COMPLETE",
+  "active_tasks": [
+    {
+      "id": "T1",
+      "description": "タスクの説明",
+      "status": "done | in_progress | blocked",
+      "commit_sha": "コミットSHA（done の場合のみ、不明なら null）",
+      "file_paths": ["関連ファイルパス"],
+      "next_action": "次の具体的アクション（in_progress/blocked の場合）",
+      "blockers": ["ブロッカー（blocked の場合）"],
+      "last_touched": "${CURRENT_TIME}"
+    }
+  ],
+  "recent_decisions": [
+    {
+      "decision": "決定事項",
+      "rationale": "理由",
+      "date": "${CURRENT_TIME}"
+    }
+  ],
+  "architecture_changes": [],
+  "known_issues": [
+    {
+      "description": "既知の問題",
+      "severity": "high | medium | low",
+      "related_files": ["関連ファイル"]
+    }
+  ],
+  "session_hash": ""
+}
 
-## 未完了タスク
-- 次にやるべきこと（優先順位付き）
-
-## 決定事項
-- 方針とその理由
-
-## 問題と解決策
-- 遭遇した問題とその解決方法
-
-## 教訓・注意点
-- 今後注意すべきポイント
-
-## 重要ファイル
-- 変更・参照した主要ファイルのパスと役割
-
-制約:
-- 200行以内
-- コードブロックは含めず、ファイルパス:行番号で参照
-- チャットログの事実のみ記述、推測しない
-- 日本語で出力
+ルール:
+- active_tasks の全 status が "done" なら、トップレベルの status を "ALL_COMPLETE" にする
+- チャットログの事実のみ記述し、推測しない
+- architecture_changes は空配列にする（post-commit hook が管理する）
+- 日本語で記述
 PROMPTEOF
 
-log "generating summary via claude -p (trigger=${TRIGGER})..."
-SUMMARY="$(echo "$CONVERTED_LOG" | claude -p --model sonnet --system-prompt "$SUMMARY_PROMPT" 2>/dev/null)" || die "claude -p failed for summary generation"
+# 既存 state がある場合はマージ指示を追加
+USER_PROMPT="$CONVERTED_LOG"
+if [[ -n "$EXISTING_STATE" ]]; then
+  read -r -d '' MERGE_INSTRUCTION << 'MERGEEOF' || true
 
-if [[ -z "$SUMMARY" ]]; then
-  die "generated summary is empty"
+--- 以下は既存の project-state.json です。マージルール: ---
+- active_tasks: 同じ ID のタスクは最新の情報で上書き、新しいタスクは追加
+- recent_decisions: 重複しない決定事項を追記
+- architecture_changes: 既存のものをそのまま保持（変更しない）
+- known_issues: 解決済みなら削除、新規は追加
+
+既存の project-state.json:
+MERGEEOF
+  USER_PROMPT="${CONVERTED_LOG}
+
+${MERGE_INSTRUCTION}
+${EXISTING_STATE}"
+fi
+
+log "generating project-state.json via claude -p (trigger=${TRIGGER})..."
+GENERATED_JSON="$(echo "$USER_PROMPT" | claude -p --model sonnet --system-prompt "$SUMMARY_PROMPT" 2>/dev/null)" || die "claude -p failed for JSON generation"
+
+if [[ -z "$GENERATED_JSON" ]]; then
+  die "generated JSON is empty"
+fi
+
+# JSON から余計なテキストを除去（```json ... ``` でラップされている場合）
+GENERATED_JSON="$(echo "$GENERATED_JSON" | sed -n '/^[{]/,/^[}]/p')"
+
+# JSON バリデーション
+if ! echo "$GENERATED_JSON" | jq empty 2>/dev/null; then
+  die "generated output is not valid JSON"
+fi
+
+# architecture_changes を既存のものとマージ
+if [[ -n "$EXISTING_STATE" ]]; then
+  EXISTING_ARCH="$(echo "$EXISTING_STATE" | jq '.architecture_changes // []')"
+  GENERATED_JSON="$(echo "$GENERATED_JSON" | jq --argjson arch "$EXISTING_ARCH" '.architecture_changes = $arch')"
 fi
 
 # ---------------------------------------------------------------------------
-# 5. handover.md 書き出し
+# 7. project-state.json 書き出し
 # ---------------------------------------------------------------------------
-HANDOVER_DIR="${CLAUDE_PROJECT_DIR}/.claude"
-HANDOVER_PATH="${HANDOVER_DIR}/handover.md"
+echo "$GENERATED_JSON" > "$STATE_FILE"
 
-mkdir -p "$HANDOVER_DIR"
-echo "$SUMMARY" > "$HANDOVER_PATH"
+# status を再計算
+update_status_field "$STATE_FILE"
+
+# session_hash を保存
+store_session_hash "$STATE_FILE"
+
+log "project-state.json written to ${STATE_FILE}"
+
+# ---------------------------------------------------------------------------
+# 8. handover.md ビュー生成
+# ---------------------------------------------------------------------------
+generate_handover_md "$STATE_FILE" "$HANDOVER_PATH"
 log "handover.md written to ${HANDOVER_PATH}"
 
+fi  # end of goto_session_end_tasks check
+
 # ---------------------------------------------------------------------------
-# 6. (session-end のみ) MEMORY.md 更新
+# 9. (session-end のみ) MEMORY.md 更新
 # ---------------------------------------------------------------------------
 if [[ "$TRIGGER" == "session-end" ]]; then
-  # encoded-project-path: / と . を - に置換（Claude Code の実際のエンコーディングに合わせる）
-  ENCODED_PATH="${CLAUDE_PROJECT_DIR//[\/.]/-}"
-  MEMORY_DIR="${HOME}/.claude/projects/${ENCODED_PATH}/memory"
+  # BUG FIX: MEMORY.md パスを既存ディレクトリから検出
+  MEMORY_DIR="$(find_memory_dir "$CLAUDE_PROJECT_DIR")"
+
+  if [[ -z "$MEMORY_DIR" ]]; then
+    # フォールバック: 従来のエンコーディング
+    ENCODED_PATH="${CLAUDE_PROJECT_DIR//[\/.]/-}"
+    ENCODED_PATH="${ENCODED_PATH#-}"
+    MEMORY_DIR="${HOME}/.claude/projects/${ENCODED_PATH}/memory"
+  fi
+
   MEMORY_PATH="${MEMORY_DIR}/MEMORY.md"
 
   EXISTING_MEMORY=""
@@ -170,7 +267,14 @@ if [[ "$TRIGGER" == "session-end" ]]; then
     EXISTING_MEMORY="$(cat "$MEMORY_PATH")"
   fi
 
-  read -r -d '' MEMORY_SYSTEM_PROMPT << 'MSEOF' || true
+  # handover.md を MEMORY.md 更新のソースとして使用
+  HANDOVER_CONTENT=""
+  if [[ -f "$HANDOVER_PATH" ]]; then
+    HANDOVER_CONTENT="$(cat "$HANDOVER_PATH")"
+  fi
+
+  if [[ -n "$HANDOVER_CONTENT" ]]; then
+    read -r -d '' MEMORY_SYSTEM_PROMPT << 'MSEOF' || true
 あなたはプロジェクト横断で再利用可能な知見を抽出するアシスタントです。
 
 以下のルールに従ってください:
@@ -182,32 +286,33 @@ if [[ "$TRIGGER" == "session-end" ]]; then
 - 日本語で出力
 MSEOF
 
-  MEMORY_USER_PROMPT="## 既存の MEMORY.md
+    MEMORY_USER_PROMPT="## 既存の MEMORY.md
 ${EXISTING_MEMORY:-（なし）}
 
 ## 今回のハンドオーバー文書
-${SUMMARY}"
+${HANDOVER_CONTENT}"
 
-  log "extracting reusable knowledge for MEMORY.md..."
-  MEMORY_ADDITION="$(echo "$MEMORY_USER_PROMPT" | claude -p --model sonnet --system-prompt "$MEMORY_SYSTEM_PROMPT" 2>/dev/null)" || {
-    log "WARNING: claude -p failed for MEMORY.md update, skipping"
-    MEMORY_ADDITION=""
-  }
+    log "extracting reusable knowledge for MEMORY.md..."
+    MEMORY_ADDITION="$(echo "$MEMORY_USER_PROMPT" | claude -p --model sonnet --system-prompt "$MEMORY_SYSTEM_PROMPT" 2>/dev/null)" || {
+      log "WARNING: claude -p failed for MEMORY.md update, skipping"
+      MEMORY_ADDITION=""
+    }
 
-  if [[ -n "$MEMORY_ADDITION" && "$MEMORY_ADDITION" != "追記なし" ]]; then
-    mkdir -p "$MEMORY_DIR"
-    if [[ -n "$EXISTING_MEMORY" ]]; then
-      printf "\n%s\n" "$MEMORY_ADDITION" >> "$MEMORY_PATH"
+    if [[ -n "$MEMORY_ADDITION" && "$MEMORY_ADDITION" != "追記なし" ]]; then
+      mkdir -p "$MEMORY_DIR"
+      if [[ -n "$EXISTING_MEMORY" ]]; then
+        printf "\n%s\n" "$MEMORY_ADDITION" >> "$MEMORY_PATH"
+      else
+        echo "$MEMORY_ADDITION" > "$MEMORY_PATH"
+      fi
+      log "MEMORY.md updated at ${MEMORY_PATH}"
     else
-      echo "$MEMORY_ADDITION" > "$MEMORY_PATH"
+      log "no new knowledge to add to MEMORY.md"
     fi
-    log "MEMORY.md updated at ${MEMORY_PATH}"
-  else
-    log "no new knowledge to add to MEMORY.md"
   fi
 
   # ---------------------------------------------------------------------------
-  # 7. (session-end のみ) WezTerm 新セッション起動
+  # 10. (session-end のみ) WezTerm 新セッション起動
   # ---------------------------------------------------------------------------
   if command -v wezterm &>/dev/null && [[ -f "$HANDOVER_PATH" ]]; then
     log "spawning new Claude session in WezTerm..."
