@@ -6,9 +6,24 @@ user-invocable: true
 
 前セッションからの引き継ぎを確認し、未完了タスクがあれば承認後に作業を再開する。
 
+## パス解決（読み込み先の決定）
+
+以下の順序で読み込み先ディレクトリを決定する:
+
+1. 自分を起動した prompt に handover ファイルの明示的なパスが含まれるか確認する
+   - 含まれる場合 → そのパスのディレクトリを使用
+2. 自分がチームに所属しているか確認する:
+   - 自分を起動した prompt に `team_name` が指定されているか（最優先）
+   - または、`~/.claude/teams/{team-name}/config.json` の `members` 配列に自分の `name` が含まれるか
+   - 両方の方法で異なるチーム名が検出された場合、prompt の `team_name` を優先する
+3. 読み込み先を決定する:
+   - **明示パスあり** → 指定されたパス
+   - **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`
+   - **チーム所属なし** → `.claude/`
+
 ## 手順
 
-1. `.claude/project-state.json` を読み込む
+1. `{読み込み先}/project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
    - JSON として不正な場合 → エラーを報告して終了
    - 必須フィールド（version, status, active_tasks）が欠けている場合 → エラーを報告して終了
@@ -27,17 +42,18 @@ user-invocable: true
    - ブロッカー（blockers があれば表示）
    - `last_touched` が 48 時間以上前のタスクには「⚠ stale（48h 以上未更新）」と警告を付ける
 
-5. ユーザーに「これらのタスクを優先順に進めますか？」と確認する
-   - 承認されるまで作業を開始しない
+5. 作業開始の確認:
+   - 後継エージェントとして起動された場合（prompt に「後継エージェント」を含む）→ 承認をスキップし即座に作業を開始する
+   - それ以外 → ユーザーに「これらのタスクを優先順に進めますか？」と確認する（承認されるまで作業を開始しない）
 
 6. 承認後、未完了タスクを一覧の順序で実行する
-   - 各タスク完了時に `.claude/project-state.json` を更新する:
+   - 各タスク完了時に `{読み込み先}/project-state.json` を更新する:
      - status を `done` に変更
      - commit_sha を記録（コミットした場合）
      - last_touched を現在時刻に更新
    - 全タスクの status が `done` になったら、トップレベルの status を `ALL_COMPLETE` に設定
 
-7. 最後に `.claude/handover.md` を `.claude/project-state.json` から再生成する
+7. 最後に `{読み込み先}/handover.md` を `{読み込み先}/project-state.json` から再生成する
    - handover.md のフォーマットは以下の通り:
 
 ```
@@ -71,4 +87,4 @@ user-invocable: true
 
 - project-state.json が存在しない、または ALL_COMPLETE の場合はコードベースの探索を行わない
 - タスク実行前に必ずユーザーの承認を得る
-- 日本語で出力する
+- 設定されている言語で出力する

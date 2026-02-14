@@ -217,30 +217,6 @@
           }
         ]
       }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-handover pre-compact",
-            "timeout": 180
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-handover session-end",
-            "timeout": 300
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
