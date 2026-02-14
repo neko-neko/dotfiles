@@ -13,7 +13,7 @@ cd ${HOME}/.dotfiles
 
 # deploy dotfiles
 for name in *; do
-  if [[ ${name} != 'setup' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'claude' ]] && [[ ${name} != 'vscode' ]] && [[ ${name} != 'README.md' ]]; then
+  if [[ ${name} != 'setup' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'vscode' ]] && [[ ${name} != 'README.md' ]]; then
     if [[ -L ${HOME}/.${name} ]]; then
       unlink ${HOME}/.${name}
     fi
@@ -40,26 +40,7 @@ if [[ ! -d ${HOME}/Library/Application\ Support/Code/User ]]; then
 fi
 ln -sfv ${PWD}/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json
 
-# deploy claude
-if [[ ! -d ${HOME}/.claude ]]; then
-  mkdir ${HOME}/.claude
-fi
-ln -sfv ${HOME}/.dotfiles/claude/CLAUDE.md ${HOME}/.claude/CLAUDE.md
-ln -sfv ${HOME}/.dotfiles/claude/settings.json ${HOME}/.claude/settings.json
-if [[ ! -d ${HOME}/.claude/skills ]]; then
-  mkdir ${HOME}/.claude/skills
-fi
-cd ${HOME}/.dotfiles/.claude/skills
-for name in *; do
-  if [[ -d ${name} ]]; then
-    if [[ -L ${HOME}/.claude/skills/${name} ]]; then
-      unlink ${HOME}/.claude/skills/${name}
-    fi
-    ln -sfv ${PWD}/${name} ${HOME}/.claude/skills/${name}
-  fi
-done
-cd ${HOME}/.dotfiles
-
 # install...
+cd ${HOME}/.dotfiles
 FORCE=1
 . ${HOME}/.dotfiles/setup/install.zsh
