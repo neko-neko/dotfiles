@@ -24,7 +24,7 @@
 ## セッション管理
 
  - 完了タスクの要約・整理はユーザーに指摘される前に行うこと
- - セッション開始時に `.claude/handover.md` が存在する場合は最初に読み込むこと
+ - セッション開始時に handover.md が存在する場合は最初に読み込むこと（パス解決は下記参照）
 
 ## Handover Protocol
 
@@ -35,5 +35,16 @@
   - タスクID（T1, T2, ...）
   - ブロッカー（あれば）
   - コミット SHA（完了タスク）
-- セッション開始時に `.claude/project-state.json` が存在する場合は最初に読み込むこと
-- `.claude/handover.md` は `.claude/project-state.json` から自動生成されたビューであり、直接編集しないこと
+- handover.md は project-state.json から自動生成されたビューであり、直接編集しないこと
+
+### パス解決
+
+- **単体セッション**: `.claude/project-state.json` と `.claude/handover.md`
+- **マルチエージェント（チーム所属時）**: `.claude/handover/{team-name}/{agent-name}/` 配下の project-state.json と handover.md
+- セッション開始時は自分の保存先パスの project-state.json を読み込むこと
+
+### マルチエージェント時の自律的 Handover
+
+- チーム所属エージェントはコンテキスト圧縮通知・ツール呼び出し50回超過・応答速度低下のいずれかで自律的に handover を実行すること
+- handover 後は Task tool で同じ type/name/team_name の後継エージェントを生成し、コンテキストを引き継ぐこと
+- チーム終了時に `.claude/handover/{team-name}/` を削除してクリーンアップすること
