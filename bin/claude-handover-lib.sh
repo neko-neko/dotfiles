@@ -2,9 +2,7 @@
 # claude-handover-lib.sh — shared utility functions for handover
 # Source this file from claude-handover and claude-post-commit
 
-readonly HANDOVER_LIB_VERSION=2
 readonly MAX_ARCHITECTURE_CHANGES=10
-readonly STALE_THRESHOLD_HOURS=48
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -52,8 +50,8 @@ validate_project_state() {
   # Version check
   local version
   version="$(jq -r '.version' "$json_file")"
-  if [[ "$version" != "2" ]]; then
-    _handover_log "ERROR: unsupported version: ${version} (expected 2)"
+  if [[ "$version" != "2" && "$version" != "3" ]]; then
+    _handover_log "ERROR: unsupported version: ${version} (expected 2 or 3)"
     return 1
   fi
 
@@ -325,20 +323,28 @@ find_memory_dir() {
 # Initialization helper
 # ---------------------------------------------------------------------------
 
-# Create a minimal empty project-state.json
-# Usage: init_project_state <output_file> <session_id>
+# Create a minimal empty project-state.json (v3)
+# Usage: init_project_state <output_file> <session_id> [workspace_root] [workspace_branch] [is_worktree]
 init_project_state() {
   local output_file="$1"
   local session_id="${2:-unknown}"
+  local workspace_root="${3:-$(git rev-parse --show-toplevel 2>/dev/null || echo "")}"
+  local workspace_branch="${4:-$(get_current_branch 2>/dev/null || echo "unknown")}"
+  local is_worktree="${5:-false}"
   local now
   now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   cat > "$output_file" << JSONEOF
 {
-  "version": 2,
+  "version": 3,
   "generated_at": "${now}",
   "session_id": "${session_id}",
   "status": "READY",
+  "workspace": {
+    "root": "${workspace_root}",
+    "branch": "${workspace_branch}",
+    "is_worktree": ${is_worktree}
+  },
   "active_tasks": [],
   "recent_decisions": [],
   "architecture_changes": [],
@@ -346,4 +352,244 @@ init_project_state() {
   "session_hash": ""
 }
 JSONEOF
+}
+
+# ---------------------------------------------------------------------------
+# Worktree-aware root resolution
+# ---------------------------------------------------------------------------
+
+# Get the current branch name, handling detached HEAD
+# Outputs branch name or "detached-{sha7}"
+# Returns 1 if not in a git repository
+get_current_branch() {
+  local branch
+  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+
+  if [[ -z "$branch" ]]; then
+    _handover_log "ERROR: unable to determine branch (not in a git repository?)"
+    return 1
+  fi
+
+  if [[ "$branch" == "HEAD" ]]; then
+    local sha
+    sha="$(git rev-parse --short=7 HEAD 2>/dev/null)"
+    if [[ -z "$sha" ]]; then
+      _handover_log "ERROR: unable to determine commit hash"
+      return 1
+    fi
+    echo "detached-${sha}"
+  else
+    echo "$branch"
+  fi
+}
+
+# Resolve the repository root (worktree-aware)
+# git rev-parse --show-toplevel automatically returns:
+# - worktree path if called from within a worktree
+# - git toplevel path if called from main repo
+# Usage: resolve_root
+resolve_root() {
+  local toplevel
+  toplevel="$(git rev-parse --show-toplevel 2>/dev/null)"
+
+  if [[ -z "$toplevel" ]]; then
+    _handover_log "ERROR: not in a git repository"
+    return 1
+  fi
+
+  echo "$toplevel"
+}
+
+# ---------------------------------------------------------------------------
+# Handover directory resolution (branch + session fingerprint)
+# ---------------------------------------------------------------------------
+
+# Resolve the full handover directory path with branch namespace and session fingerprint.
+# - Reuses an existing READY session if found under {root}/.claude/handover/{branch}/
+# - Creates a new fingerprinted directory if no active session exists
+# Usage: resolve_handover_dir
+# Outputs: absolute path to the handover directory
+resolve_handover_dir() {
+  local root
+  root="$(resolve_root)" || return 1
+
+  local branch
+  branch="$(get_current_branch)" || return 1
+
+  local branch_dir="${root}/.claude/handover/${branch}"
+
+  # Look for an existing READY session
+  if [[ -d "$branch_dir" ]]; then
+    local session_dir
+    for session_dir in "${branch_dir}"/*/; do
+      # Skip if glob didn't match (literal */  returned)
+      [[ -d "$session_dir" ]] || continue
+
+      local state_file="${session_dir}project-state.json"
+      if [[ -f "$state_file" ]]; then
+        local status
+        status="$(jq -r '.status // "UNKNOWN"' "$state_file" 2>/dev/null)"
+        if [[ "$status" == "READY" ]]; then
+          # Remove trailing slash for clean output
+          echo "${session_dir%/}"
+          return 0
+        fi
+      fi
+    done
+  fi
+
+  # No active session found — generate a new fingerprint
+  local fingerprint
+  fingerprint="$(date +%Y%m%d-%H%M%S)"
+  local new_dir="${branch_dir}/${fingerprint}"
+  mkdir -p "$new_dir"
+  echo "$new_dir"
+}
+
+# ---------------------------------------------------------------------------
+# Session scanning
+# ---------------------------------------------------------------------------
+
+# Scan handover base directory for active (non-ALL_COMPLETE) sessions.
+# Returns a JSON array of session objects.
+# Usage: scan_sessions <handover_base_dir>
+scan_sessions() {
+  local handover_base_dir="$1"
+
+  if [[ ! -d "$handover_base_dir" ]]; then
+    echo "[]"
+    return 0
+  fi
+
+  local results="[]"
+
+  local branch_dir
+  for branch_dir in "${handover_base_dir}"/*/; do
+    [[ -d "$branch_dir" ]] || continue
+
+    local session_dir
+    for session_dir in "${branch_dir}"/*/; do
+      [[ -d "$session_dir" ]] || continue
+
+      local state_file="${session_dir}project-state.json"
+      [[ -f "$state_file" ]] || continue
+
+      # Validate JSON syntax
+      if ! jq empty "$state_file" 2>/dev/null; then
+        _handover_log "WARNING: skipping invalid JSON: ${state_file}"
+        continue
+      fi
+
+      local status
+      status="$(jq -r '.status // "UNKNOWN"' "$state_file")"
+
+      # Skip ALL_COMPLETE sessions
+      if [[ "$status" == "ALL_COMPLETE" ]]; then
+        continue
+      fi
+
+      # Extract branch and fingerprint from path
+      local fingerprint branch
+      fingerprint="$(basename "${session_dir%/}")"
+      branch="$(basename "${branch_dir%/}")"
+
+      # Build session object and append to results
+      results="$(echo "$results" | jq \
+        --arg branch "$branch" \
+        --arg fingerprint "$fingerprint" \
+        --arg dir "${session_dir%/}" \
+        --arg status "$status" \
+        --arg state_file "$state_file" \
+        --slurpfile state "$state_file" \
+        '
+        . + [{
+          branch: $branch,
+          fingerprint: $fingerprint,
+          dir: $dir,
+          status: $status,
+          generated_at: ($state[0].generated_at // ""),
+          total_tasks: (($state[0].active_tasks // []) | length),
+          done_tasks: ([($state[0].active_tasks // [])[] | select(.status == "done")] | length),
+          next_action: (
+            [($state[0].active_tasks // [])[] | select(.status != "done")] |
+            if length > 0 then .[0].description // "" else "" end
+          )
+        }]
+        '
+      )"
+    done
+  done
+
+  echo "$results"
+}
+
+# ---------------------------------------------------------------------------
+# Session cleanup
+# ---------------------------------------------------------------------------
+
+# Remove ALL_COMPLETE sessions older than N days.
+# Usage: cleanup_old_sessions <handover_base_dir> <max_age_days>
+cleanup_old_sessions() {
+  local handover_base_dir="$1"
+  local max_age_days="${2:-7}"
+
+  if [[ ! -d "$handover_base_dir" ]]; then
+    return 0
+  fi
+
+  local now_epoch
+  now_epoch="$(date +%s)"
+  local max_age_seconds=$((max_age_days * 86400))
+
+  local branch_dir
+  for branch_dir in "${handover_base_dir}"/*/; do
+    [[ -d "$branch_dir" ]] || continue
+
+    local session_dir
+    for session_dir in "${branch_dir}"/*/; do
+      [[ -d "$session_dir" ]] || continue
+
+      local state_file="${session_dir}project-state.json"
+      [[ -f "$state_file" ]] || continue
+
+      # Validate JSON syntax
+      if ! jq empty "$state_file" 2>/dev/null; then
+        continue
+      fi
+
+      local status
+      status="$(jq -r '.status // "UNKNOWN"' "$state_file")"
+
+      # Only clean up ALL_COMPLETE sessions
+      if [[ "$status" != "ALL_COMPLETE" ]]; then
+        continue
+      fi
+
+      local generated_at
+      generated_at="$(jq -r '.generated_at // ""' "$state_file")"
+
+      if [[ -z "$generated_at" ]]; then
+        continue
+      fi
+
+      # Parse timestamp to epoch — macOS first, Linux fallback
+      local session_epoch
+      session_epoch="$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$generated_at" "+%s" 2>/dev/null)" \
+        || session_epoch="$(date -d "$generated_at" "+%s" 2>/dev/null)" \
+        || continue
+
+      local age_seconds=$((now_epoch - session_epoch))
+
+      if [[ $age_seconds -gt $max_age_seconds ]]; then
+        _handover_log "Removing old completed session: ${session_dir%/}"
+        rm -rf "${session_dir%/}"
+      fi
+    done
+
+    # Remove empty branch directories after cleanup
+    if [[ -d "$branch_dir" ]] && [[ -z "$(ls -A "${branch_dir%/}" 2>/dev/null)" ]]; then
+      _handover_log "Removing empty branch directory: ${branch_dir%/}"
+      rmdir "${branch_dir%/}" 2>/dev/null || true
+    fi
+  done
 }

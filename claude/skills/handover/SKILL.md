@@ -4,23 +4,35 @@ description: 現在のセッション内容を振り返り、project-state.json 
 user-invocable: true
 ---
 
-このセッションで行った作業を振り返り、`.claude/project-state.json` を生成（既存があればマージ）し、`.claude/handover.md` を自動生成する。
+このセッションで行った作業を振り返り、`project-state.json` を生成（既存があればマージ）し、`handover.md` を自動生成する。
 
 ## パス解決（保存先の決定）
 
 以下の順序で保存先ディレクトリを決定する:
 
+### チーム所属判定（既存と同じ）
+
 1. 自分がチームに所属しているか確認する:
    - 自分を起動した prompt に `team_name` が指定されているか（最優先）
    - または、`~/.claude/teams/{team-name}/config.json` の `members` 配列に自分の `name` が含まれるか
-   - 両方の方法で異なるチーム名が検出された場合、prompt の `team_name` を優先する
 2. エージェント名を取得する:
    - Task tool で起動された場合は `name` パラメータの値
    - 不明な場合は `default`
-3. 保存先を決定する:
-   - **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`
-   - **チーム所属なし** → `.claude/`
-4. 保存先ディレクトリが存在しない場合は作成する。作成に失敗した場合は `.claude/` にフォールバックする
+3. **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`（以降のブランチ分離は適用しない）
+
+### 単体セッション（チーム所属なし）
+
+1. ルートディレクトリの決定:
+   - `git rev-parse --show-toplevel` でリポジトリルートを取得
+   - `git worktree list --porcelain` で worktree 一覧を取得し、現在のブランチに対応する worktree パスがあるか確認
+   - CWD のリポジトリルートと異なる worktree が検出された場合、`AskUserQuestion` でユーザーに保存先を確認する:
+     > worktree `{path}` が検出されました。こちらの `.claude/` に保存しますか？
+2. ブランチ名を `git rev-parse --abbrev-ref HEAD` で取得。detached HEAD の場合は `detached-{sha7}` を使用
+3. `{root}/.claude/handover/{branch}/` 配下を走査:
+   - status が `READY` のセッション（= `in_progress` / `blocked` タスクを持つ）があれば、その fingerprint を再利用
+   - なければ新しい fingerprint（`$(date +%Y%m%d-%H%M%S)`）を生成
+4. 保存先: `{root}/.claude/handover/{branch}/{fingerprint}/`
+5. 保存先ディレクトリが存在しない場合は `mkdir -p` で作成する
 
 ## 手順
 
@@ -28,14 +40,23 @@ user-invocable: true
    - 存在する場合 → 既存の内容を読み込み、マージベースで更新する
    - 存在しない場合 → 新規作成する
 
+1.5. v2 互換チェック:
+   - `{root}/.claude/project-state.json`（旧パス、version 2）が存在する場合、新パスへマイグレーションする
+   - マイグレーション: 既存ファイルを `{root}/.claude/handover/{branch}/{fingerprint}/` にコピーし version を 3 に更新、workspace フィールドを追加。元ファイルはコピー成功後にのみ削除
+
 2. このセッションの作業内容を以下の JSON スキーマに従って整理する:
 
 ```json
 {
-  "version": 2,
+  "version": 3,
   "generated_at": "ISO8601 現在時刻",
   "session_id": "現在のセッションID（不明なら unknown）",
   "status": "READY | ALL_COMPLETE",
+  "workspace": {
+    "root": "リポジトリまたは worktree のルートパス",
+    "branch": "ブランチ名",
+    "is_worktree": false
+  },
   "active_tasks": [
     {
       "id": "T1",
@@ -116,6 +137,10 @@ user-invocable: true
 ## Known Issues
 - [severity] 問題の説明（なければ「なし」）
 ```
+
+## Cleanup
+
+handover 実行時に、`{root}/.claude/handover/` 配下の `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
 
 ## 自律的 Handover（マルチエージェント時）
 

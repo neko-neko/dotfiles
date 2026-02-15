@@ -8,22 +8,29 @@ user-invocable: true
 
 ## パス解決（読み込み先の決定）
 
-以下の順序で読み込み先ディレクトリを決定する:
+### チーム所属判定
 
 1. 自分を起動した prompt に handover ファイルの明示的なパスが含まれるか確認する
    - 含まれる場合 → そのパスのディレクトリを使用
-2. 自分がチームに所属しているか確認する:
-   - 自分を起動した prompt に `team_name` が指定されているか（最優先）
-   - または、`~/.claude/teams/{team-name}/config.json` の `members` 配列に自分の `name` が含まれるか
-   - 両方の方法で異なるチーム名が検出された場合、prompt の `team_name` を優先する
-3. 読み込み先を決定する:
-   - **明示パスあり** → 指定されたパス
-   - **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`
-   - **チーム所属なし** → `.claude/`
+2. チーム所属判定（handover スキルと同じロジック）
+3. **明示パスあり** → 指定されたパス
+4. **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`
+
+### 単体セッション（チーム所属なし）
+
+1. `{cwd}/.claude/handover/` を走査し、利用可能なセッション（status が `READY`）を収集する
+2. v2 互換: `{cwd}/.claude/project-state.json` が存在する場合、候補に含める（選択後にマイグレーション）
+3. 候補がない場合、`git worktree list` で他の worktree の `.claude/handover/` も検索する。見つかった場合:
+   > CWD にはセッションがありませんが、worktree `{path}` に以下のセッションがあります:
+4. 候補数に応じた処理:
+   - **0件** → 「再開可能なセッションがありません」と報告して終了
+   - **1件以上** → `AskUserQuestion` で一覧表示し選択させる。表示内容:
+     - ブランチ名、fingerprint、完了/残タスク数、次タスクの概要
+     - orphan session（`workspace.root` が存在しない）には「⚠ worktree 削除済み」と警告を付ける
 
 ## 手順
 
-1. `{読み込み先}/project-state.json` を読み込む
+1. 上記のパス解決で選択されたセッションの `project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
    - JSON として不正な場合 → エラーを報告して終了
    - 必須フィールド（version, status, active_tasks）が欠けている場合 → エラーを報告して終了
@@ -47,13 +54,13 @@ user-invocable: true
    - それ以外 → ユーザーに「これらのタスクを優先順に進めますか？」と確認する（承認されるまで作業を開始しない）
 
 6. 承認後、未完了タスクを一覧の順序で実行する
-   - 各タスク完了時に `{読み込み先}/project-state.json` を更新する:
+   - 各タスク完了時に選択されたセッションの `project-state.json` を更新する:
      - status を `done` に変更
      - commit_sha を記録（コミットした場合）
      - last_touched を現在時刻に更新
    - 全タスクの status が `done` になったら、トップレベルの status を `ALL_COMPLETE` に設定
 
-7. 最後に `{読み込み先}/handover.md` を `{読み込み先}/project-state.json` から再生成する
+7. 最後に選択されたセッションの `handover.md` を `project-state.json` から再生成する
    - handover.md のフォーマットは以下の通り:
 
 ```
@@ -82,6 +89,10 @@ user-invocable: true
 ## Known Issues
 - [severity] 問題の説明
 ```
+
+## Cleanup
+
+continue 実行時に、`{cwd}/.claude/handover/` 配下の `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
 
 ## 制約
 

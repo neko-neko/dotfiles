@@ -24,7 +24,7 @@
 ## セッション管理
 
  - 完了タスクの要約・整理はユーザーに指摘される前に行うこと
- - セッション開始時に handover.md が存在する場合は最初に読み込むこと（パス解決は下記参照）
+ - セッション開始時に `.claude/handover/` 配下に READY ステータスのセッションが存在する場合は確認すること（パス解決は下記参照）
 
 ## Handover Protocol
 
@@ -39,9 +39,11 @@
 
 ### パス解決
 
-- **単体セッション**: `.claude/project-state.json` と `.claude/handover.md`
-- **マルチエージェント（チーム所属時）**: `.claude/handover/{team-name}/{agent-name}/` 配下の project-state.json と handover.md
-- セッション開始時は自分の保存先パスの project-state.json を読み込むこと
+- **単体セッション**: `.claude/handover/{branch}/{session-fingerprint}/` 配下の project-state.json と handover.md
+- **マルチエージェント（チーム所属時）**: `.claude/handover/{team-name}/{agent-name}/` 配下の project-state.json と handover.md（既存と同じ）
+- セッション開始時は `.claude/handover/` を走査し、READY ステータスの project-state.json を読み込むこと
+- worktree 環境では CWD 以外の worktree の `.claude/handover/` も検索すること
+- `.claude/project-state.json`（v2 形式）が残っている場合は新パスへマイグレーションすること
 
 ### マルチエージェント時の自律的 Handover
 
