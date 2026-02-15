@@ -32,5 +32,4 @@ config/helix/runtime
 
 # Claude
 .worktrees
-.claude/handover.md
-.claude/project-state.json
+.claude/handover
