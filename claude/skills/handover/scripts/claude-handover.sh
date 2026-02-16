@@ -6,7 +6,7 @@ readonly MAX_MARKDOWN_BYTES=102400  # 100KB
 readonly MIN_JSONL_LINES=10
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "${SCRIPT_DIR}/claude-handover-lib.sh"
+source "${SCRIPT_DIR}/handover-lib.sh"
 
 log() {
   echo "${HANDOVER_LOG_PREFIX} $*" >&2
