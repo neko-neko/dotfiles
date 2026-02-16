@@ -4,7 +4,7 @@ set -euo pipefail
 readonly HANDOVER_LOG_PREFIX="[claude-post-commit]"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "${SCRIPT_DIR}/claude-handover-lib.sh"
+source "${SCRIPT_DIR}/../skills/handover/scripts/handover-lib.sh"
 
 # 1. Determine project directory
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}"
