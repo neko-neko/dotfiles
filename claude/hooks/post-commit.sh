@@ -13,14 +13,14 @@ if [[ -z "$PROJECT_DIR" ]]; then
   exit 0
 fi
 
-STATE_FILE="${PROJECT_DIR}/.claude/project-state.json"
-HANDOVER_FILE="${PROJECT_DIR}/.claude/handover.md"
-
-# 2. Guard: project-state.json must exist (first creation is done by /handover skill)
-if [[ ! -f "$STATE_FILE" ]]; then
-  _handover_log "project-state.json not found, skipping"
+# 2. Find active handover session (branch/fingerprint structure)
+SESSION_DIR="$(find_active_session_dir "$PROJECT_DIR")" || {
+  _handover_log "no active handover session found, skipping"
   exit 0
-fi
+}
+
+STATE_FILE="${SESSION_DIR}/project-state.json"
+HANDOVER_FILE="${SESSION_DIR}/handover.md"
 
 if ! validate_project_state "$STATE_FILE"; then
   _handover_log "invalid project-state.json, skipping"

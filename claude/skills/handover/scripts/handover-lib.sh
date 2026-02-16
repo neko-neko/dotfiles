@@ -404,6 +404,45 @@ resolve_root() {
 # Handover directory resolution (branch + session fingerprint)
 # ---------------------------------------------------------------------------
 
+# Find an active (READY) session directory under the handover path.
+# Search only — does NOT create directories.
+# Returns 0 and outputs the directory path if found, 1 if not found.
+# Usage: find_active_session_dir [project_root]
+find_active_session_dir() {
+  local root
+  if [[ -n "${1:-}" ]]; then
+    root="$1"
+  else
+    root="$(resolve_root)" || return 1
+  fi
+
+  local branch
+  branch="$(get_current_branch)" || return 1
+
+  local branch_dir="${root}/.claude/handover/${branch}"
+
+  if [[ ! -d "$branch_dir" ]]; then
+    return 1
+  fi
+
+  local session_dir
+  for session_dir in "${branch_dir}"/*/; do
+    [[ -d "$session_dir" ]] || continue
+
+    local state_file="${session_dir}project-state.json"
+    if [[ -f "$state_file" ]]; then
+      local status
+      status="$(jq -r '.status // "UNKNOWN"' "$state_file" 2>/dev/null)"
+      if [[ "$status" == "READY" ]]; then
+        echo "${session_dir%/}"
+        return 0
+      fi
+    fi
+  done
+
+  return 1
+}
+
 # Resolve the full handover directory path with branch namespace and session fingerprint.
 # - Reuses an existing READY session if found under {root}/.claude/handover/{branch}/
 # - Creates a new fingerprinted directory if no active session exists
@@ -413,35 +452,19 @@ resolve_handover_dir() {
   local root
   root="$(resolve_root)" || return 1
 
-  local branch
-  branch="$(get_current_branch)" || return 1
-
-  local branch_dir="${root}/.claude/handover/${branch}"
-
-  # Look for an existing READY session
-  if [[ -d "$branch_dir" ]]; then
-    local session_dir
-    for session_dir in "${branch_dir}"/*/; do
-      # Skip if glob didn't match (literal */  returned)
-      [[ -d "$session_dir" ]] || continue
-
-      local state_file="${session_dir}project-state.json"
-      if [[ -f "$state_file" ]]; then
-        local status
-        status="$(jq -r '.status // "UNKNOWN"' "$state_file" 2>/dev/null)"
-        if [[ "$status" == "READY" ]]; then
-          # Remove trailing slash for clean output
-          echo "${session_dir%/}"
-          return 0
-        fi
-      fi
-    done
+  # Try to find existing active session
+  local existing
+  if existing="$(find_active_session_dir "$root")"; then
+    echo "$existing"
+    return 0
   fi
 
   # No active session found — generate a new fingerprint
+  local branch
+  branch="$(get_current_branch)" || return 1
   local fingerprint
   fingerprint="$(date +%Y%m%d-%H%M%S)"
-  local new_dir="${branch_dir}/${fingerprint}"
+  local new_dir="${root}/.claude/handover/${branch}/${fingerprint}"
   mkdir -p "$new_dir"
   echo "$new_dir"
 }

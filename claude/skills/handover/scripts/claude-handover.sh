@@ -64,12 +64,11 @@ if [[ "$LINE_COUNT" -lt "$MIN_JSONL_LINES" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 3. Setup paths
+# 3. Setup paths (branch/fingerprint structure)
 # ---------------------------------------------------------------------------
-CLAUDE_DIR="${CLAUDE_PROJECT_DIR}/.claude"
-STATE_FILE="${CLAUDE_DIR}/project-state.json"
-HANDOVER_PATH="${CLAUDE_DIR}/handover.md"
-mkdir -p "$CLAUDE_DIR"
+SESSION_DIR="$(resolve_handover_dir)"
+STATE_FILE="${SESSION_DIR}/project-state.json"
+HANDOVER_PATH="${SESSION_DIR}/handover.md"
 
 # ---------------------------------------------------------------------------
 # 4. session-end: check if state has changed (skip if unchanged)
