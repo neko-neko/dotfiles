@@ -230,15 +230,11 @@
     "document-skills@anthropic-agent-skills": true,
     "postgres-best-practices@supabase-agent-skills": true,
     "compound-engineering@every-marketplace": true,
-    "code-documentation@claude-code-workflows": true,
-    "code-refactoring@claude-code-workflows": true,
-    "code-review-ai@claude-code-workflows": true,
     "database-design@claude-code-workflows": true,
-    "security-compliance@claude-code-workflows": true,
-    "unit-testing@claude-code-workflows": true,
-    "codebase-cleanup@claude-code-workflows": true,
     "security-guidance@claude-plugins-official": true,
-    "ast-grep@ast-grep-marketplace": true
+    "ast-grep@ast-grep-marketplace": true,
+    "quantitative-trading@claude-code-workflows": true,
+    "claude-md-management@claude-plugins-official": true
   },
   "language": "japanese",
   "skipDangerousModePermissionPrompt": true
