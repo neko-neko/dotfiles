@@ -56,3 +56,9 @@
 - チーム所属エージェントはコンテキスト圧縮通知・ツール呼び出し50回超過・応答速度低下のいずれかで自律的に handover を実行すること
 - handover 後は Task tool で同じ type/name/team_name の後継エージェントを生成し、コンテキストを引き継ぐこと
 - チーム終了時に `.claude/handover/{team-name}/` を削除してクリーンアップすること
+
+## Document Dependency Check
+
+- md ファイルの frontmatter に `depends-on` が宣言されている場合、そのドキュメントはコード変更の影響を受ける可能性がある
+- コード変更を含むタスクを完了する際、`/doc-check` の実行を検討すること
+- ドキュメントの更新はユーザー承認後に行うこと。自動更新は禁止
