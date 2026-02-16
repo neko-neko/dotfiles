@@ -40,10 +40,6 @@ user-invocable: true
    - 存在する場合 → 既存の内容を読み込み、マージベースで更新する
    - 存在しない場合 → 新規作成する
 
-1.5. v2 互換チェック:
-   - `{root}/.claude/project-state.json`（旧パス、version 2）が存在する場合、新パスへマイグレーションする
-   - マイグレーション: 既存ファイルを `{root}/.claude/handover/{branch}/{fingerprint}/` にコピーし version を 3 に更新、workspace フィールドを追加。元ファイルはコピー成功後にのみ削除
-
 2. このセッションの作業内容を以下の JSON スキーマに従って整理する:
 
 ```json
