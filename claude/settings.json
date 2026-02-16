@@ -212,7 +212,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command' 2>/dev/null | grep -qE 'git commit'; then claude-post-commit; fi",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command' 2>/dev/null | grep -qE 'git commit'; then \"${HOME}/.dotfiles/claude/hooks/post-commit.sh\"; fi",
             "timeout": 30
           }
         ]
