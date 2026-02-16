@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "generated_at": "2026-01-15T10:00:00Z",
+  "session_id": "mixed-session",
+  "status": "READY",
+  "workspace": { "root": "/tmp/test", "branch": "feature-x", "is_worktree": false },
+  "active_tasks": [
+    { "id": "T1", "description": "Done task", "status": "done", "commit_sha": "abc1234", "file_paths": ["src/a.sh"], "last_touched": "2026-01-15T09:00:00Z" },
+    { "id": "T2", "description": "In progress task", "status": "in_progress", "file_paths": ["src/b.sh"], "next_action": "Continue coding", "last_touched": "2026-01-15T09:30:00Z" },
+    { "id": "T3", "description": "Blocked task", "status": "blocked", "file_paths": ["src/c.sh"], "next_action": "Wait for review", "blockers": ["PR #42 pending"], "last_touched": "2026-01-15T09:00:00Z" }
+  ],
+  "recent_decisions": [
+    { "decision": "Decision A", "rationale": "Reason A", "date": "2026-01-15T09:00:00Z" }
+  ],
+  "architecture_changes": [
+    { "commit_sha": "abc1234", "summary": "Refactored module X", "files_changed": ["src/x.sh"], "date": "2026-01-15T09:00:00Z" }
+  ],
+  "known_issues": [
+    { "description": "Memory leak in Y", "severity": "high", "related_files": ["src/y.sh"] }
+  ],
+  "session_hash": ""
+}

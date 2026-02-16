@@ -10,6 +10,18 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install dotfiles
         run: CI=true ./setup/setup.zsh
+
+  shellspec:
+    name: ShellSpec tests
+    timeout-minutes: 10
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install ShellSpec
+        run: brew install shellspec
+      - name: Run tests
+        run: shellspec --shell bash

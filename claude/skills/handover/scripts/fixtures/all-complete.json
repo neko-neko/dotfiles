@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "generated_at": "2026-01-15T10:00:00Z",
+  "session_id": "done-session",
+  "status": "ALL_COMPLETE",
+  "workspace": { "root": "/tmp/test", "branch": "main", "is_worktree": false },
+  "active_tasks": [
+    { "id": "T1", "description": "Task 1", "status": "done", "commit_sha": "aaa1111", "file_paths": [], "last_touched": "2026-01-15T10:00:00Z" }
+  ],
+  "recent_decisions": [],
+  "architecture_changes": [],
+  "known_issues": [],
+  "session_hash": ""
+}

@@ -1,0 +1,45 @@
+{
+  "version": 3,
+  "generated_at": "2026-01-15T10:00:00Z",
+  "session_id": "test-session",
+  "status": "READY",
+  "workspace": {
+    "root": "/tmp/test-repo",
+    "branch": "main",
+    "is_worktree": false
+  },
+  "active_tasks": [
+    {
+      "id": "T1",
+      "description": "Implement feature A",
+      "status": "done",
+      "commit_sha": "abc1234",
+      "file_paths": ["src/a.sh"],
+      "last_touched": "2026-01-15T10:00:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Implement feature B",
+      "status": "in_progress",
+      "file_paths": ["src/b.sh", "src/c.sh"],
+      "next_action": "Write tests for B",
+      "last_touched": "2026-01-15T10:00:00Z"
+    }
+  ],
+  "recent_decisions": [
+    {
+      "decision": "Use ShellSpec for testing",
+      "rationale": "BDD style, good mocking support",
+      "date": "2026-01-15T10:00:00Z"
+    }
+  ],
+  "architecture_changes": [],
+  "known_issues": [
+    {
+      "description": "flaky test on CI",
+      "severity": "low",
+      "related_files": ["spec/flaky_spec.sh"]
+    }
+  ],
+  "session_hash": ""
+}
