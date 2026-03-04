@@ -304,6 +304,19 @@ Describe "handover-lib.sh"
       The status should be failure
       The stderr should include "unable to determine branch"
     End
+
+    It "uses -C flag when project_dir is provided"
+      git() {
+        if [ "$1" = "-C" ] && [ "$2" = "/other/repo" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
+          echo "feature/remote-branch"
+          return 0
+        fi
+        echo "main"
+        return 0
+      }
+      When call get_current_branch "/other/repo"
+      The output should eq "feature/remote-branch"
+    End
   End
 
   # =========================================================================

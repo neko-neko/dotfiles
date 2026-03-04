@@ -362,8 +362,13 @@ JSONEOF
 # Outputs branch name or "detached-{sha7}"
 # Returns 1 if not in a git repository
 get_current_branch() {
+  local git_args=()
+  if [[ -n "${1:-}" ]]; then
+    git_args=(-C "$1")
+  fi
+
   local branch
-  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  branch="$(git "${git_args[@]}" rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
   if [[ -z "$branch" ]]; then
     _handover_log "ERROR: unable to determine branch (not in a git repository?)"
@@ -372,7 +377,7 @@ get_current_branch() {
 
   if [[ "$branch" == "HEAD" ]]; then
     local sha
-    sha="$(git rev-parse --short=7 HEAD 2>/dev/null)"
+    sha="$(git "${git_args[@]}" rev-parse --short=7 HEAD 2>/dev/null)"
     if [[ -z "$sha" ]]; then
       _handover_log "ERROR: unable to determine commit hash"
       return 1
