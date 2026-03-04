@@ -4,39 +4,20 @@ set -euo pipefail
 MESSAGE="${1:?Usage: notify.sh MESSAGE TITLE TYPE}"
 TITLE="${2:?Usage: notify.sh MESSAGE TITLE TYPE}"
 TYPE="${3:?Usage: notify.sh MESSAGE TITLE TYPE}"
-PANE_ID="${WEZTERM_PANE:-}"
-ICON="${HOME}/.dotfiles/claude/assets/claude-icon.png"
-
-command -v alerter >/dev/null 2>&1 || {
-  echo "notify.sh: alerter not found (brew install vjeantet/tap/alerter)" >&2
-  exit 1
-}
 
 case "$TYPE" in
-  permission|question) TIMEOUT=0 ;;
-  *)                   TIMEOUT=30 ;;
+  permission|question) TIMEOUT=0    ;;
+  *)                   TIMEOUT=4000 ;;
 esac
 
-# バックグラウンドで alerter を実行し、クリック時に WezTerm タブへ遷移
-(
-  RESULT=$(alerter \
-    --message "$MESSAGE" \
-    --title "$TITLE" \
-    --app-icon "$ICON" \
-    --timeout "$TIMEOUT" \
-    --group "claude-${PANE_ID:-default}" \
-    --sound default \
-    2>/dev/null) || true
+# WezTerm の user-var エスケープシーケンスで toast_notification をトリガー
+VALUE="$(printf '%s\t%s\t%s' "$TITLE" "$MESSAGE" "$TIMEOUT")"
+ENCODED="$(printf '%s' "$VALUE" | base64)"
+ESCAPE_SEQ="$(printf "\033]1337;SetUserVar=%s=%s\007" "claude_notify" "$ENCODED")"
 
-  case "${RESULT:-}" in
-    @CONTENTCLICKED|@ACTIONCLICKED)
-      osascript -e 'tell application "WezTerm" to activate' 2>/dev/null || true
-      if [ -n "$PANE_ID" ]; then
-        wezterm cli activate-pane --pane-id "$PANE_ID" 2>/dev/null || true
-      fi
-      ;;
-  esac
-) &
-
-# バックグラウンドプロセスをデタッチして即座に終了
-disown
+if (printf '%s' "$ESCAPE_SEQ" > /dev/tty) 2>/dev/null; then
+  : # WezTerm toast_notification に送信成功
+else
+  # TTY が使えない場合は osascript にフォールバック
+  osascript -e "display notification \"$MESSAGE\" with title \"$TITLE\""
+fi

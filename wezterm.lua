@@ -144,4 +144,17 @@ config.keys = {
   },
 }
 
+---------------------------------------------------------------
+-- Claude Code notification via user-var
+---------------------------------------------------------------
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  if name == 'claude_notify' then
+    local title, message, timeout = value:match('([^\t]*)\t([^\t]*)\t?(.*)')
+    if title and message then
+      timeout = tonumber(timeout) or 4000
+      window:toast_notification(title, message, nil, timeout)
+    end
+  end
+end)
+
 return config

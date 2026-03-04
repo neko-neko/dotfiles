@@ -10,7 +10,6 @@ tap 'johanhaleby/kubetail'
 tap 'ktr0731/evans'
 tap 'leoafarias/fvm'
 tap 'oven-sh/bun'
-tap 'vjeantet/tap'
 tap 'wez/wezterm'
 
 # Taps for tools
@@ -71,7 +70,6 @@ brew 'direnv'
 brew 'fzf'
 brew 'sheldon'
 brew 'starship'
-brew 'vjeantet/tap/alerter'
 
 # Editors
 brew 'helix'
