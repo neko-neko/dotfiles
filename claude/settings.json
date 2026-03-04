@@ -241,12 +241,12 @@
     "document-skills@anthropic-agent-skills": true,
     "compound-engineering@every-marketplace": true,
     "database-design@claude-code-workflows": true,
-    "security-guidance@claude-plugins-official": true,
     "ast-grep@ast-grep-marketplace": true,
     "claude-md-management@claude-plugins-official": true,
     "superpowers-chrome@superpowers-marketplace": true,
     "superpowers@superpowers-marketplace": true,
-    "code-simplifier@claude-plugins-official": true
+    "code-simplifier@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
   },
   "language": "japanese",
   "skipDangerousModePermissionPrompt": true
