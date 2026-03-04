@@ -25,32 +25,7 @@
 ## セッション管理
 
  - 完了タスクの要約・整理はユーザーに指摘される前に行うこと
- - セッション開始時に `.claude/handover/` 配下に READY ステータスのセッションが存在する場合は確認すること（パス解決は下記参照）
-
-## Handover Protocol
-
-- `continue from handover` や handover.md への言及があった場合、まず前回の変更がコミット済みか `git log` で確認してから作業を開始すること
-- 全タスク完了済み（status: ALL_COMPLETE）なら即座にその旨を報告し、コードベースの探索を始めないこと
-- handover 文書には必ず以下を含めること:
-  - 具体的なファイルパス
-  - タスクID（T1, T2, ...）
-  - ブロッカー（あれば）
-  - コミット SHA（完了タスク）
-- handover.md は project-state.json から自動生成されたビューであり、直接編集しないこと
-
-### パス解決
-
-- **単体セッション**: `.claude/handover/{branch}/{session-fingerprint}/` 配下の project-state.json と handover.md
-- **マルチエージェント（チーム所属時）**: `.claude/handover/{team-name}/{agent-name}/` 配下の project-state.json と handover.md（既存と同じ）
-- セッション開始時は `.claude/handover/` を走査し、READY ステータスの project-state.json を読み込むこと
-- worktree 環境では CWD 以外の worktree の `.claude/handover/` も検索すること
-- `.claude/project-state.json`（v2 形式）が残っている場合は新パスへマイグレーションすること
-
-### マルチエージェント時の自律的 Handover
-
-- チーム所属エージェントはコンテキスト圧縮通知・ツール呼び出し50回超過・応答速度低下のいずれかで自律的に handover を実行すること
-- handover 後は Task tool で同じ type/name/team_name の後継エージェントを生成し、コンテキストを引き継ぐこと
-- チーム終了時に `.claude/handover/{team-name}/` を削除してクリーンアップすること
+ - handover の詳細なプロトコルは `/handover` スキルを参照すること
 
 ## Document Dependency Check
 
