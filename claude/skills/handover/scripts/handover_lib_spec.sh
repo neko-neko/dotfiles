@@ -362,10 +362,14 @@ Describe "handover-lib.sh"
 
     It "finds READY session directory"
       git() {
-        case "$2" in
-          --abbrev-ref) echo "main"; return 0 ;;
-          --show-toplevel) echo "$test_root"; return 0 ;;
-        esac
+        if [ "$1" = "-C" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
+          echo "main"
+          return 0
+        fi
+        if [ "$1" = "rev-parse" ] && [ "$2" = "--abbrev-ref" ]; then
+          echo "main"
+          return 0
+        fi
       }
       When call find_active_session_dir "$test_root"
       The status should be success
@@ -374,10 +378,14 @@ Describe "handover-lib.sh"
 
     It "returns failure when no sessions exist (different branch)"
       git() {
-        case "$2" in
-          --abbrev-ref) echo "other-branch"; return 0 ;;
-          --show-toplevel) echo "$test_root"; return 0 ;;
-        esac
+        if [ "$1" = "-C" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
+          echo "other-branch"
+          return 0
+        fi
+        if [ "$1" = "rev-parse" ] && [ "$2" = "--abbrev-ref" ]; then
+          echo "other-branch"
+          return 0
+        fi
       }
       When call find_active_session_dir "$test_root"
       The status should be failure
@@ -387,13 +395,33 @@ Describe "handover-lib.sh"
       # Remove the READY session, leaving only ALL_COMPLETE
       rm -rf "$test_root/.claude/handover/main/session-001"
       git() {
-        case "$2" in
-          --abbrev-ref) echo "main"; return 0 ;;
-          --show-toplevel) echo "$test_root"; return 0 ;;
-        esac
+        if [ "$1" = "-C" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
+          echo "main"
+          return 0
+        fi
+        if [ "$1" = "rev-parse" ] && [ "$2" = "--abbrev-ref" ]; then
+          echo "main"
+          return 0
+        fi
       }
       When call find_active_session_dir "$test_root"
       The status should be failure
+    End
+
+    It "passes root to get_current_branch (uses -C flag)"
+      git() {
+        if [ "$1" = "-C" ] && [ "$2" = "$test_root" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
+          echo "main"
+          return 0
+        fi
+        if [ "$1" = "rev-parse" ] && [ "$2" = "--abbrev-ref" ]; then
+          echo "wrong-branch"
+          return 0
+        fi
+      }
+      When call find_active_session_dir "$test_root"
+      The status should be success
+      The output should include "session-001"
     End
   End
 

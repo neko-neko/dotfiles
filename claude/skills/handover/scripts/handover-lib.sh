@@ -422,7 +422,7 @@ find_active_session_dir() {
   fi
 
   local branch
-  branch="$(get_current_branch)" || return 1
+  branch="$(get_current_branch "$root")" || return 1
 
   local branch_dir="${root}/.claude/handover/${branch}"
 
