@@ -7,7 +7,7 @@ TYPE="${3:?Usage: notify.sh MESSAGE TITLE TYPE}"
 
 case "$TYPE" in
   permission|question) TIMEOUT=0    ;;
-  *)                   TIMEOUT=4000 ;;
+  *)                   TIMEOUT=5000 ;;
 esac
 
 # WezTerm の user-var エスケープシーケンスで toast_notification をトリガー
