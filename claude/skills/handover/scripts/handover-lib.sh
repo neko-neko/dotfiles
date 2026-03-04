@@ -368,7 +368,7 @@ get_current_branch() {
   fi
 
   local branch
-  branch="$(git "${git_args[@]}" rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  branch="$(git ${git_args[@]+"${git_args[@]}"} rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
   if [[ -z "$branch" ]]; then
     _handover_log "ERROR: unable to determine branch (not in a git repository?)"
@@ -377,7 +377,7 @@ get_current_branch() {
 
   if [[ "$branch" == "HEAD" ]]; then
     local sha
-    sha="$(git "${git_args[@]}" rev-parse --short=7 HEAD 2>/dev/null)"
+    sha="$(git ${git_args[@]+"${git_args[@]}"} rev-parse --short=7 HEAD 2>/dev/null)"
     if [[ -z "$sha" ]]; then
       _handover_log "ERROR: unable to determine commit hash"
       return 1
