@@ -83,15 +83,15 @@ severity で降順ソート: high > medium > low
 ## Review Report (scope: <scope_description>)
 
 ### High
-1. [category] file:line -- description
+1. [category] file:line — description
    suggestion: ...
 
 ### Medium
-2. [category] file:line -- description
+2. [category] file:line — description
    suggestion: ...
 
 ### Low
-3. [category] file:line -- description
+3. [category] file:line — description
    suggestion: ...
 
 ---
@@ -102,7 +102,7 @@ findings が 0 件の場合 → 「指摘事項はありません。レビュー
 
 ### ユーザー選択
 
-ユーザーの入力を待つ。受け付ける入力:
+AskUserQuestion ツールを使用してユーザーの選択を取得する。受け付ける入力:
 - `none` → 「レビュー完了です。修正は行いません。」と報告して終了
 - `all` → 全 findings を Phase 4 に渡す
 - カンマ区切りの番号（例: `1,2,4`） → 該当番号の findings を Phase 4 に渡す
