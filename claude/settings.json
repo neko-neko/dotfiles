@@ -217,6 +217,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${HOME}/.dotfiles/claude/hooks/session-start.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
