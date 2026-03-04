@@ -459,14 +459,20 @@ Describe "handover-lib.sh"
   Describe "cleanup_old_sessions()"
     setup_cleanup() {
       test_root="$(mktemp -d)"
-      # Old ALL_COMPLETE session (2025-12-01, ~78 days ago)
+      # Old ALL_COMPLETE session (30 days ago, exceeds max_age_days=7)
+      local old_date
+      old_date="$(date -v-30d -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null \
+        || date -u -d '30 days ago' '+%Y-%m-%dT%H:%M:%SZ')"
       mkdir -p "$test_root/main/old-session"
       old_json="$test_root/main/old-session/project-state.json"
-      jq '.generated_at = "2025-12-01T00:00:00Z"' "$FIXTURES_DIR/all-complete.json" > "$old_json"
-      # Recent ALL_COMPLETE session (2026-02-16, 1 day ago)
+      jq --arg d "$old_date" '.generated_at = $d' "$FIXTURES_DIR/all-complete.json" > "$old_json"
+      # Recent ALL_COMPLETE session (1 day ago, within max_age_days=7)
+      local recent_date
+      recent_date="$(date -v-1d -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null \
+        || date -u -d '1 day ago' '+%Y-%m-%dT%H:%M:%SZ')"
       mkdir -p "$test_root/main/recent-session"
       recent_json="$test_root/main/recent-session/project-state.json"
-      jq '.generated_at = "2026-02-16T00:00:00Z"' "$FIXTURES_DIR/all-complete.json" > "$recent_json"
+      jq --arg d "$recent_date" '.generated_at = $d' "$FIXTURES_DIR/all-complete.json" > "$recent_json"
     }
     cleanup_cleanup() { rm -rf "$test_root"; }
     BeforeEach 'setup_cleanup'
