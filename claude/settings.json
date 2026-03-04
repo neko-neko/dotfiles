@@ -172,7 +172,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Task completed\" with title \"Claude Code\"'"
+            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Task completed' 'Claude Code' idle"
           }
         ]
       },
@@ -181,7 +181,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Waiting for approval\" with title \"Claude Code\"'"
+            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Waiting for approval' 'Claude Code' permission"
           }
         ]
       },
@@ -190,7 +190,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Waiting for your answer\" with title \"Claude Code\"'"
+            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Waiting for your answer' 'Claude Code' question"
           }
         ]
       }
@@ -234,7 +234,13 @@
     "security-guidance@claude-plugins-official": true,
     "ast-grep@ast-grep-marketplace": true,
     "quantitative-trading@claude-code-workflows": true,
-    "claude-md-management@claude-plugins-official": true
+    "claude-md-management@claude-plugins-official": true,
+    "double-shot-latte@superpowers-marketplace": true,
+    "claude-session-driver@superpowers-marketplace": true,
+    "elements-of-style@superpowers-marketplace": true,
+    "episodic-memory@superpowers-marketplace": true,
+    "superpowers-chrome@superpowers-marketplace": true,
+    "superpowers@superpowers-marketplace": true
   },
   "language": "japanese",
   "skipDangerousModePermissionPrompt": true

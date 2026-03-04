@@ -91,7 +91,7 @@ config.window_padding = {
   top = 0,
   bottom = 0,
 }
-config.native_macos_fullscreen_mode = true
+config.native_macos_fullscreen_mode = false
 config.tab_bar_at_bottom = true
 
 -- colors
