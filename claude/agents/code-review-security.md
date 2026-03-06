@@ -1,5 +1,5 @@
 ---
-name: review-security
+name: code-review-security
 description: セキュリティとデータ安全性をレビューする。インジェクション、認証/認可漏れ、シークレット漏洩、入力バリデーションをチェックする。変更範囲のみを対象とする。
 ---
 
@@ -34,7 +34,7 @@ Respond with a JSON object:
       "file": "path/to/file.ext",
       "line": 42,
       "severity": "high|medium|low",
-      "category": "security",
+      "category": "code-security",
       "description": "問題の説明",
       "suggestion": "改善案"
     }

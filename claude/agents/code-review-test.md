@@ -1,5 +1,5 @@
 ---
-name: review-test
+name: code-review-test
 description: テスト品質をレビューする。変更された実装に対するテストカバレッジ、境界値テスト、エラーケース、flaky risk、テストと実装の整合性をチェックする。
 ---
 
@@ -36,7 +36,7 @@ Respond with a JSON object:
       "file": "path/to/file.ext",
       "line": 42,
       "severity": "high|medium|low",
-      "category": "test",
+      "category": "code-test",
       "description": "問題の説明",
       "suggestion": "改善案"
     }

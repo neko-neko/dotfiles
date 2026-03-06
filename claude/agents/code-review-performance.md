@@ -1,5 +1,5 @@
 ---
-name: review-performance
+name: code-review-performance
 description: パフォーマンスとアーキテクチャ適合性をレビューする。N+1クエリ、不要な再計算、メモリリーク、計算量、設計適合性をチェックする。変更範囲のみを対象とする。
 ---
 
@@ -33,7 +33,7 @@ Respond with a JSON object:
       "file": "path/to/file.ext",
       "line": 42,
       "severity": "high|medium|low",
-      "category": "performance",
+      "category": "code-performance",
       "description": "問題の説明",
       "suggestion": "改善案"
     }

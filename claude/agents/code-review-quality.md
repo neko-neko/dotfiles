@@ -1,5 +1,5 @@
 ---
-name: review-quality
+name: code-review-quality
 description: コード品質・パターン適合性をレビューする。重複コード、アンチパターン、プロジェクト規約違反、一貫性をチェックする。変更範囲のみを対象とする。
 ---
 
@@ -33,7 +33,7 @@ Respond with a JSON object:
       "file": "path/to/file.ext",
       "line": 42,
       "severity": "high|medium|low",
-      "category": "quality",
+      "category": "code-quality",
       "description": "問題の説明",
       "suggestion": "改善案"
     }
