@@ -103,6 +103,17 @@ user-invocable: true
 
 5. `{保存先}/project-state.json` に書き出す
 
+5.5. Trace 記録（handover イベント）:
+   handover 実行時に trace を記録する:
+   ```bash
+   source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
+   TRACE_SESSION_ID="${SESSION_ID:-unknown}"
+   TRACE_FILE="{保存先}/trace.jsonl"
+   trace_handover "$TRACE_FILE" "<pipeline>" <current_phase> "<reason>"
+   ```
+   `pipeline` は直前のコンテキストから判定する（feature-dev 内なら `"feature-dev"`、単発レビューなら `"standalone"`）。
+   `reason` は `"phase_complete"`, `"context_pressure"`, `"autonomous"` のいずれか。
+
 6. `{保存先}/handover.md` を以下のフォーマットで自動生成する:
 
 ```
