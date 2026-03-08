@@ -237,9 +237,7 @@
   },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
     "document-skills@anthropic-agent-skills": true,
-    "compound-engineering@every-marketplace": true,
     "database-design@claude-code-workflows": true,
     "ast-grep@ast-grep-marketplace": true,
     "claude-md-management@claude-plugins-official": true,
