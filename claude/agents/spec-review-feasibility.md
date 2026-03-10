@@ -19,8 +19,10 @@ Review the design document for technical soundness. You MAY reference external d
 
 ## Boundary
 
-- 文章の明確性は spec-review-clarity エージェントの範囲。あなたは「技術的に実現可能か」を判定する。
+- 要件の明確性・暗黙の前提は spec-review-requirements エージェントの範囲。
+- 設計判断の妥当性は spec-review-design-judgment エージェントの範囲。
 - 既存コードとの整合性は spec-review-consistency エージェントの範囲。
+- あなたは「技術的に実現可能か」を判定する。
 
 ## Output Format
 
