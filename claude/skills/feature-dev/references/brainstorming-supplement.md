@@ -1,19 +1,25 @@
 ---
 name: brainstorming-supplement
 description: >-
-  feature-dev Phase 1 専用。superpowers:brainstorming invoke 直後に invoke し、
-  brainstorming プロセスにコードベース調査・暗黙ルール抽出ステップを挿入する。
+  feature-dev Phase 1 専用。superpowers:brainstorming の **前に** invoke し、
+  brainstorming プロセスにインタラクティブ制約・コードベース調査・テスト観点ステップを注入する。
 ---
 
-# Brainstorming Supplement for Feature Dev
+# Brainstorming Constraints for Feature Dev
 
-このスキルは `superpowers:brainstorming` と併用する。brainstorming のプロセスに以下のステップを挿入する。
+このスキルは `superpowers:brainstorming` の **前に** invoke される。brainstorming が読み込まれた時点で、以下の制約と追加ステップが context 上に存在する状態になる。
 
-## 挿入位置
+## 制約: インタラクティブ実行
 
-brainstorming のステップ2（Ask clarifying questions）が完了した後、ステップ3（Propose 2-3 approaches）に進む **前** に、以下の全ステップを実行すること。
+以下の制約は brainstorming の全プロセスに適用される:
 
-## 挿入ステップ
+- brainstorming のチェックリスト項目を **TaskCreate でサブエージェントに委譲しない**。全ステップをこの会話内で逐次実行する
+- 全ての質問はユーザーに直接投げ、回答を待つ。自動回答禁止
+- 1問ずつ質問する原則を厳守する
+
+## 追加ステップ（brainstorming の step 2 と step 3 の間に挿入）
+
+brainstorming のステップ2（Ask clarifying questions）が完了した後、ステップ3（Propose 2-3 approaches）に進む **前** に、以下の S1〜S3 を実行すること。
 
 ### S1: 影響範囲の調査
 
@@ -46,6 +52,18 @@ S1・S2 で確認した内容を、設計書に以下のセクションとして
 - **前提条件** — 新機能が依存する既存の制約・ルール
 - **影響範囲** — 変更が波及する可能性のあるモジュール・テーブル一覧
 
+## 追加ステップ（brainstorming の step 4 の設計書に含める）
+
+### S4: テスト観点の列挙
+
+設計書に「テスト観点」セクションを追加し、以下を含める:
+
+- 正常系テストケース名の列挙
+- 異常系・境界値テストケース名の列挙
+- 非機能要件（パフォーマンス、セキュリティ）の観点があれば列挙
+
+※ Given/When/Then レベルの詳細化は Phase 3（Plan）で行う。設計書内のテスト観点は Phase 3 で `docs/plans/*-test-cases.md` に展開される。
+
 ## 完了条件
 
-S1〜S3 が完了したら、brainstorming のステップ3（Propose 2-3 approaches）に戻る。approaches の提案時には、この調査結果を考慮に入れること。
+S1〜S4 が完了したら、brainstorming のステップ3（Propose 2-3 approaches）に戻る。approaches の提案時には、調査結果とテスト観点を考慮に入れること。

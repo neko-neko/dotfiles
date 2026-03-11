@@ -117,10 +117,10 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 ### Phase 1: Design
 
-- **INVOKE 1:** Skill tool で `superpowers:brainstorming` を invoke する
-- **INVOKE 2:** 直後に Skill tool で `feature-dev/references/brainstorming-supplement` を invoke する（brainstorming プロセスにコードベース調査ステップを挿入）
+- **INVOKE 1:** Skill tool で `feature-dev/references/brainstorming-supplement` を invoke する（brainstorming の事前制約・追加ステップを context に載せる）
+- **INVOKE 2:** 直後に Skill tool で `superpowers:brainstorming` を invoke する
 - **Autonomy:** INTERACTIVE
-- **動作:** feature spec をもとに brainstorming + supplement で設計書を作成する。supplement により clarifying questions 後に影響範囲調査・暗黙ルール抽出が実行される
+- **動作:** supplement が先に context に載った状態で brainstorming を実行する。supplement により TaskCreate 禁止・インタラクティブ制約が適用され、clarifying questions 後に影響範囲調査・暗黙ルール抽出・テスト観点列挙が実行される
 - **自動遷移条件:** 設計書がコミット済み
 - **成果物:** `docs/plans/*-design.md`
 - **失敗時:** ユーザーが中断 -> STOP。クリーンアップ不要
@@ -140,9 +140,9 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 - **INVOKE:** `superpowers:writing-plans`
 - **Autonomy:** AUTONOMOUS
-- **動作:** レビュー通過済み設計書をもとに実装計画を作成する
+- **動作:** レビュー通過済み設計書をもとに実装計画を作成する。設計書内の「テスト観点」セクションを `docs/plans/*-test-cases.md` に展開し、Given/When/Then レベルに詳細化する
 - **自動遷移条件:** 計画書がコミット済み
-- **成果物:** `docs/plans/*-plan.md`
+- **成果物:** `docs/plans/*-plan.md`, `docs/plans/*-test-cases.md`
 - **失敗時:** 失敗内容を報告、PAUSE
 
 ### Phase 4: Plan Review
@@ -253,9 +253,9 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 
 | Phase | 成果物 | 消費者 |
 |-------|--------|--------|
-| 1 | `docs/plans/*-design.md` | Phase 2, 3, 8 |
+| 1 | `docs/plans/*-design.md`（テスト観点セクション含む） | Phase 2, 3, 8 |
 | 2 | レビュー通過済み設計書 | Phase 3 |
-| 3 | `docs/plans/*-plan.md` | Phase 4, 6 |
+| 3 | `docs/plans/*-plan.md`, `docs/plans/*-test-cases.md` | Phase 4, 6 |
 | 4 | レビュー通過済み計画書 | Phase 6 |
 | 5 | worktree パス、ブランチ名 | Phase 6, 9 |
 | 6 | コミット済みコード | Phase 7, 8 |
