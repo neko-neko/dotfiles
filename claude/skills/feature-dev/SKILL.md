@@ -117,13 +117,10 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 ### Phase 1: Design
 
-- **INVOKE:** `superpowers:brainstorming`
+- **INVOKE 1:** Skill tool で `superpowers:brainstorming` を invoke する
+- **INVOKE 2:** 直後に Skill tool で `feature-dev/references/brainstorming-supplement` を invoke する（brainstorming プロセスにコードベース調査ステップを挿入）
 - **Autonomy:** INTERACTIVE
-- **動作:** feature spec をもとに brainstorming で設計書を作成する。ユーザーとの対話で設計を詰める
-- **コードベース調査:** clarifying questions 完了後、approaches 提示前に以下を実施する:
-  1. **影響範囲の調査** — 変更対象のモデル・コントローラ・ジョブ等を起点に、Grep/Read で関連コード（呼び出し元、依存先、同じテーブルを参照する箇所）を探索する
-  2. **暗黙ルールの抽出** — 調査で見つけた既存コードのバリデーション・条件分岐・ビジネスロジックをユーザーに提示し、「この制約は新機能でも適用されるか？」と確認する（1問ずつ）
-  3. **調査結果の記録** — 確認した影響範囲・業務ルールを設計書の「前提条件」「影響範囲」セクションに含める
+- **動作:** feature spec をもとに brainstorming + supplement で設計書を作成する。supplement により clarifying questions 後に影響範囲調査・暗黙ルール抽出が実行される
 - **自動遷移条件:** 設計書がコミット済み
 - **成果物:** `docs/plans/*-design.md`
 - **失敗時:** ユーザーが中断 -> STOP。クリーンアップ不要
