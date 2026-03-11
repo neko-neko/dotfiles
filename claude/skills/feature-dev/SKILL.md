@@ -295,7 +295,7 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 | 7: Code Review | 修正後テスト失敗 | 最大2回リトライ、それでも失敗なら PAUSE |
 | 8: Test Review | テスト追加後の既存テスト破損 | PAUSE。影響範囲を報告 |
 | 9: Integrate | マージコンフリクト | コンフリクトを報告、手動解決を提案 |
-| 全フェーズ | `--codex` 指定時に codex 未インストール | 警告し codex なしで続行 |
+| 全フェーズ | `--codex` 指定時に MCP Codex 接続失敗 | 警告し codex なしで続行 |
 | 全フェーズ | Context 逼迫 | `/handover` を実行してパイプライン状態を保存 |
 
 ## Red Flags

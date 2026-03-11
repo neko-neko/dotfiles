@@ -4,7 +4,7 @@ description: >-
   E2E観点でのテストレビューワークフロー。3つの観点（coverage, quality, design-alignment）で
   テストコードを並列レビューし、統合レポートから承認された指摘を修正する。
   --design 指定時は設計書も加味する。
-  --codex 指定時は Codex CLI によるメタレビューを追加する。
+  --codex 指定時は MCP Codex による並列レビューとメタレビューを追加する。
 user-invocable: true
 ---
 
@@ -73,21 +73,37 @@ Agent tool を使用する。`subagent_type` に `test-review-design-alignment` 
 - 設計要件・業務制約に由来するエラーパスのテスト漏れ（一般的なコードパスカバレッジは test-review-coverage の範囲）
 - 業務制約のテスト検証
 
-### 2-4. codex review（`codex_enabled` 時のみ）
+### 2-4. Codex レビュー（`codex_enabled` 時のみ）
 
-`codex_enabled` が true の場合のみ実行する。Bash ツールで `run_in_background: true` を使用して `codex review` を実行する。
+`codex_enabled` が true の場合のみ実行する。`mcp__codex__codex` ツールを `run_in_background: true` で呼び出す。
 
-**実行前チェック:** `which codex` でコマンドの存在を確認する。存在しない場合は「codex コマンドが見つかりません。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
+共通パターンは `references/mcp-codex-patterns.md` のパターン2（コードレビュー）を参照。
 
-コマンドは diff スコープに応じて分岐する。**注意:** Codex CLI はスコープフラグとカスタムプロンプトを併用できないため、ビルトインのレビュー機能をそのまま使用する。
+diff はプロンプトに埋め込まず、Codex 自身に git diff コマンドを実行させる。
 
-| スコープ | コマンド |
-|---------|---------|
-| `--staged` | `codex review --uncommitted` |
-| `--branch` | `codex review --base <base_branch>` |
-| commit range / デフォルト | `codex review --commit <sha>` |
+```yaml
+tool: mcp__codex__codex
+params:
+  prompt: |
+    <スコープに応じた指示（下表参照）>
+    変更内容をレビューし、問題点を指摘してください。
+  sandbox: "read-only"
+  approval-policy: "on-failure"
+  cwd: <作業ディレクトリ>
+```
 
-Codex はビルトインで diff の取得・解析・レビューを行う。出力はフリーテキスト形式。
+| スコープ | プロンプト指示 |
+|---------|--------------|
+| `--staged` | 「`git diff --cached` を実行し、ステージ済みの変更をレビューしてください」 |
+| `--branch` | 「`git diff $(git merge-base HEAD <base_branch>)..HEAD` を実行し、ブランチの全変更をレビューしてください」 |
+| commit range | 「`git diff <range>` を実行し、指定範囲の変更をレビューしてください」 |
+| デフォルト | 「`git diff HEAD~1..HEAD` を実行し、最新コミットの変更をレビューしてください」 |
+
+レスポンスから `threadId` を保持し、Phase 3.5 のメタレビューで使用する。
+
+MCP 呼び出しが失敗した場合は「MCP Codex への接続に失敗しました。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
+
+Codex の出力はフリーテキスト形式。
 
 ### Trace 記録（Phase 2 エージェントトレース）
 
@@ -128,7 +144,7 @@ test-review-coverage、test-review-quality の応答から JSON `{"findings": [.
 
 test-review-design-alignment の応答から JSON `{"requirement_map": [...], "findings": [...]}` をパースする。`requirement_map` は Phase 3 のレポートで使用する。`findings` は他エージェントの findings と統合する。パース失敗時は正規表現フォールバックを試み、それでも失敗ならエラーとして扱う。
 
-codex review の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
+Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
 
 ## Phase 3: Report
 
@@ -188,23 +204,27 @@ findings が 0 件の場合 → 「指摘事項はありません。テストレ
 
 #### 実行
 
-Bash ツールで `codex exec` を実行する（タイムアウト: 5分）:
+`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは `references/mcp-codex-patterns.md` のパターン3（メタレビュー）を参照。
 
-```bash
-codex exec "以下のテストレビューレポートと差分を確認し、2つの観点で分析してください。
+```yaml
+tool: mcp__codex__codex-reply
+params:
+  threadId: <Phase 2 で取得した threadId>
+  prompt: |
+    先ほどのレビュー結果を踏まえ、以下の2つの観点で分析してください。
 
-## 観点1: 見落とし検出
-レビューレポートに含まれていないテストの問題があれば指摘してください。
+    ## 観点1: 見落とし検出
+    レビューレポートに含まれていないテストの問題があれば指摘してください。
 
-## 観点2: False Positive 検証
-レビューレポートの各 finding が正当かどうか検証してください。false positive の疑いがあるものを指摘してください。
+    ## 観点2: False Positive 検証
+    レビューレポートの各 finding が正当かどうか検証してください。
+    false positive の疑いがあるものを指摘してください。
 
-## Test Review Report
-<Phase 3 で生成したレポート全文>
-
-## Diff
-<diff_content>"
+    ## Test Review Report
+    <Phase 3 で生成したレポート全文>
 ```
+
+diff は Codex が Phase 2 で既に取得済みなのでプロンプトに含めない。`threadId` が取得できなかった場合はメタレビューをスキップする。
 
 #### 結果の統合
 
@@ -224,7 +244,7 @@ N+1. [codex-meta] file:line — description
 
 #### エラー時
 
-- `codex exec` が失敗またはタイムアウトした場合 → 「Codex メタレビューをスキップします」と表示し、Phase 3 のレポートのみで続行する
+- `mcp__codex__codex-reply` が失敗またはタイムアウトした場合 → 「Codex メタレビューをスキップします」と表示し、Phase 3 のレポートのみで続行する
 - 出力パースが失敗した場合 → Codex の生テキストをそのまま「Meta Review (by Codex)」セクションに表示する
 
 ### ユーザー選択
@@ -333,10 +353,10 @@ git diff
 | 2 | エージェントタイムアウト | 該当エージェント結果を空として続行 |
 | 2 | JSON パース失敗 | 正規表現フォールバック、それでも失敗なら空 |
 | 1 | `--design` のパスが存在しない | 警告表示し、設計書なしモードで続行 |
-| 2 | `codex` コマンド未インストール | 警告表示し Codex なしで続行 |
-| 2 | `codex review` タイムアウト/失敗 | 該当結果を空として続行 |
+| 2 | MCP Codex 接続失敗 | 警告表示し Codex なしで続行 |
+| 2 | `mcp__codex__codex` タイムアウト/失敗 | 該当結果を空として続行 |
 | 3 | ユーザー入力が不正 | 再入力を求める |
-| 3.5 | `codex exec` 失敗 | メタレビューをスキップし Phase 3 レポートで続行 |
+| 3.5 | `mcp__codex__codex-reply` 失敗 | メタレビューをスキップし Phase 3 レポートで続行 |
 | 3.5 | 出力パース失敗 | 生テキストをそのまま表示 |
 | 4 | ファイル/行番号不正 | スキップして次の finding へ |
 | 5 | テスト失敗 | 修正提案、最大2回リトライ |

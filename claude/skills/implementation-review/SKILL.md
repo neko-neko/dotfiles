@@ -3,7 +3,7 @@ name: implementation-review
 description: >-
   実装計画書レビューワークフロー。3つの観点（clarity, feasibility, consistency）で
   実装計画書を並列レビューし、統合レポートから承認された指摘を修正する。
-  --codex 指定時は Codex CLI によるメタレビューを追加する。
+  --codex 指定時は MCP Codex によるレビューとメタレビューを追加する。
 user-invocable: true
 ---
 
@@ -95,17 +95,26 @@ Agent tool を使用する。`subagent_type` に `implementation-review-consiste
 
 findings を JSON で返すよう指示する。
 
-### 2-4. codex review（`codex_enabled` 時のみ）
+### 2-4. Codex レビュー（`codex_enabled` 時のみ）
 
-`codex_enabled` が true の場合のみ実行する。Bash ツールで `run_in_background: true` を使用して `codex exec` を実行する。
+`codex_enabled` が true の場合のみ実行する。`mcp__codex__codex` ツールを `run_in_background: true` で呼び出す。
 
-**実行前チェック:** `which codex` でコマンドの存在を確認する。存在しない場合は「codex コマンドが見つかりません。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
+共通パターンは `references/mcp-codex-patterns.md` のパターン1（ドキュメントレビュー）を参照。
 
-```bash
-codex exec "以下の実装計画書をレビューしてください。技術的実現可能性、明確さ、一貫性の観点で問題点を指摘してください。
+```yaml
+tool: mcp__codex__codex
+params:
+  prompt: |
+    以下の実装計画書をレビューしてください。技術的実現可能性、明確さ、一貫性の観点で問題点を指摘してください。
 
-<doc_content>"
+    <doc_content>
+  sandbox: "read-only"
+  approval-policy: "on-failure"
 ```
+
+レスポンスから `threadId` を保持し、Phase 3.5 のメタレビューで使用する。
+
+MCP 呼び出しが失敗した場合は「MCP Codex への接続に失敗しました。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
 
 Codex の出力はフリーテキスト形式。
 
@@ -156,7 +165,7 @@ findings を JSON で返すよう指示する。
 
 各エージェントの応答から JSON `{"findings": [...]}` をパースする。失敗した場合は正規表現フォールバックを試み、それでも失敗ならエラーとして扱う。
 
-codex review の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
+Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
 
 ## Phase 3: Report
 
@@ -207,23 +216,30 @@ findings が 0 件の場合 → 「指摘事項はありません。レビュー
 
 #### 実行
 
-Bash ツールで `codex exec` を実行する（タイムアウト: 5分）:
+`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは `references/mcp-codex-patterns.md` のパターン3（メタレビュー）を参照。
 
-```bash
-codex exec "以下の実装計画書レビューレポートと実装計画書を確認し、2つの観点で分析してください。
+```yaml
+tool: mcp__codex__codex-reply
+params:
+  threadId: <Phase 2 で取得した threadId>
+  prompt: |
+    先ほどのレビュー結果を踏まえ、以下の2つの観点で分析してください。
 
-## 観点1: 見落とし検出
-レビューレポートに含まれていない問題があれば指摘してください。
+    ## 観点1: 見落とし検出
+    レビューレポートに含まれていない問題があれば指摘してください。
 
-## 観点2: False Positive 検証
-レビューレポートの各 finding が正当かどうか検証してください。false positive の疑いがあるものを指摘してください。
+    ## 観点2: False Positive 検証
+    レビューレポートの各 finding が正当かどうか検証してください。
+    false positive の疑いがあるものを指摘してください。
 
-## Review Report
-<Phase 3 で生成したレポート全文>
+    ## Review Report
+    <Phase 3 で生成したレポート全文>
 
-## Implementation Plan
-<doc_content>"
+    ## Implementation Plan
+    <doc_content>
 ```
+
+`threadId` が取得できなかった場合（Phase 2 の Codex 失敗）はメタレビューをスキップする。
 
 #### 結果の統合
 
@@ -243,7 +259,7 @@ N+1. [codex-meta] section — description
 
 #### エラー時
 
-- `codex exec` が失敗またはタイムアウトした場合 → 「Codex メタレビューをスキップします」と表示し、Phase 3 のレポートのみで続行する
+- `mcp__codex__codex-reply` が失敗またはタイムアウトした場合 → 「Codex メタレビューをスキップします」と表示し、Phase 3 のレポートのみで続行する
 - 出力パースが失敗した場合 → Codex の生テキストをそのまま「Meta Review (by Codex)」セクションに表示する
 
 ### ユーザー選択
@@ -338,10 +354,10 @@ git diff
 | 1 | `docs/plans/` ディレクトリが存在しない | ディレクトリ構成を確認するよう報告 |
 | 2 | エージェントタイムアウト | 該当エージェント結果を空として続行 |
 | 2 | JSON パース失敗 | 正規表現フォールバック、それでも失敗なら空 |
-| 2 | `codex` コマンド未インストール | 警告表示し Codex なしで続行 |
-| 2 | `codex exec` タイムアウト/失敗 | 該当結果を空として続行 |
+| 2 | MCP Codex 接続失敗 | 警告表示し Codex なしで続行 |
+| 2 | `mcp__codex__codex` タイムアウト/失敗 | 該当結果を空として続行 |
 | 3 | ユーザー入力が不正 | 再入力を求める |
-| 3.5 | `codex exec` 失敗 | メタレビューをスキップし Phase 3 レポートで続行 |
+| 3.5 | `mcp__codex__codex-reply` 失敗 | メタレビューをスキップし Phase 3 レポートで続行 |
 | 3.5 | 出力パース失敗 | 生テキストをそのまま表示 |
 | 4 | セクション/構造不正 | スキップして次の finding へ |
 | 5 | 整合性チェックで問題検出 | 修正提案、最大2回リトライ |
