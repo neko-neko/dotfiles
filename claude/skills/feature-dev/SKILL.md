@@ -192,11 +192,12 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 ### Phase 8: Test Review
 
-- **INVOKE:** `/test-review`
+- **INVOKE:** `/test-review --design <artifacts.design_doc>`
 - **Autonomy:** INTERACTIVE
 - **有効条件:** `--e2e` 指定時のみ。未指定時はスキップして Phase 9 へ
-- **`--codex` 伝播:** `--codex` 指定時、`/test-review` に `args: "--codex"` を渡す
-- **動作:** テストコードを2観点（coverage, quality）でレビューする
+- **`--design` 伝播:** `artifacts.design_doc`（Phase 1 の設計書パス）を `--design` 引数として自動付与する
+- **`--codex` 伝播:** `--codex` 指定時、`/test-review` に `--codex` も渡す（例: `args: "--design docs/plans/2026-03-11-xxx-design.md --codex"`）
+- **動作:** テストコードを3観点（coverage, quality, design-alignment）でレビューする
 - **自動遷移条件:** ユーザーが承認した修正完了
 - **成果物:** テストレビュー済みコード
 - **失敗時:** テスト追加後の既存テスト破損 -> PAUSE。影響範囲を報告
@@ -255,7 +256,7 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 
 | Phase | 成果物 | 消費者 |
 |-------|--------|--------|
-| 1 | `docs/plans/*-design.md` | Phase 2, 3 |
+| 1 | `docs/plans/*-design.md` | Phase 2, 3, 8 |
 | 2 | レビュー通過済み設計書 | Phase 3 |
 | 3 | `docs/plans/*-plan.md` | Phase 4, 6 |
 | 4 | レビュー通過済み計画書 | Phase 6 |
