@@ -7,7 +7,9 @@ import { Box, Text, useApp, useFocusManager, useInput } from "ink";
 import { ConfirmInput, TextInput } from "@inkjs/ui";
 import { useScreenSize } from "fullscreen-ink";
 import type { Priority, Task, TaskStatus } from "../../types.ts";
+import type { ProjectState } from "../../services/sync-service.ts";
 import { JsonFileTaskRepository } from "../../repositories/mod.ts";
+import { SyncService } from "../../services/sync-service.ts";
 import { groupTasksByStatus, loadBoardData } from "../hooks/use-board.ts";
 import { TaskActions } from "../hooks/use-task-actions.ts";
 import { SummaryBar } from "../components/summary-bar.tsx";
@@ -54,11 +56,17 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<ViewMode>("normal");
+  const [toast, setToast] = useState<
+    { message: string; color: string } | null
+  >(null);
 
-  // --- TaskActions instance ---
-  const actions = useMemo(() => {
+  // --- TaskActions & SyncService instances ---
+  const { actions, syncService } = useMemo(() => {
     const repo = new JsonFileTaskRepository(dataDir);
-    return new TaskActions(repo, boardId);
+    return {
+      actions: new TaskActions(repo, boardId),
+      syncService: new SyncService(repo),
+    };
   }, [dataDir, boardId]);
 
   // --- Data loading ---
@@ -206,6 +214,93 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
     setMode("normal");
   }, []);
 
+  // --- Toast helper ---
+  const showToast = useCallback(
+    (message: string, color: string = theme.sage) => {
+      setToast({ message, color });
+      setTimeout(() => setToast(null), 3000);
+    },
+    [],
+  );
+
+  // --- Handover sync handler ---
+  const handleSync = useCallback(async () => {
+    try {
+      // Get current git branch
+      const branchCmd = new Deno.Command("git", {
+        args: ["rev-parse", "--abbrev-ref", "HEAD"],
+        stdout: "piped",
+        stderr: "piped",
+      });
+      const branchOutput = await branchCmd.output();
+      if (!branchOutput.success) {
+        showToast("Failed to detect git branch", theme.coral);
+        return;
+      }
+      const branch = new TextDecoder().decode(branchOutput.stdout).trim();
+      if (!branch) {
+        showToast("No git branch detected", theme.coral);
+        return;
+      }
+
+      // Find latest fingerprint directory in ~/.claude/handover/<branch>/
+      const homeDir = Deno.env.get("HOME") ?? "";
+      const handoverBranchDir = `${homeDir}/.claude/handover/${branch}`;
+
+      let entries: Deno.DirEntry[];
+      try {
+        entries = [];
+        for await (const entry of Deno.readDir(handoverBranchDir)) {
+          if (entry.isDirectory) {
+            entries.push(entry);
+          }
+        }
+      } catch {
+        showToast(`No handover data for branch '${branch}'`, theme.coral);
+        return;
+      }
+
+      if (entries.length === 0) {
+        showToast(`No handover data for branch '${branch}'`, theme.coral);
+        return;
+      }
+
+      // Sort by name descending to get the latest fingerprint
+      entries.sort((a, b) => b.name.localeCompare(a.name));
+      const latestDir = `${handoverBranchDir}/${entries[0].name}`;
+      const projectStatePath = `${latestDir}/project-state.json`;
+
+      let projectStateText: string;
+      try {
+        projectStateText = await Deno.readTextFile(projectStatePath);
+      } catch {
+        showToast("project-state.json not found", theme.coral);
+        return;
+      }
+
+      const projectState: ProjectState = JSON.parse(projectStateText);
+      const result = await syncService.syncFromProjectState(
+        boardId,
+        projectState,
+        projectStatePath,
+      );
+
+      await loadTasks();
+
+      const parts: string[] = [];
+      if (result.created > 0) parts.push(`${result.created} created`);
+      if (result.updated > 0) parts.push(`${result.updated} updated`);
+      if (result.errors.length > 0) {
+        parts.push(`${result.errors.length} errors`);
+      }
+      const summary = parts.length > 0 ? parts.join(", ") : "no changes";
+      showToast(`Synced: ${summary}`, theme.sage);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      showToast(`Sync failed: ${msg}`, theme.coral);
+    }
+  }, [syncService, boardId, loadTasks, showToast]);
+
   // --- Global keybinds (only active in normal mode) ---
   useInput(
     (input, key) => {
@@ -252,6 +347,12 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
       // Delete task
       if (input === "d" && selectedTask) {
         setMode("deleting");
+        return;
+      }
+
+      // Handover sync
+      if (input === "s") {
+        handleSync();
         return;
       }
 
@@ -307,6 +408,13 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
 
       {/* Summary Bar */}
       <SummaryBar tasks={tasks} focusedStatus={focusedStatus} />
+
+      {/* Toast notification */}
+      {toast && (
+        <Box paddingX={1}>
+          <Text color={toast.color}>{toast.message}</Text>
+        </Box>
+      )}
 
       {/* Error toast */}
       {error && (
