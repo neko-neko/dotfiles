@@ -3,14 +3,18 @@
 // and modal modes for add/move/delete operations.
 // Prerequisite: fullscreen-ink ^0.1.0, ink ^5, react ^18, @inkjs/ui ^2
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Text, useApp, useFocusManager, useInput } from "ink";
+import { Box, Text, useApp, useFocusManager, useInput, useStdin } from "ink";
 import { ConfirmInput, TextInput } from "@inkjs/ui";
 import { useScreenSize } from "fullscreen-ink";
 import type { Priority, Task, TaskStatus } from "../../types.ts";
 import type { ProjectState } from "../../services/sync-service.ts";
 import { JsonFileTaskRepository } from "../../repositories/mod.ts";
 import { SyncService } from "../../services/sync-service.ts";
-import { groupTasksByStatus, loadBoardData } from "../hooks/use-board.ts";
+import {
+  groupTasksByStatus,
+  loadBoardData,
+  STATUS_ORDER,
+} from "../hooks/use-board.ts";
 import { TaskActions } from "../hooks/use-task-actions.ts";
 import { SummaryBar } from "../components/summary-bar.tsx";
 import { TaskTree } from "../components/task-tree.tsx";
@@ -20,6 +24,11 @@ import { StatusSelect } from "../components/status-select.tsx";
 import { TaskEditor } from "./task-editor.tsx";
 import { SearchOverlay } from "../components/search-overlay.tsx";
 import { theme } from "../theme.ts";
+import {
+  disableMouse,
+  enableMouse,
+  parseMouseEvent,
+} from "../hooks/use-mouse-input.ts";
 
 interface BoardViewProps {
   dataDir: string;
@@ -115,12 +124,117 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
     return () => controller.abort();
   }, [dataDir, boardId, loadTasks]);
 
+  // --- Mouse support ---
+  const { stdin, isRawModeSupported } = useStdin();
+
+  useEffect(() => {
+    enableMouse();
+    return () => disableMouse();
+  }, []);
+
+  // --- Layout calculations (needed early for mouse hit-testing) ---
+  const showDetail = width >= MIN_SPLIT_WIDTH;
+  const leftWidth = showDetail ? Math.floor(width * 0.25) : width;
+
   // --- Derived data ---
   const grouped = groupTasksByStatus(tasks);
   const selectedTask = tasks.find((t) => t.id === selectedTaskId) ?? null;
 
   // Determine which status group the selected task belongs to
   const focusedStatus = selectedTask?.status;
+
+  // Build flat item list for mouse hit-testing (mirrors task-tree.tsx logic)
+  const flatItems = useMemo(() => {
+    const items: Array<
+      { type: "group"; status: TaskStatus } | { type: "task"; task: Task }
+    > = [];
+    for (const status of STATUS_ORDER) {
+      const group = grouped.get(status);
+      if (!group || group.length === 0) continue;
+      items.push({ type: "group", status });
+      for (const task of group) {
+        items.push({ type: "task", task });
+      }
+    }
+    return items;
+  }, [grouped]);
+
+  /** Navigate task selection by delta (+1 = down, -1 = up). */
+  const navigateTask = useCallback(
+    (delta: number) => {
+      const currentIdx = flatItems.findIndex(
+        (item) => item.type === "task" && item.task.id === selectedTaskId,
+      );
+      const dir = delta > 0 ? 1 : -1;
+      let i =
+        (currentIdx === -1 ? (dir > 0 ? -1 : flatItems.length) : currentIdx) +
+        dir;
+      while (i >= 0 && i < flatItems.length) {
+        const item = flatItems[i];
+        if (item.type === "task") {
+          setSelectedTaskId(item.task.id);
+          return;
+        }
+        i += dir;
+      }
+    },
+    [flatItems, selectedTaskId],
+  );
+
+  /** Handle mouse click at terminal coordinates. */
+  const handleMouseClick = useCallback(
+    (x: number, y: number) => {
+      // Row layout (0-indexed terminal rows):
+      //   0: Header
+      //   1: Summary bar
+      //   2: Toast or Error (conditional, may not exist)
+      //   3+: Main pane (task-tree border top is row 3, items start at row 4)
+      // The border of the TaskTree box adds 1 row top + 1 row bottom.
+      const headerRows = 2 + (toast ? 1 : 0) + (error ? 1 : 0);
+      const treeStartRow = headerRows + 1; // +1 for border top of TaskTree box
+
+      // Only process clicks in the left pane area
+      const leftPaneWidth = showDetail ? Math.floor(width * 0.25) : width;
+      if (x > leftPaneWidth) return;
+
+      const itemIndex = y - treeStartRow;
+      if (itemIndex < 0 || itemIndex >= flatItems.length) return;
+
+      const item = flatItems[itemIndex];
+      if (item.type === "task") {
+        setSelectedTaskId(item.task.id);
+      }
+    },
+    [flatItems, toast, error, width, showDetail],
+  );
+
+  // Mouse event listener on stdin
+  useEffect(() => {
+    if (!isRawModeSupported || !stdin) return;
+
+    const handler = (data: Uint8Array | string) => {
+      const str = typeof data === "string"
+        ? data
+        : new TextDecoder().decode(data);
+      const mouseEvent = parseMouseEvent(str);
+      if (!mouseEvent || mouseEvent.type !== "press") return;
+
+      if (mouseEvent.button === "left") {
+        handleMouseClick(mouseEvent.x, mouseEvent.y);
+      }
+      if (mouseEvent.button === "scrollUp") {
+        navigateTask(-1);
+      }
+      if (mouseEvent.button === "scrollDown") {
+        navigateTask(1);
+      }
+    };
+
+    stdin.on("data", handler);
+    return () => {
+      stdin.removeListener("data", handler);
+    };
+  }, [stdin, isRawModeSupported, handleMouseClick, navigateTask]);
 
   // --- Mode handlers ---
   const handleAddSubmit = useCallback(
@@ -389,10 +503,6 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
     },
     { isActive: mode !== "normal" },
   );
-
-  // --- Layout calculations ---
-  const showDetail = width >= MIN_SPLIT_WIDTH;
-  const leftWidth = showDetail ? Math.floor(width * 0.35) : width;
 
   return (
     <Box

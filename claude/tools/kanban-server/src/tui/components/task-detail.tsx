@@ -1,4 +1,5 @@
 // src/tui/components/task-detail.tsx — Right pane: selected task detail view
+// Layout mirrors the Web UI: Title → Description → Labels → Fields → Session → Footer
 import { Box, Text } from "ink";
 import type { Task } from "../../types.ts";
 import { priorityIcon, statusColor, statusIcon, theme } from "../theme.ts";
@@ -13,6 +14,23 @@ interface FieldProps {
 }
 
 const LABEL_WIDTH = 12;
+
+const LABEL_COLORS = [
+  theme.amber,
+  theme.sage,
+  theme.coral,
+  theme.sky,
+  theme.violet,
+  theme.rose,
+];
+
+function labelColor(label: string): string {
+  let hash = 0;
+  for (const char of label) {
+    hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+  }
+  return LABEL_COLORS[Math.abs(hash) % LABEL_COLORS.length];
+}
 
 function Field({ label, children }: FieldProps) {
   return (
@@ -40,6 +58,27 @@ function timeSince(dateStr: string): string {
   if (hours > 0) return `${hours}h ago`;
   if (minutes > 0) return `${minutes}m ago`;
   return "just now";
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "unknown";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const h = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${y}-${m}-${day} ${h}:${min}`;
+}
+
+function Separator() {
+  return (
+    <Box marginY={0}>
+      <Text color={theme.textDim}>
+        {"  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"}
+      </Text>
+    </Box>
+  );
 }
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -77,27 +116,47 @@ export function TaskDetail({ task }: TaskDetailProps) {
       paddingX={1}
       flexGrow={1}
     >
-      {/* Title */}
-      <Box marginBottom={1}>
-        <Text color={theme.amber} bold>{task.title}</Text>
+      {/* Title (prominent, amber, bold) */}
+      <Box marginBottom={0}>
+        <Text color={theme.amber} bold>
+          {task.title}
+        </Text>
       </Box>
 
-      {/* Fields */}
+      {/* Description (immediately after title, prominent) */}
+      {task.description && (
+        <Box marginTop={1} marginBottom={0}>
+          <Text color={theme.text} wrap="wrap">
+            {task.description}
+          </Text>
+        </Box>
+      )}
+
+      {/* Labels as colored tags */}
+      {task.labels.length > 0 && (
+        <Box marginTop={1} gap={1}>
+          {task.labels.map((l) => (
+            <Text key={l} color={labelColor(l)}>
+              #{l}
+            </Text>
+          ))}
+        </Box>
+      )}
+
+      <Separator />
+
+      {/* Status + Priority + Worktree fields */}
       <Field label="Status">
-        <Text color={sColor}>{sIcon} {task.status}</Text>
+        <Text color={sColor}>
+          {sIcon} {task.status}
+        </Text>
       </Field>
 
       <Field label="Priority">
-        <Text color={pColor}>{pIcon} {task.priority}</Text>
+        <Text color={pColor}>
+          {pIcon} {task.priority}
+        </Text>
       </Field>
-
-      {task.labels.length > 0 && (
-        <Field label="Labels">
-          <Text color={theme.sky}>
-            {task.labels.map((l) => `#${l}`).join(" ")}
-          </Text>
-        </Field>
-      )}
 
       {task.worktree && (
         <Field label="Worktree">
@@ -105,41 +164,50 @@ export function TaskDetail({ task }: TaskDetailProps) {
         </Field>
       )}
 
+      {/* Session Context */}
+      {task.sessionContext && (
+        <>
+          <Separator />
+          <Box flexDirection="column">
+            <Text color={theme.textMuted} bold>
+              Session
+            </Text>
+            {task.sessionContext.lastSessionId && (
+              <Field label="  ID">
+                <Text color={theme.violet}>
+                  {task.sessionContext.lastSessionId}
+                </Text>
+              </Field>
+            )}
+            {task.sessionContext.resumeHint && (
+              <Field label="  Resume">
+                <Text color={theme.text}>
+                  {task.sessionContext.resumeHint}
+                </Text>
+              </Field>
+            )}
+            {task.sessionContext.handoverFile && (
+              <Field label="  Handover">
+                <Text color={theme.sage}>
+                  {task.sessionContext.handoverFile}
+                </Text>
+              </Field>
+            )}
+          </Box>
+        </>
+      )}
+
+      {/* Footer: Created, Updated, Task ID */}
+      <Separator />
+      <Field label="Created">
+        <Text color={theme.textMuted}>{formatDate(task.createdAt)}</Text>
+      </Field>
       <Field label="Updated">
         <Text color={theme.textMuted}>{timeSince(task.updatedAt)}</Text>
       </Field>
-
-      {/* Description */}
-      {task.description && (
-        <Box marginTop={1} flexDirection="column">
-          <Text color={theme.textMuted} underline>Description</Text>
-          <Box marginTop={0}>
-            <Text color={theme.text}>{task.description}</Text>
-          </Box>
-        </Box>
-      )}
-
-      {/* Session Context */}
-      {task.sessionContext && (
-        <Box marginTop={1} flexDirection="column">
-          <Text color={theme.textMuted} underline>Session</Text>
-          {task.sessionContext.lastSessionId && (
-            <Field label="Session ID">
-              <Text color={theme.violet}>{task.sessionContext.lastSessionId}</Text>
-            </Field>
-          )}
-          {task.sessionContext.resumeHint && (
-            <Field label="Resume">
-              <Text color={theme.text}>{task.sessionContext.resumeHint}</Text>
-            </Field>
-          )}
-          {task.sessionContext.handoverFile && (
-            <Field label="Handover">
-              <Text color={theme.sage}>{task.sessionContext.handoverFile}</Text>
-            </Field>
-          )}
-        </Box>
-      )}
+      <Field label="ID">
+        <Text color={theme.textDim}>{task.id}</Text>
+      </Field>
     </Box>
   );
 }
