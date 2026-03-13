@@ -62,6 +62,14 @@ user-invocable: true
       "file_paths": ["関連ファイルパス"],
       "next_action": "次にやるべき具体的なアクション（in_progress/blocked の場合）",
       "blockers": ["ブロッカーの説明（blocked の場合）"],
+      "attempted_approaches": [
+        {
+          "approach": "試みたアプローチの説明",
+          "result": "failed | abandoned | partial",
+          "reason": "なぜ失敗/断念したか",
+          "learnings": "次に活かすべき知見"
+        }
+      ],
       "last_touched": "ISO8601"
     }
   ],
@@ -99,6 +107,7 @@ user-invocable: true
    - active_tasks: 同じ ID のタスクは上書き、新しいタスクは追加
    - recent_decisions: 追記（重複しない）
    - architecture_changes: 追記（直近10件を保持、古い順に削除）
+   - attempted_approaches: 同一タスク ID のタスクでは追記（重複排除、approach が同じエントリは上書き）
    - known_issues: 解決済みなら削除、新規は追加
 
 5. `{保存先}/project-state.json` に書き出す
@@ -129,6 +138,8 @@ user-invocable: true
 - [ID] **status** タスク説明
   - files: ファイルパス
   - next: 次のアクション
+  （attempted_approaches がある場合）
+  - tried: アプローチ説明 → result: 理由 (知見)
   （blocked の場合）
   - blocker: ブロッカー
 
