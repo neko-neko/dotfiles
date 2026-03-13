@@ -145,6 +145,44 @@ config.keys = {
 }
 
 ---------------------------------------------------------------
+-- Dynamic padding: compensate for non-native fullscreen offset
+---------------------------------------------------------------
+local function recompute_padding(window)
+  local dims = window:get_dimensions()
+  local overrides = window:get_config_overrides() or {}
+
+  if not dims.is_full_screen then
+    if not overrides.window_padding then
+      return
+    end
+    overrides.window_padding = nil
+  else
+    local new_padding = {
+      left = 32,
+      right = 0,
+      top = 0,
+      bottom = 0,
+    }
+    if
+      overrides.window_padding
+      and new_padding.left == overrides.window_padding.left
+    then
+      return
+    end
+    overrides.window_padding = new_padding
+  end
+  window:set_config_overrides(overrides)
+end
+
+wezterm.on('window-resized', function(window, pane)
+  recompute_padding(window)
+end)
+
+wezterm.on('window-config-reloaded', function(window)
+  recompute_padding(window)
+end)
+
+---------------------------------------------------------------
 -- Claude Code notification via user-var
 ---------------------------------------------------------------
 wezterm.on('user-var-changed', function(window, pane, name, value)
