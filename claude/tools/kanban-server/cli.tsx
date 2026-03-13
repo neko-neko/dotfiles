@@ -1,36 +1,18 @@
-// cli.tsx — Minimal Ink + fullscreen-ink scaffold on Deno
-// Prerequisites: Deno 2.7+, npm:ink@5, npm:fullscreen-ink@2, npm:react@18
-import { useScreenSize, withFullScreen } from "fullscreen-ink";
-import { Box, Text, useApp, useInput } from "ink";
+// cli.tsx — Kanban TUI entry point
+// Prerequisites: Deno 2.7+, npm:ink@5, npm:fullscreen-ink@^0.1.0, npm:react@18
+import { withFullScreen } from "fullscreen-ink";
+import { BoardView } from "./src/tui/views/board-view.tsx";
 
-function App() {
-  const { exit } = useApp();
-  const { width, height } = useScreenSize();
+const DATA_DIR = Deno.env.get("KANBAN_DATA_DIR") ??
+  `${Deno.env.get("HOME")}/.claude/kanban`;
 
-  useInput((input, key) => {
-    if (input === "q" || (input === "c" && key.ctrl)) {
-      exit();
-    }
-  });
-
-  return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor="#D4A574"
-      width={width}
-      height={height}
-    >
-      <Text color="#D4A574" bold>
-        kanban TUI — {width}x{height}
-      </Text>
-      <Text color="#6B6560">Press q to quit</Text>
-    </Box>
-  );
-}
+// For now, use first CLI arg or default to "dotfiles"
+const boardId = Deno.args[0] ?? "dotfiles";
 
 async function main() {
-  const ink = withFullScreen(<App />);
+  const ink = withFullScreen(
+    <BoardView dataDir={DATA_DIR} boardId={boardId} />,
+  );
   await ink.start();
   await ink.waitUntilExit();
 }
