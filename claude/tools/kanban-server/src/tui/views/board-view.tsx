@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Text, useApp, useFocusManager, useInput } from "ink";
 import { ConfirmInput, TextInput } from "@inkjs/ui";
 import { useScreenSize } from "fullscreen-ink";
-import type { Task, TaskStatus } from "../../types.ts";
+import type { Priority, Task, TaskStatus } from "../../types.ts";
 import { JsonFileTaskRepository } from "../../repositories/mod.ts";
 import { groupTasksByStatus, loadBoardData } from "../hooks/use-board.ts";
 import { TaskActions } from "../hooks/use-task-actions.ts";
@@ -15,6 +15,7 @@ import { TaskTree } from "../components/task-tree.tsx";
 import { TaskDetail } from "../components/task-detail.tsx";
 import { KeybindBar } from "../components/keybind-bar.tsx";
 import { StatusSelect } from "../components/status-select.tsx";
+import { TaskEditor } from "./task-editor.tsx";
 import { theme } from "../theme.ts";
 
 interface BoardViewProps {
@@ -23,7 +24,7 @@ interface BoardViewProps {
   onBack?: () => void;
 }
 
-type ViewMode = "normal" | "adding" | "moving" | "deleting";
+type ViewMode = "normal" | "adding" | "moving" | "deleting" | "editing";
 
 /** Maps numeric keys 1-5 to statuses for quick jump. */
 const STATUS_JUMP: Record<string, TaskStatus> = {
@@ -165,6 +166,39 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
     setMode("normal");
   }, []);
 
+  const handleEditSave = useCallback(
+    async (
+      updates: Partial<{
+        title: string;
+        description: string;
+        status: TaskStatus;
+        priority: Priority;
+        labels: string[];
+        worktree: string;
+      }>,
+    ) => {
+      if (!selectedTaskId) {
+        setMode("normal");
+        return;
+      }
+      try {
+        if (Object.keys(updates).length > 0) {
+          await actions.updateTask(selectedTaskId, updates);
+          await loadTasks();
+        }
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(msg);
+      }
+      setMode("normal");
+    },
+    [actions, selectedTaskId, loadTasks],
+  );
+
+  const handleEditCancel = useCallback(() => {
+    setMode("normal");
+  }, []);
+
   // --- Global keybinds (only active in normal mode) ---
   useInput(
     (input, key) => {
@@ -199,6 +233,12 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
       // Move task
       if (input === "m" && selectedTask) {
         setMode("moving");
+        return;
+      }
+
+      // Edit task
+      if (input === "e" && selectedTask) {
+        setMode("editing");
         return;
       }
 
@@ -279,10 +319,18 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
           />
         </Box>
 
-        {/* Right pane: TaskDetail */}
+        {/* Right pane: TaskDetail or TaskEditor */}
         {showDetail && (
           <Box flexGrow={1} flexDirection="column">
-            <TaskDetail task={selectedTask} />
+            {mode === "editing" && selectedTask
+              ? (
+                <TaskEditor
+                  task={selectedTask}
+                  onSave={handleEditSave}
+                  onCancel={handleEditCancel}
+                />
+              )
+              : <TaskDetail task={selectedTask} />}
           </Box>
         )}
       </Box>
