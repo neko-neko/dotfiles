@@ -134,7 +134,9 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
 
   // --- Layout calculations (needed early for mouse hit-testing) ---
   const showDetail = width >= MIN_SPLIT_WIDTH;
-  const leftWidth = showDetail ? Math.floor(width * 0.25) : width;
+  // Fixed character width for left pane (30 chars including border)
+  // Percentage-based sizing doesn't work well with Ink's flexbox + border
+  const leftWidth = showDetail ? Math.min(36, Math.floor(width * 0.28)) : width;
 
   // --- Derived data ---
   const grouped = groupTasksByStatus(tasks);
@@ -194,7 +196,7 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
       const treeStartRow = headerRows + 1; // +1 for border top of TaskTree box
 
       // Only process clicks in the left pane area
-      const leftPaneWidth = showDetail ? Math.floor(width * 0.25) : width;
+      const leftPaneWidth = leftWidth;
       if (x > leftPaneWidth) return;
 
       const itemIndex = y - treeStartRow;

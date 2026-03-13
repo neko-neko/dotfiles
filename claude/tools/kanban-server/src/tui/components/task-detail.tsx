@@ -73,9 +73,9 @@ function formatDate(dateStr: string): string {
 
 function Separator() {
   return (
-    <Box marginY={0}>
-      <Text color={theme.textDim}>
-        {"  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"}
+    <Box marginY={0} paddingX={0}>
+      <Text color={theme.border}>
+        {"─".repeat(50)}
       </Text>
     </Box>
   );
@@ -112,63 +112,80 @@ export function TaskDetail({ task }: TaskDetailProps) {
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor={theme.border}
-      paddingX={1}
+      borderColor={theme.borderActive}
+      paddingX={2}
+      paddingY={1}
       flexGrow={1}
     >
       {/* Title (prominent, amber, bold) */}
-      <Box marginBottom={0}>
-        <Text color={theme.amber} bold>
-          {task.title}
-        </Text>
-      </Box>
+      <Text color={theme.amber} bold>
+        {task.title}
+      </Text>
 
       {/* Description (immediately after title, prominent) */}
-      {task.description && (
-        <Box marginTop={1} marginBottom={0}>
-          <Text color={theme.text} wrap="wrap">
-            {task.description}
-          </Text>
-        </Box>
-      )}
+      {task.description
+        ? (
+          <Box marginTop={1}>
+            <Text color={theme.text} wrap="wrap">
+              {task.description}
+            </Text>
+          </Box>
+        )
+        : (
+          <Box marginTop={1}>
+            <Text color={theme.textDim} italic>
+              (no description)
+            </Text>
+          </Box>
+        )}
 
       {/* Labels as colored tags */}
       {task.labels.length > 0 && (
         <Box marginTop={1} gap={1}>
           {task.labels.map((l) => (
-            <Text key={l} color={labelColor(l)}>
+            <Text key={l} color={labelColor(l)} bold>
               #{l}
             </Text>
           ))}
         </Box>
       )}
 
-      <Separator />
+      <Box marginTop={1}>
+        <Separator />
+      </Box>
 
       {/* Status + Priority + Worktree fields */}
-      <Field label="Status">
-        <Text color={sColor}>
-          {sIcon} {task.status}
-        </Text>
-      </Field>
-
-      <Field label="Priority">
-        <Text color={pColor}>
-          {pIcon} {task.priority}
-        </Text>
-      </Field>
-
-      {task.worktree && (
-        <Field label="Worktree">
-          <Text color={theme.sage}>{task.worktree}</Text>
+      <Box marginTop={1} flexDirection="column">
+        <Field label="Status">
+          <Text color={sColor}>
+            {sIcon} {task.status.replace("_", " ")}
+          </Text>
         </Field>
-      )}
+
+        <Field label="Priority">
+          <Text color={pColor}>
+            {pIcon} {task.priority}
+          </Text>
+        </Field>
+
+        {task.worktree && (
+          <Field label="Worktree">
+            <Text color={theme.sage}>{task.worktree}</Text>
+          </Field>
+        )}
+
+        {task.executionHost && (
+          <Field label="Host">
+            <Text color={theme.violet}>{task.executionHost}</Text>
+          </Field>
+        )}
+      </Box>
 
       {/* Session Context */}
       {task.sessionContext && (
-        <>
+        <Box flexDirection="column" marginTop={1}>
           <Separator />
-          <Box flexDirection="column">
+          <Box marginTop={1} flexDirection="column">
             <Text color={theme.textMuted} bold>
               Session
             </Text>
@@ -194,20 +211,23 @@ export function TaskDetail({ task }: TaskDetailProps) {
               </Field>
             )}
           </Box>
-        </>
+        </Box>
       )}
 
       {/* Footer: Created, Updated, Task ID */}
+      <Box flexGrow={1} />
       <Separator />
-      <Field label="Created">
-        <Text color={theme.textMuted}>{formatDate(task.createdAt)}</Text>
-      </Field>
-      <Field label="Updated">
-        <Text color={theme.textMuted}>{timeSince(task.updatedAt)}</Text>
-      </Field>
-      <Field label="ID">
-        <Text color={theme.textDim}>{task.id}</Text>
-      </Field>
+      <Box marginTop={1} flexDirection="column">
+        <Field label="Created">
+          <Text color={theme.textMuted}>{formatDate(task.createdAt)}</Text>
+        </Field>
+        <Field label="Updated">
+          <Text color={theme.textMuted}>{timeSince(task.updatedAt)}</Text>
+        </Field>
+        <Field label="ID">
+          <Text color={theme.textDim}>{task.id}</Text>
+        </Field>
+      </Box>
     </Box>
   );
 }
