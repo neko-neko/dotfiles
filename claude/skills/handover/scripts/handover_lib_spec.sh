@@ -199,9 +199,14 @@ Describe "handover-lib.sh"
     It "includes attempted approaches as tried lines"
       When call generate_handover_md "$FIXTURES_DIR/mixed-tasks.json" "$md_output"
       The status should be success
-      The contents of file "$md_output" should include "tried:"
-      The contents of file "$md_output" should include "Used grep-based parsing"
-      The contents of file "$md_output" should include "failed"
+      The contents of file "$md_output" should include "tried: Used grep-based parsing"
+      The contents of file "$md_output" should include "failed: Could not handle multiline values"
+    End
+
+    It "does not include tried lines when attempted_approaches is absent"
+      When call generate_handover_md "$FIXTURES_DIR/valid-v3.json" "$md_output"
+      The status should be success
+      The contents of file "$md_output" should not include "tried:"
     End
 
     It "includes known issues"
