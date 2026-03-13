@@ -1,15 +1,20 @@
 // src/tui/views/board-view.tsx — Main board view: Split Pane layout
-// Integrates SummaryBar, TaskTree, TaskDetail, and KeybindBar.
-// Prerequisite: fullscreen-ink ^0.1.0, ink ^5, react ^18
-import { useCallback, useEffect, useState } from "react";
+// Integrates SummaryBar, TaskTree, TaskDetail, KeybindBar,
+// and modal modes for add/move/delete operations.
+// Prerequisite: fullscreen-ink ^0.1.0, ink ^5, react ^18, @inkjs/ui ^2
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Text, useApp, useFocusManager, useInput } from "ink";
+import { ConfirmInput, TextInput } from "@inkjs/ui";
 import { useScreenSize } from "fullscreen-ink";
 import type { Task, TaskStatus } from "../../types.ts";
+import { JsonFileTaskRepository } from "../../repositories/mod.ts";
 import { groupTasksByStatus, loadBoardData } from "../hooks/use-board.ts";
+import { TaskActions } from "../hooks/use-task-actions.ts";
 import { SummaryBar } from "../components/summary-bar.tsx";
 import { TaskTree } from "../components/task-tree.tsx";
 import { TaskDetail } from "../components/task-detail.tsx";
 import { KeybindBar } from "../components/keybind-bar.tsx";
+import { StatusSelect } from "../components/status-select.tsx";
 import { theme } from "../theme.ts";
 
 interface BoardViewProps {
@@ -17,6 +22,8 @@ interface BoardViewProps {
   boardId: string;
   onBack?: () => void;
 }
+
+type ViewMode = "normal" | "adding" | "moving" | "deleting";
 
 /** Maps numeric keys 1-5 to statuses for quick jump. */
 const STATUS_JUMP: Record<string, TaskStatus> = {
@@ -38,6 +45,13 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<ViewMode>("normal");
+
+  // --- TaskActions instance ---
+  const actions = useMemo(() => {
+    const repo = new JsonFileTaskRepository(dataDir);
+    return new TaskActions(repo, boardId);
+  }, [dataDir, boardId]);
 
   // --- Data loading ---
   const loadTasks = useCallback(async () => {
@@ -93,40 +107,129 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
   // Determine which status group the selected task belongs to
   const focusedStatus = selectedTask?.status;
 
-  // --- Global keybinds ---
-  useInput((input, key) => {
-    // Quit
-    if (input === "q" || (key.ctrl && input === "c")) {
-      exit();
-      return;
-    }
-
-    // Tab / Shift+Tab to switch pane focus
-    if (key.tab) {
-      if (key.shift) {
-        focusPrevious();
-      } else {
-        focusNext();
+  // --- Mode handlers ---
+  const handleAddSubmit = useCallback(
+    async (title: string) => {
+      const trimmed = title.trim();
+      if (trimmed.length === 0) {
+        setMode("normal");
+        return;
       }
-      return;
-    }
-
-    // Board selection (back)
-    if (input === "b" && onBack) {
-      onBack();
-      return;
-    }
-
-    // Quick-jump to status group (1-5)
-    const jumpStatus = STATUS_JUMP[input];
-    if (jumpStatus) {
-      const groupTasks = grouped.get(jumpStatus);
-      if (groupTasks && groupTasks.length > 0) {
-        setSelectedTaskId(groupTasks[0].id);
+      try {
+        await actions.createTask(trimmed);
+        await loadTasks();
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(msg);
       }
+      setMode("normal");
+    },
+    [actions, loadTasks],
+  );
+
+  const handleMoveSelect = useCallback(
+    async (status: TaskStatus) => {
+      if (!selectedTaskId) {
+        setMode("normal");
+        return;
+      }
+      try {
+        await actions.moveTask(selectedTaskId, status);
+        await loadTasks();
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(msg);
+      }
+      setMode("normal");
+    },
+    [actions, selectedTaskId, loadTasks],
+  );
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!selectedTaskId) {
+      setMode("normal");
       return;
     }
-  });
+    try {
+      await actions.deleteTask(selectedTaskId);
+      setSelectedTaskId(null);
+      await loadTasks();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg);
+    }
+    setMode("normal");
+  }, [actions, selectedTaskId, loadTasks]);
+
+  const handleDeleteCancel = useCallback(() => {
+    setMode("normal");
+  }, []);
+
+  // --- Global keybinds (only active in normal mode) ---
+  useInput(
+    (input, key) => {
+      // Quit
+      if (input === "q" || (key.ctrl && input === "c")) {
+        exit();
+        return;
+      }
+
+      // Tab / Shift+Tab to switch pane focus
+      if (key.tab) {
+        if (key.shift) {
+          focusPrevious();
+        } else {
+          focusNext();
+        }
+        return;
+      }
+
+      // Board selection (back)
+      if (input === "b" && onBack) {
+        onBack();
+        return;
+      }
+
+      // Add task
+      if (input === "a") {
+        setMode("adding");
+        return;
+      }
+
+      // Move task
+      if (input === "m" && selectedTask) {
+        setMode("moving");
+        return;
+      }
+
+      // Delete task
+      if (input === "d" && selectedTask) {
+        setMode("deleting");
+        return;
+      }
+
+      // Quick-jump to status group (1-5)
+      const jumpStatus = STATUS_JUMP[input];
+      if (jumpStatus) {
+        const groupTasks = grouped.get(jumpStatus);
+        if (groupTasks && groupTasks.length > 0) {
+          setSelectedTaskId(groupTasks[0].id);
+        }
+        return;
+      }
+    },
+    { isActive: mode === "normal" },
+  );
+
+  // Escape handler for modal modes
+  useInput(
+    (_input, key) => {
+      if (key.escape) {
+        setMode("normal");
+      }
+    },
+    { isActive: mode !== "normal" },
+  );
 
   // --- Layout calculations ---
   const showDetail = width >= MIN_SPLIT_WIDTH;
@@ -183,6 +286,37 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
           </Box>
         )}
       </Box>
+
+      {/* Modal overlays */}
+      {mode === "adding" && (
+        <Box paddingX={1} flexDirection="row" gap={1}>
+          <Text color={theme.amber} bold>New task:</Text>
+          <TextInput
+            placeholder="Task title..."
+            onSubmit={handleAddSubmit}
+          />
+        </Box>
+      )}
+
+      {mode === "moving" && selectedTask && (
+        <StatusSelect
+          currentStatus={selectedTask.status}
+          onSelect={handleMoveSelect}
+        />
+      )}
+
+      {mode === "deleting" && selectedTask && (
+        <Box paddingX={1} flexDirection="row" gap={1}>
+          <Text color={theme.coral} bold>
+            Delete &apos;{selectedTask.title}&apos;?
+          </Text>
+          <ConfirmInput
+            defaultChoice="cancel"
+            onConfirm={handleDeleteConfirm}
+            onCancel={handleDeleteCancel}
+          />
+        </Box>
+      )}
 
       {/* Keybind Bar */}
       <KeybindBar />
