@@ -196,6 +196,14 @@ Describe "handover-lib.sh"
       The contents of file "$md_output" should include "PR #42 pending"
     End
 
+    It "includes attempted approaches as tried lines"
+      When call generate_handover_md "$FIXTURES_DIR/mixed-tasks.json" "$md_output"
+      The status should be success
+      The contents of file "$md_output" should include "tried:"
+      The contents of file "$md_output" should include "Used grep-based parsing"
+      The contents of file "$md_output" should include "failed"
+    End
+
     It "includes known issues"
       When call generate_handover_md "$FIXTURES_DIR/mixed-tasks.json" "$md_output"
       The status should be success
