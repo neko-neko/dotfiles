@@ -95,25 +95,24 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
   // Watch board file for external changes
   useEffect(() => {
     const boardPath = `${dataDir}/boards/${boardId}.json`;
-    let aborted = false;
+    const controller = new AbortController();
 
     (async () => {
       try {
         const watcher = Deno.watchFs(boardPath);
+        controller.signal.addEventListener("abort", () => watcher.close());
         for await (const event of watcher) {
-          if (aborted) break;
+          if (controller.signal.aborted) break;
           if (event.kind === "modify" || event.kind === "create") {
             await loadTasks();
           }
         }
       } catch {
-        // File may not exist yet or watcher unsupported; ignore
+        // File may not exist yet, or watcher closed; ignore
       }
     })();
 
-    return () => {
-      aborted = true;
-    };
+    return () => controller.abort();
   }, [dataDir, boardId, loadTasks]);
 
   // --- Derived data ---
@@ -278,7 +277,13 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
         return;
       }
 
-      const projectState: ProjectState = JSON.parse(projectStateText);
+      let projectState: ProjectState;
+      try {
+        projectState = JSON.parse(projectStateText);
+      } catch {
+        showToast("Invalid project-state.json", theme.coral);
+        return;
+      }
       const result = await syncService.syncFromProjectState(
         boardId,
         projectState,

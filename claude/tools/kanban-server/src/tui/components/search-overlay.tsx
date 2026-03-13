@@ -34,7 +34,7 @@ export function SearchOverlay(
     ? tasks.filter((t) => matchesQuery(t, query)).slice(0, MAX_RESULTS)
     : [];
 
-  // Clamp cursor when results shrink
+  // Clamp cursor to valid range (covers results shrinking between renders)
   const clampedCursor = results.length > 0
     ? Math.min(cursor, results.length - 1)
     : 0;
@@ -50,9 +50,7 @@ export function SearchOverlay(
     }
     // Navigate results with Ctrl+n / Ctrl+p (arrow keys captured by TextInput)
     if (key.ctrl && input === "n") {
-      setCursor((prev) =>
-        results.length > 0 ? Math.min(prev + 1, results.length - 1) : 0
-      );
+      setCursor((prev) => Math.min(prev + 1, results.length - 1));
       return;
     }
     if (key.ctrl && input === "p") {
@@ -92,7 +90,7 @@ export function SearchOverlay(
                     {task.title}
                     {task.labels.length > 0 && (
                       <Text color={theme.textMuted}>
-                         [{task.labels.join(", ")}]
+                        [{task.labels.join(", ")}]
                       </Text>
                     )}
                   </Text>

@@ -15,6 +15,9 @@ export class TaskActions {
     const moved = await this.repo.moveTasks(this.boardId, [
       { taskId, status },
     ]);
+    if (moved.length === 0) {
+      throw new Error(`Task ${taskId} not found`);
+    }
     return moved[0];
   }
 

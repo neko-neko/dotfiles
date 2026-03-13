@@ -52,7 +52,11 @@ function findIndexForTask(
   );
 }
 
-function findNextTaskIndex(items: FlatItem[], from: number, dir: 1 | -1): number {
+function findNextTaskIndex(
+  items: FlatItem[],
+  from: number,
+  dir: 1 | -1,
+): number {
   let i = from + dir;
   while (i >= 0 && i < items.length) {
     if (items[i].type === "task") return i;
@@ -61,7 +65,11 @@ function findNextTaskIndex(items: FlatItem[], from: number, dir: 1 | -1): number
   return -1;
 }
 
-function findNextGroupIndex(items: FlatItem[], from: number, dir: 1 | -1): number {
+function findNextGroupIndex(
+  items: FlatItem[],
+  from: number,
+  dir: 1 | -1,
+): number {
   let i = from + dir;
   while (i >= 0 && i < items.length) {
     if (items[i].type === "group") {
@@ -86,21 +94,16 @@ export function TaskTree({
   const items = buildFlatList(groupedTasks, collapsed);
   const currentIndex = findIndexForTask(items, selectedTaskId);
 
-  // Auto-select first task if nothing is selected
-  if (selectedTaskId === null && items.length > 0) {
-    const firstTask = items.find((item) => item.type === "task");
-    if (firstTask && firstTask.type === "task") {
-      // Defer to avoid updating state during render
-      queueMicrotask(() => onSelectTask(firstTask.task.id));
-    }
-  }
-
   useInput((input, key) => {
     if (!isFocused) return;
 
     if (input === "j" || (key.downArrow && !key.shift)) {
       // Move to next task
-      const next = findNextTaskIndex(items, currentIndex === -1 ? -1 : currentIndex, 1);
+      const next = findNextTaskIndex(
+        items,
+        currentIndex === -1 ? -1 : currentIndex,
+        1,
+      );
       if (next !== -1) {
         const item = items[next];
         if (item.type === "task") onSelectTask(item.task.id);
@@ -124,7 +127,11 @@ export function TaskTree({
 
     if (input === "J") {
       // Jump to next status group
-      const next = findNextGroupIndex(items, currentIndex === -1 ? -1 : currentIndex, 1);
+      const next = findNextGroupIndex(
+        items,
+        currentIndex === -1 ? -1 : currentIndex,
+        1,
+      );
       if (next !== -1) {
         const item = items[next];
         if (item.type === "task") onSelectTask(item.task.id);
@@ -179,7 +186,11 @@ export function TaskTree({
   });
 
   return (
-    <Box flexDirection="column" borderStyle="round" borderColor={isFocused ? theme.borderActive : theme.border}>
+    <Box
+      flexDirection="column"
+      borderStyle="round"
+      borderColor={isFocused ? theme.borderActive : theme.border}
+    >
       {items.map((item) => {
         if (item.type === "group") {
           const count = groupedTasks.get(item.status)?.length ?? 0;
@@ -188,7 +199,9 @@ export function TaskTree({
           return (
             <Box key={`group-${item.status}`} paddingX={1}>
               <Text color={color}>
-                {isCollapsed ? "\u25B8" : "\u25BE"} {STATUS_LABELS[item.status]} ({count})
+                {isCollapsed ? "\u25B8" : "\u25BE"} {STATUS_LABELS[item.status]}
+                {" "}
+                ({count})
               </Text>
             </Box>
           );
@@ -209,7 +222,7 @@ export function TaskTree({
               {isSelected ? "\u258C" : " "}
             </Text>
             <Text color={sColor}>{` ${sIcon} `}</Text>
-            <Text color={theme.textMuted}>{pIcon} </Text>
+            <Text color={theme.textMuted}>{pIcon}</Text>
             <Text color={isSelected ? theme.text : theme.textMuted}>
               {item.task.title}
             </Text>
