@@ -332,6 +332,10 @@
         const res = await fetch(`/api/remote/status?taskId=${encodeURIComponent(taskId)}&host=${encodeURIComponent(host)}`);
         return res.json();
       },
+      async getSessionsDashboard() {
+        const res = await fetch('/api/sessions/dashboard');
+        return res.json();
+      },
     };
 
     // --- Utility ---
@@ -457,6 +461,20 @@
               disabled=${syncing}
             >
               ${'\u25C6'} ${syncing ? 'Syncing...' : 'Sync'}
+            </button>
+
+            <button
+              class="text-xs font-heading tracking-wider px-3 py-1.5 rounded-md transition-colors"
+              style=${{
+                color: currentView === 'sessions' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+                border: '1px solid ' + (currentView === 'sessions' ? 'var(--accent-amber-dim)' : 'var(--border-subtle)'),
+                background: currentView === 'sessions' ? 'var(--bg-elevated)' : 'transparent',
+              }}
+              onMouseEnter=${(e) => { if (currentView !== 'sessions') { e.target.style.borderColor = 'var(--border-default)'; e.target.style.color = 'var(--text-primary)'; }}}
+              onMouseLeave=${(e) => { if (currentView !== 'sessions') { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.color = 'var(--text-secondary)'; }}}
+              onClick=${() => onNavigate('sessions', null)}
+            >
+              SESSIONS
             </button>
 
             ${currentView === 'board' && html`
@@ -1922,6 +1940,256 @@
       `;
     }
 
+    // --- Sessions Dashboard Component ---
+    const SESSION_STATUS_COLORS = {
+      'in-progress': '#7DAF72',
+      'starting': '#7DAF72',
+      'awaiting-review': '#E8A838',
+      'failed': '#D4654A',
+      'done': '#5C5752',
+    };
+    const SESSION_STATUS_ICONS = {
+      'in-progress': '\u{1F7E2}',
+      'starting': '\u{1F7E2}',
+      'awaiting-review': '\u{1F7E1}',
+      'failed': '\u{1F534}',
+      'done': '\u26AA',
+    };
+
+    function formatElapsed(dateStr) {
+      if (!dateStr) return '--';
+      const diff = Date.now() - new Date(dateStr).getTime();
+      if (diff < 0) return 'just now';
+      const secs = Math.floor(diff / 1000);
+      if (secs < 60) return `${secs}s`;
+      const mins = Math.floor(secs / 60);
+      if (mins < 60) return `${mins}m`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours}h ${mins % 60}m`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
+    }
+
+    function SessionsDashboard() {
+      const [dashboard, setDashboard] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      async function fetchDashboard() {
+        try {
+          const data = await api.getSessionsDashboard();
+          setDashboard(data);
+          setError(null);
+        } catch (err) {
+          console.error('Failed to load sessions dashboard:', err);
+          setError('Failed to load sessions');
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      useEffect(() => {
+        fetchDashboard();
+        const interval = setInterval(fetchDashboard, 30000);
+        return () => clearInterval(interval);
+      }, []);
+
+      if (loading) {
+        return html`
+          <div class="flex items-center justify-center h-64">
+            <div class="text-sm font-body" style=${{ color: 'var(--text-tertiary)' }}>Loading sessions...</div>
+          </div>
+        `;
+      }
+
+      if (error) {
+        return html`
+          <div class="flex items-center justify-center h-64">
+            <div class="text-sm font-body" style=${{ color: 'var(--accent-coral)' }}>${error}</div>
+          </div>
+        `;
+      }
+
+      const sessions = (dashboard && dashboard.sessions) || [];
+      const byHost = (dashboard && dashboard.byHost) || {};
+      const awaitingReview = sessions.filter(s => s.status === 'awaiting-review');
+      const hosts = Object.keys(byHost);
+
+      // Group sessions by host
+      const sessionsByHost = {};
+      for (const s of sessions) {
+        if (!sessionsByHost[s.host]) sessionsByHost[s.host] = [];
+        sessionsByHost[s.host].push(s);
+      }
+
+      // Activity log: all sessions sorted by updated_at descending, take top 20
+      const activityLog = [...sessions]
+        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+        .slice(0, 20);
+
+      return html`
+        <div class="p-6 max-w-6xl mx-auto">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="text-xs font-heading tracking-[0.2em] uppercase" style=${{ color: 'var(--text-secondary)' }}>Sessions Dashboard</h2>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono" style=${{ color: 'var(--text-tertiary)' }}>Auto-refresh: 30s</span>
+              <button
+                class="px-3 py-1.5 text-xs font-heading tracking-wider rounded-md transition-colors flex items-center gap-1.5"
+                style=${{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
+                onMouseEnter=${(e) => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.color = 'var(--text-primary)'; }}
+                onMouseLeave=${(e) => { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.color = 'var(--text-secondary)'; }}
+                onClick=${() => { setLoading(true); fetchDashboard(); }}
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                REFRESH
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary cards -->
+          <div class="grid gap-4 sm:grid-cols-3 mb-8">
+            <div class="rounded-md p-4" style=${{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+              <div class="text-[10px] font-heading tracking-widest uppercase mb-2" style=${{ color: 'var(--text-tertiary)' }}>Total Sessions</div>
+              <div class="text-2xl font-heading font-bold" style=${{ color: 'var(--text-primary)' }}>${sessions.length}</div>
+              <div class="text-[10px] font-mono mt-1" style=${{ color: 'var(--text-tertiary)' }}>${hosts.length} host${hosts.length !== 1 ? 's' : ''}</div>
+            </div>
+            <div class="rounded-md p-4" style=${{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+              <div class="text-[10px] font-heading tracking-widest uppercase mb-2" style=${{ color: 'var(--text-tertiary)' }}>Active</div>
+              <div class="text-2xl font-heading font-bold" style=${{ color: 'var(--accent-sage)' }}>${sessions.filter(s => s.status === 'in-progress' || s.status === 'starting').length}</div>
+              <div class="text-[10px] font-mono mt-1" style=${{ color: 'var(--text-tertiary)' }}>in-progress / starting</div>
+            </div>
+            <div class="rounded-md p-4" style=${{
+              background: awaitingReview.length > 0 ? 'rgba(232, 168, 56, 0.05)' : 'var(--bg-surface)',
+              border: '1px solid ' + (awaitingReview.length > 0 ? 'var(--accent-amber-dim)' : 'var(--border-subtle)'),
+            }}>
+              <div class="text-[10px] font-heading tracking-widest uppercase mb-2" style=${{ color: awaitingReview.length > 0 ? 'var(--accent-amber)' : 'var(--text-tertiary)' }}>Awaiting Review</div>
+              <div class="text-2xl font-heading font-bold" style=${{ color: awaitingReview.length > 0 ? 'var(--accent-amber)' : 'var(--text-primary)' }}>${awaitingReview.length}</div>
+              <div class="text-[10px] font-mono mt-1" style=${{ color: 'var(--text-tertiary)' }}>need attention</div>
+            </div>
+          </div>
+
+          ${awaitingReview.length > 0 && html`
+            <!-- Awaiting Review Section -->
+            <div class="mb-8">
+              <h3 class="text-xs font-heading tracking-[0.15em] uppercase mb-4 flex items-center gap-2" style=${{ color: 'var(--accent-amber)' }}>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                Awaiting Review
+              </h3>
+              <div class="space-y-3">
+                ${awaitingReview.map(session => html`
+                  <div
+                    key=${session.id}
+                    class="rounded-md p-4 flex items-center justify-between"
+                    style=${{ background: 'rgba(232, 168, 56, 0.04)', border: '1px solid var(--accent-amber-dim)' }}
+                  >
+                    <div class="flex items-center gap-3">
+                      <span style=${{ fontSize: '14px' }}>${SESSION_STATUS_ICONS[session.status]}</span>
+                      <div>
+                        <div class="text-sm font-body font-medium" style=${{ color: 'var(--text-primary)' }}>${session.name || session.id}</div>
+                        <div class="text-[10px] font-mono mt-0.5" style=${{ color: 'var(--text-tertiary)' }}>
+                          ${session.host} \u00B7 ${session.phase || 'unknown'} \u00B7 waiting ${formatElapsed(session.waiting_since || session.updated_at)}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div
+                        class="px-3 py-1.5 rounded text-[10px] font-mono cursor-default"
+                        style=${{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+                        title="Run this command to attach to the session"
+                      >
+                        claude --resume ${session.id}
+                      </div>
+                      <span class="text-[10px] font-heading tracking-wider uppercase px-2 py-1 rounded" style=${{ background: 'var(--bg-elevated)', color: 'var(--accent-amber)', border: '1px solid var(--accent-amber-dim)' }}>Attach</span>
+                    </div>
+                  </div>
+                `)}
+              </div>
+            </div>
+          `}
+
+          <!-- Sessions by Host -->
+          <div class="mb-8">
+            <h3 class="text-xs font-heading tracking-[0.15em] uppercase mb-4" style=${{ color: 'var(--text-secondary)' }}>Sessions by Host</h3>
+            ${hosts.length === 0 && html`
+              <div class="text-center py-12">
+                <div class="text-sm font-body" style=${{ color: 'var(--text-tertiary)' }}>No sessions found.</div>
+                <div class="text-[10px] font-mono mt-2" style=${{ color: 'var(--text-tertiary)' }}>Sessions will appear here when spawned via claude-spawn.</div>
+              </div>
+            `}
+            <div class="space-y-6">
+              ${hosts.map(host => {
+                const hostSessions = sessionsByHost[host] || [];
+                const activeCount = hostSessions.filter(s => s.status === 'in-progress' || s.status === 'starting').length;
+                return html`
+                  <div key=${host}>
+                    <div class="flex items-center gap-2 mb-3">
+                      <span class="w-2 h-2 rounded-full" style=${{ background: activeCount > 0 ? 'var(--accent-sage)' : 'var(--text-tertiary)' }}></span>
+                      <span class="text-sm font-heading font-bold" style=${{ color: 'var(--text-primary)' }}>${host}</span>
+                      <span class="text-[10px] font-mono" style=${{ color: 'var(--text-tertiary)' }}>${hostSessions.length} session${hostSessions.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      ${hostSessions.map(session => html`
+                        <div
+                          key=${session.id}
+                          class="rounded-md p-3 transition-colors"
+                          style=${{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}
+                          onMouseEnter=${(e) => e.currentTarget.style.borderColor = 'var(--border-default)'}
+                          onMouseLeave=${(e) => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
+                        >
+                          <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 rounded-full" style=${{ background: SESSION_STATUS_COLORS[session.status] || '#5C5752' }}></span>
+                            <span class="text-xs font-body font-medium truncate" style=${{ color: 'var(--text-primary)' }}>${session.name || session.id}</span>
+                          </div>
+                          <div class="flex items-center gap-2 text-[10px] font-mono" style=${{ color: 'var(--text-tertiary)' }}>
+                            <span class="px-1.5 py-0.5 rounded" style=${{ background: 'var(--bg-elevated)', color: SESSION_STATUS_COLORS[session.status] || 'var(--text-tertiary)' }}>${session.status}</span>
+                            <span>${session.phase || '--'}</span>
+                            <span class="ml-auto">${formatElapsed(session.created_at)}</span>
+                          </div>
+                          ${session.branch && html`
+                            <div class="text-[10px] font-mono mt-1.5 truncate" style=${{ color: 'var(--text-tertiary)' }}>
+                              ${'↳'} ${session.branch}
+                            </div>
+                          `}
+                        </div>
+                      `)}
+                    </div>
+                  </div>
+                `;
+              })}
+            </div>
+          </div>
+
+          <!-- Activity Log -->
+          ${activityLog.length > 0 && html`
+            <div>
+              <h3 class="text-xs font-heading tracking-[0.15em] uppercase mb-4" style=${{ color: 'var(--text-secondary)' }}>Recent Activity</h3>
+              <div class="rounded-md overflow-hidden" style=${{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+                ${activityLog.map((session, i) => html`
+                  <div
+                    key=${session.id + '-' + i}
+                    class="flex items-center gap-3 px-4 py-2.5"
+                    style=${{ borderBottom: i < activityLog.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style=${{ background: SESSION_STATUS_COLORS[session.status] || '#5C5752' }}></span>
+                    <span class="text-xs font-body truncate flex-1" style=${{ color: 'var(--text-primary)' }}>${session.name || session.id}</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded flex-shrink-0" style=${{ background: 'var(--bg-elevated)', color: SESSION_STATUS_COLORS[session.status] || 'var(--text-tertiary)' }}>${session.status}</span>
+                    <span class="text-[10px] font-mono flex-shrink-0" style=${{ color: 'var(--text-tertiary)' }}>${session.phase || '--'}</span>
+                    <span class="text-[10px] font-mono flex-shrink-0" style=${{ color: 'var(--text-tertiary)' }}>${session.host}</span>
+                    <span class="text-[10px] font-mono flex-shrink-0 w-16 text-right" style=${{ color: 'var(--text-tertiary)' }}>${timeAgo(session.updated_at)}</span>
+                  </div>
+                `)}
+              </div>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
     // --- Overview Component ---
     function Overview({ boards, onSelectBoard, onBoardCreated, onBoardDeleted }) {
       const [overview, setOverview] = useState([]);
@@ -2119,6 +2387,10 @@
               onBoardCreated=${handleBoardCreated}
               onBoardDeleted=${handleBoardDeleted}
             />
+          `}
+
+          ${currentView === 'sessions' && html`
+            <${SessionsDashboard} />
           `}
 
           ${currentView === 'board' && currentBoardId && html`
