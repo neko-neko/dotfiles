@@ -9,7 +9,9 @@ import { remoteRoutes } from "./src/routes/remote.ts";
 import { loadConfig } from "./src/config.ts";
 import { JsonFileBoardRepository } from "./src/repositories/json-file-board-repository.ts";
 import { JsonFileTaskRepository } from "./src/repositories/json-file-task-repository.ts";
+import { SessionRepository } from "./src/repositories/session-repository.ts";
 import { GitSyncService } from "./src/services/git-sync-service.ts";
+import { sessionsRoutes } from "./src/routes/sessions.ts";
 
 const DATA_DIR = Deno.env.get("KANBAN_DATA_DIR") ??
   `${Deno.env.get("HOME")}/.claude/kanban`;
@@ -27,6 +29,7 @@ try {
 
 const boardRepo = new JsonFileBoardRepository(DATA_DIR);
 const taskRepo = new JsonFileTaskRepository(DATA_DIR);
+const sessionRepo = new SessionRepository(DATA_DIR);
 
 const app = new Hono();
 
@@ -35,6 +38,7 @@ app.get("/api/health", (c) => c.json({ status: "ok" }));
 app.route("/api", boardRoutes(boardRepo));
 app.route("/api", taskRoutes(taskRepo));
 app.route("/api", actionRoutes(boardRepo, taskRepo));
+app.route("/api/sessions", sessionsRoutes(sessionRepo));
 
 const gitSync = new GitSyncService(DATA_DIR);
 app.route("/api", syncRoutes(gitSync));
