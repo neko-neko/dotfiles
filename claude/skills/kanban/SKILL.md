@@ -62,6 +62,21 @@ user-invocable: true
    open http://localhost:3456
    ```
 
+## リモート管理コマンド
+
+### `/kanban sync`（git 同期）
+1. kanban データリポジトリ（`~/.claude/kanban/`）の git pull & push を実行する
+2. サーバーが起動中の場合は `POST http://localhost:3456/api/sync/pull` → `POST /api/sync/push` でも可
+
+### `/kanban remote-status`
+1. `GET http://localhost:3456/api/remote/ping` でリモート Mac mini の接続状態を確認
+2. 実行中タスクがあれば `GET /api/remote/status?taskId=<id>` で zellij セッション状態を表示
+
+### `/kanban remote-launch <task-id>`
+1. 指定タスクの情報とコンテキストを構築
+2. `POST http://localhost:3456/api/remote/launch` でリモート Mac mini に Claude Code を起動
+3. タスクの executionHost を `remote` に更新
+
 ## プロジェクト自動検出
 
 - `pwd` と `boards.json` の各ボードの `path` をマッチングする
