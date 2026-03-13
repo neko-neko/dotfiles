@@ -99,7 +99,7 @@ findings を JSON で返すよう指示する。
 
 `codex_enabled` が true の場合のみ実行する。`mcp__codex__codex` ツールを `run_in_background: true` で呼び出す。
 
-共通パターンは `references/mcp-codex-patterns.md` のパターン1（ドキュメントレビュー）を参照。
+共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン1（ドキュメントレビュー）を参照。
 
 ```yaml
 tool: mcp__codex__codex
@@ -215,7 +215,7 @@ findings が 0 件の場合 → 「指摘事項はありません。レビュー
 
 #### 実行
 
-`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは `references/mcp-codex-patterns.md` のパターン3（メタレビュー）を参照。
+`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン3（メタレビュー）を参照。
 
 ```yaml
 tool: mcp__codex__codex-reply

@@ -119,7 +119,7 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 ### Phase 1: Design
 
-- **INVOKE 1:** Skill tool で `feature-dev/references/brainstorming-supplement` を invoke する（brainstorming の事前制約・追加ステップを context に載せる）
+- **INVOKE 1:** Read tool で `./references/brainstorming-supplement.md`（このスキルのディレクトリからの相対パス）を読み込む（brainstorming の事前制約・追加ステップを context に載せる）
 - **INVOKE 2:** 直後に Skill tool で `superpowers:brainstorming` を invoke する
 - **INVOKE 3:** 設計書ドラフト完成後、コミット前に `superpowers:using-git-worktrees` を invoke し、開発用 worktree とブランチを作成する
 - **Autonomy:** INTERACTIVE
@@ -283,7 +283,7 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 | 8: Test Review | INTERACTIVE | 修正完了 | -- |
 | 9: Integrate | INTERACTIVE | 選択完了 | -- |
 
-詳細は `references/autonomy-gates.md` を参照。
+詳細は Read tool で `./references/autonomy-gates.md`（このスキルのディレクトリからの相対パス）を読み込んで参照。
 
 ## Error Handling
 

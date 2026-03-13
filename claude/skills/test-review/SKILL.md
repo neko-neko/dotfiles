@@ -77,7 +77,7 @@ Agent tool を使用する。`subagent_type` に `test-review-design-alignment` 
 
 `codex_enabled` が true の場合のみ実行する。`mcp__codex__codex` ツールを `run_in_background: true` で呼び出す。
 
-共通パターンは `references/mcp-codex-patterns.md` のパターン2（コードレビュー）を参照。
+共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン2（コードレビュー）を参照。
 
 diff はプロンプトに埋め込まず、Codex 自身に git diff コマンドを実行させる。
 
@@ -204,7 +204,7 @@ findings が 0 件の場合 → 「指摘事項はありません。テストレ
 
 #### 実行
 
-`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは `references/mcp-codex-patterns.md` のパターン3（メタレビュー）を参照。
+`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン3（メタレビュー）を参照。
 
 ```yaml
 tool: mcp__codex__codex-reply
