@@ -10,7 +10,10 @@
 |-----------|--------|-----------|
 | brainstorming が設計質問を提示 | PAUSE | ユーザーの意思決定が必要。自動回答禁止 |
 | ユーザーが回答を提供 | AUTO | 次の質問 or 設計書ドラフトへ進む |
-| 設計書がコミット済み | AUTO | Phase 2 へ自動遷移 |
+| 設計書ドラフト完成 | AUTO | worktree 作成を実行 |
+| worktree テスト通過 | AUTO | 設計書を worktree 内にコミット |
+| worktree テスト失敗 | PAUSE | 続行 or STOP をユーザーに提案 |
+| 設計書が worktree 内にコミット済み | AUTO | Phase 2 へ自動遷移 |
 | ユーザーが中断を指示 | STOP | クリーンアップ不要で終了 |
 
 ### Phase 2: Spec Review
@@ -40,26 +43,32 @@
 | エージェントエラー | AUTO | 該当エージェントをスキップし残りで続行 |
 | レポート生成完了 | PAUSE | ユーザーに findings を提示し修正選択を待つ |
 | ユーザーが修正を選択 | AUTO | 選択された findings を修正 |
-| 全観点パス | AUTO | handover 実行後に Phase 5 へ自動遷移 |
+| 全観点パス | AUTO | handover 実行後に Phase 5: Execute へ自動遷移 |
 | 3回レビュー不合格 | PAUSE | 計画の根本的見直しを提案 |
 
-### Phase 5: Workspace
-
-| Situation | Action | Rationale |
-|-----------|--------|-----------|
-| worktree 作成 | AUTO | ブランチと worktree を自動作成 |
-| テスト通過 | AUTO | Phase 6 へ自動遷移 |
-| テスト失敗 | PAUSE | 続行 or STOP をユーザーに提案 |
-
-### Phase 6: Execute
+### Phase 5: Execute
 
 | Situation | Action | Rationale |
 |-----------|--------|-----------|
 | サブエージェントによるタスク実行 | AUTO | 計画書に基づき自動実行 |
 | 個別タスク完了 | AUTO | 次のタスクへ進む |
-| 全タスク完了 | AUTO | Phase 7 へ自動遷移 |
+| 全タスク完了 | AUTO | Phase 6/7 へ自動遷移 |
 | タスク失敗（1-2回目） | AUTO | リトライ |
 | タスク失敗（3回目） | PAUSE | 設計ギャップをエスカレーション |
+
+### Phase 6: Smoke Test
+
+| Situation | Action | Rationale |
+|-----------|--------|-----------|
+| `--smoke` 未指定かつ UI 関連なし | AUTO | Phase 6 をスキップして Phase 7 へ |
+| UI 関連キーワード検出 | PAUSE | 自動有効化をユーザーに提案 |
+| smoke-test 起動 | AUTO | 4ステップを自動実行 |
+| サーバー起動不可 | PAUSE | ユーザーに起動コマンドを確認 |
+| VRT 差分検出 | PAUSE | ベースライン更新をユーザーに確認 |
+| 全ステップ PASS | AUTO | Phase 7 へ自動遷移 |
+| FAIL（修正可能） | AUTO | 自動修正 → 再実行（最大2回） |
+| FAIL（修正不能） | PAUSE | ユーザーに報告して判断を委ねる |
+| フレーキーテスト検出 | AUTO | 報告のみでブロックしない。Phase 7 へ |
 
 ### Phase 7: Code Review
 
