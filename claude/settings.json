@@ -162,7 +162,8 @@
       "Bash(op:*)",
       "Bash(ssh:*)",
       "Bash(scp:*)"
-    ]
+    ],
+    "defaultMode": "default"
   },
   "model": "opus",
   "hooks": {
