@@ -16,6 +16,7 @@ import { TaskDetail } from "../components/task-detail.tsx";
 import { KeybindBar } from "../components/keybind-bar.tsx";
 import { StatusSelect } from "../components/status-select.tsx";
 import { TaskEditor } from "./task-editor.tsx";
+import { SearchOverlay } from "../components/search-overlay.tsx";
 import { theme } from "../theme.ts";
 
 interface BoardViewProps {
@@ -24,7 +25,13 @@ interface BoardViewProps {
   onBack?: () => void;
 }
 
-type ViewMode = "normal" | "adding" | "moving" | "deleting" | "editing";
+type ViewMode =
+  | "normal"
+  | "adding"
+  | "moving"
+  | "deleting"
+  | "editing"
+  | "searching";
 
 /** Maps numeric keys 1-5 to statuses for quick jump. */
 const STATUS_JUMP: Record<string, TaskStatus> = {
@@ -248,6 +255,12 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
         return;
       }
 
+      // Search
+      if (input === "/") {
+        setMode("searching");
+        return;
+      }
+
       // Quick-jump to status group (1-5)
       const jumpStatus = STATUS_JUMP[input];
       if (jumpStatus) {
@@ -364,6 +377,17 @@ export function BoardView({ dataDir, boardId, onBack }: BoardViewProps) {
             onCancel={handleDeleteCancel}
           />
         </Box>
+      )}
+
+      {mode === "searching" && (
+        <SearchOverlay
+          tasks={tasks}
+          onSelect={(taskId) => {
+            setSelectedTaskId(taskId);
+            setMode("normal");
+          }}
+          onCancel={() => setMode("normal")}
+        />
       )}
 
       {/* Keybind Bar */}
