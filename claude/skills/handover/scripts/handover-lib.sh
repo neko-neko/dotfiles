@@ -160,13 +160,19 @@ generate_handover_md() {
   fi
 
   jq -r '
+    def format_approaches:
+      if (.attempted_approaches // [] | length) > 0 then
+        [.attempted_approaches[] |
+          "\n  - tried: \(.approach) → \(.result): \(.reason) (\(.learnings))"] | join("")
+      else "" end;
+
     def format_task:
       if .status == "done" then
         "- [\(.id)] \(.description) (\(.commit_sha // "no-sha"))"
       elif .status == "in_progress" then
-        "- [\(.id)] **in_progress** \(.description)\n  - files: \((.file_paths // []) | join(", "))\n  - next: \(.next_action // "未定義")"
+        "- [\(.id)] **in_progress** \(.description)\n  - files: \((.file_paths // []) | join(", "))\n  - next: \(.next_action // "未定義")" + format_approaches
       elif .status == "blocked" then
-        "- [\(.id)] **blocked** \(.description)\n  - files: \((.file_paths // []) | join(", "))\n  - next: \(.next_action // "未定義")\n  - blocker: \((.blockers // []) | join(", "))"
+        "- [\(.id)] **blocked** \(.description)\n  - files: \((.file_paths // []) | join(", "))\n  - next: \(.next_action // "未定義")\n  - blocker: \((.blockers // []) | join(", "))" + format_approaches
       else
         "- [\(.id)] **\(.status)** \(.description)"
       end;
