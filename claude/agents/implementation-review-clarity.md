@@ -42,3 +42,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- タスクの入力 or 出力が未定義（何を受け取り何を返すか不明） → severity: high
+- 完了条件が曖昧（「適切に実装する」「正しく動作する」等） → severity: high
+- ファイルパスが不正確（存在しないディレクトリへの参照） → severity: high
+
+### WARNING 基準
+- 実行コマンドの期待出力が未記載 → severity: medium
+- Create/Modify/Test の区別が不明確 → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

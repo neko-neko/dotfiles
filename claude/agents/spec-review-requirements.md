@@ -46,3 +46,19 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 機能要件に検証可能な完了条件がない（「適切に処理する」「パフォーマンスを改善する」等の曖昧な記述） → severity: high
+- 暗黙の前提が3つ以上存在し、設計書に明記されていない → severity: high
+
+### WARNING 基準
+- 具体的な数値・条件の欠如（「大量のデータ」「高速に」等） → severity: medium
+- 既存コードのバリデーション・条件分岐で設計書が考慮していないもの → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

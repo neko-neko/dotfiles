@@ -41,3 +41,19 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 設計要件が計画タスクに未マッピング（設計書にある要件が計画に含まれていない） → severity: high
+- CLAUDE.md 規約の明確な違反 → severity: high
+
+### WARNING 基準
+- 既存コードの構造・パターンに沿わないファイル配置 → severity: medium
+- 設計書の意図と計画タスクの間に解釈のずれがある → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

@@ -11,9 +11,11 @@ user-invocable: true
 引数に応じて以下の操作を実行する:
 
 ### `/kanban`（引数なし）
-1. `~/.claude/kanban/boards.json` を読み込む
-2. ボード一覧を表示する
-3. 現在の `pwd` に対応するボードがあれば、そのサマリー（カラムごとのタスク数）を表示する
+1. TUI を起動する:
+   ```bash
+   cd ~/.claude/tools/kanban-server && deno task tui
+   ```
+2. 現在の `pwd` からボードを自動検出する
 
 ### `/kanban add <title>`
 1. 現在の `pwd` から対応するボードを `boards.json` の `path` で検索する
@@ -28,18 +30,6 @@ user-invocable: true
 1. status は `backlog`, `todo`, `in_progress`, `review`, `done` のいずれか
 2. 対応するボードの JSON ファイルを更新する
 3. 更新後のタスク情報を表示する
-
-### `/kanban show`
-1. 現在の `pwd` に対応するボードのタスクを読み込む
-2. カラムごとにグループ化してテーブル形式で表示する:
-
-```
-| Backlog    | Todo       | In Progress | Review     | Done       |
-|------------|------------|-------------|------------|------------|
-| [t-001]    |            | [t-002]     |            |            |
-| タスク1    |            | タスク2     |            |            |
-| 🔴 high    |            | 🟡 med      |            |            |
-```
 
 ### `/kanban sync`
 1. 現在の `pwd` から `.claude/handover/` 配下の最新 `project-state.json` を探す

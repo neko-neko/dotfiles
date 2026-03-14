@@ -6,8 +6,8 @@
   "workspace": { "root": "/tmp/test", "branch": "feature-x", "is_worktree": false },
   "active_tasks": [
     { "id": "T1", "description": "Done task", "status": "done", "commit_sha": "abc1234", "file_paths": ["src/a.sh"], "last_touched": "2026-01-15T09:00:00Z" },
-    { "id": "T2", "description": "In progress task", "status": "in_progress", "file_paths": ["src/b.sh"], "next_action": "Continue coding", "last_touched": "2026-01-15T09:30:00Z" },
-    { "id": "T3", "description": "Blocked task", "status": "blocked", "file_paths": ["src/c.sh"], "next_action": "Wait for review", "blockers": ["PR #42 pending"], "last_touched": "2026-01-15T09:00:00Z" }
+    { "id": "T2", "description": "In progress task", "status": "in_progress", "file_paths": ["src/b.sh"], "next_action": "Continue coding", "attempted_approaches": [{"approach": "Used grep-based parsing", "result": "failed", "reason": "Could not handle multiline values", "learnings": "Need a proper JSON parser"}], "last_touched": "2026-01-15T09:30:00Z" },
+    { "id": "T3", "description": "Blocked task", "status": "blocked", "file_paths": ["src/c.sh"], "next_action": "Wait for review", "blockers": ["PR #42 pending"], "attempted_approaches": [{"approach": "Direct API call", "result": "abandoned", "reason": "API rate limits too strict", "learnings": "Use batch endpoint instead"}], "last_touched": "2026-01-15T09:00:00Z" }
   ],
   "recent_decisions": [
     { "decision": "Decision A", "rationale": "Reason A", "date": "2026-01-15T09:00:00Z" }

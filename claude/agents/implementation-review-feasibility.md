@@ -13,6 +13,10 @@ Review ONLY the implementation plan provided. Focus on technical feasibility, ta
 
 1. **Task granularity** — タスク分割の粒度が適切か（大きすぎ/小さすぎ）
 2. **TDD coverage** — テストケースが設計要件をカバーしているか
+   - 各入力パラメータに正常値・境界値・異常値のテストがあるか
+   - 状態遷移を伴う機能に前提条件の異なるテストがあるか
+   - エラーパスのテストがあるか（happy path だけでないか）
+   - テストが実装の内部構造ではなく外部契約（入力→出力）を検証しているか
 3. **Dependency order** — 依存順序の妥当性（循環依存がないか）
 4. **Risk areas** — 複雑性の高いタスクが識別されているか
 5. **Estimation** — タスクの難易度が均一か（1つだけ極端に大きくないか）
@@ -42,3 +46,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- テストケースに境界値テストが1つもない → severity: high
+- テストケースに異常系・エラーパスのテストが1つもない → severity: high
+- 循環依存がある（タスク A→B→A） → severity: high
+
+### WARNING 基準
+- タスク粒度が不均一（1つだけ極端に大きい） → severity: medium
+- テストが入力→出力ではなく内部実装詳細を検証する設計 → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

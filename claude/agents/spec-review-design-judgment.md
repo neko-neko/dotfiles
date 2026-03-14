@@ -41,3 +41,19 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 選択根拠なしの技術選定（「〜を使う」のみで代替案やトレードオフの記載がない） → severity: high
+- 正常系のみ考慮し、エッジケース・異常系の振る舞いが未定義 → severity: high
+
+### WARNING 基準
+- 代替案の検討が浅い（形式的にリストされているが実質的な比較がない） → severity: medium
+- 成功基準が設計に反映されていない → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

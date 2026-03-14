@@ -43,3 +43,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 未検証の外部入力がデータベースクエリ・コマンド実行・ファイルパスに使用 → severity: critical
+- ハードコードされた API キー・トークン・パスワード → severity: critical
+- 認証チェックの欠如（認証必須のエンドポイントで） → severity: high
+
+### WARNING 基準
+- ログへの機密情報出力の可能性 → severity: medium
+- エラーメッセージでの内部パス・スタックトレース漏洩 → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

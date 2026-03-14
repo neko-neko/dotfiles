@@ -42,3 +42,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- DRY 違反: 同一ロジックが3箇所以上に重複 → severity: high
+- 未使用の export: export されているが import 元がない関数・型 → severity: high
+- CLAUDE.md 規約の明確な違反 → severity: high
+
+### WARNING 基準
+- 命名規約の不一致（camelCase/snake_case 混在） → severity: medium
+- 既存パターンとの軽微な不整合 → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

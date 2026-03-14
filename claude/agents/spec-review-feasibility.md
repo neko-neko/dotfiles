@@ -44,3 +44,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 存在しないライブラリ・API・機能への依存 → severity: critical
+- 非推奨/EOL の技術スタックへの新規依存 → severity: high
+- 境界条件（空入力、最大値、同時実行）が一切考慮されていない → severity: high
+
+### WARNING 基準
+- バージョン互換性への言及がない外部依存 → severity: medium
+- スケーラビリティのボトルネックが特定されていない → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

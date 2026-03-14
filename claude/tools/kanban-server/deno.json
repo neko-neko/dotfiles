@@ -2,12 +2,26 @@
   "tasks": {
     "dev": "deno run --allow-net --allow-read --allow-write --allow-run --allow-env --watch server.ts",
     "start": "deno run --allow-net --allow-read --allow-write --allow-run --allow-env server.ts",
-    "test": "deno test --allow-read --allow-write --allow-env --allow-run"
+    "test": "deno test --allow-read --allow-write --allow-env --allow-run",
+    "tui": "deno run --allow-read --allow-write --allow-env --allow-run cli.tsx",
+    "tui:dev": "deno run --allow-read --allow-write --allow-env --allow-run --watch cli.tsx"
   },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "nodeModulesDir": "auto",
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4",
     "@std/assert": "jsr:@std/assert@^1",
     "@std/path": "jsr:@std/path@^1",
-    "@std/fs": "jsr:@std/fs@^1"
+    "@std/fs": "jsr:@std/fs@^1",
+    "ink": "npm:ink@^5",
+    "@inkjs/ui": "npm:@inkjs/ui@^2",
+    "fullscreen-ink": "npm:fullscreen-ink@^0.1.0",
+    "react": "npm:react@^18",
+    "react/jsx-runtime": "npm:react@^18/jsx-runtime",
+    "@types/react": "npm:@types/react@^18",
+    "ink-testing-library": "npm:ink-testing-library@^4"
   }
 }

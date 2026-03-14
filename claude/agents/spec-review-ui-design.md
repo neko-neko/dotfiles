@@ -47,3 +47,19 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 状態遷移（ローディング・エラー・空状態・成功）の考慮が一切ない → severity: high
+- 既存の UI パターン・デザインシステムと明確に矛盾する設計 → severity: high
+
+### WARNING 基準
+- 類似する既存画面があるのにパターンを参照していない → severity: medium
+- ユーザーインタラクションの詳細が不足 → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。

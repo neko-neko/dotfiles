@@ -165,37 +165,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "opus",
   "hooks": {
-    "Notification": [
-      {
-        "matcher": "idle_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Task completed' 'Claude Code' idle"
-          }
-        ]
-      },
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Waiting for approval' 'Claude Code' permission"
-          }
-        ]
-      },
-      {
-        "matcher": "elicitation_dialog",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${HOME}/.dotfiles/claude/hooks/notify.sh\" 'Waiting for your answer' 'Claude Code' question"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",

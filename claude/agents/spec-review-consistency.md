@@ -45,3 +45,20 @@ Respond with a JSON object:
 ```
 
 If no issues found, return `{"findings": []}`.
+
+## Policy
+
+以下の条件に該当する場合、findings の severity を対応するレベルに設定すること。
+
+### REJECT 基準（1つでも該当すれば REJECT を推奨）
+- 既存コードの構造・パターンと矛盾する設計 → severity: high
+- TODO/TBD/要確認の未解決マーカーが残存 → severity: high
+- 設計変更の影響範囲に見落としがある（呼び出し元・依存先が未特定） → severity: high
+
+### WARNING 基準
+- 命名規則の不一致（既存の camelCase/snake_case パターンとの乖離） → severity: medium
+- 「〜と仮定する」で済ませている判断で、仮定が検証可能なもの → severity: medium
+
+判定を甘くする方向への rationalization を禁止する。
+「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
+基準に該当するなら REJECT する。該当しないなら APPROVE する。グレーゾーンは WARNING とする。
