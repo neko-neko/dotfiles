@@ -1,0 +1,45 @@
+# Theme (system light/dark 連動)
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+
+# Primary font (bold/italic はデフォルト動作に任せ、フォールバックチェーンを継承させる)
+font-family = Monaspace Neon
+font-feature = calt
+font-feature = liga
+font-feature = dlig
+font-size = 12
+
+# Fallback for Japanese glyphs (font-family 複数宣言はフォールバックチェーンとして解釈される)
+font-family = Hiragino Sans
+
+# Window
+window-padding-balance = true
+fullscreen = false
+macos-titlebar-style = tabs
+macos-non-native-fullscreen = true
+
+# Terminal
+scrollback-limit = 10000
+shell-integration = zsh
+mouse-shift-capture = true
+
+# Bell (system: dock bounce + badge, audio: play sound, attention: request focus)
+bell-features = system,audio,attention
+
+# Link
+link-url = true
+
+# Notifications (長時間コマンド完了時)
+notify-on-command-finish = unfocused
+
+# Quick Terminal
+keybind = global:super+grave_accent=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-autohide = true
+
+# Keybindings
+keybind = super+left=previous_tab
+keybind = super+right=next_tab
+keybind = super+t=new_tab
+keybind = shift+enter=text:\n
+keybind = super+shift+up=jump_to_prompt:-1
+keybind = super+shift+down=jump_to_prompt:1

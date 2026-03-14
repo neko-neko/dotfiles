@@ -10,7 +10,6 @@ tap 'johanhaleby/kubetail'
 tap 'ktr0731/evans'
 tap 'leoafarias/fvm'
 tap 'oven-sh/bun'
-tap 'wez/wezterm'
 
 # Taps for tools
 brew 'boz/repo/kail'
@@ -163,7 +162,7 @@ cask 'notion-mail'
 cask 'orbstack'
 cask 'raycast'
 cask 'slack'
-cask 'wezterm@nightly'
+cask 'ghostty'
 
 # Fonts
 cask 'font-hack-nerd-font'
