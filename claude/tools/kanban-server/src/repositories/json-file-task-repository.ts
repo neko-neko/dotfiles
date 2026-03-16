@@ -1,5 +1,4 @@
 import type {
-  BoardData,
   CreateTaskInput,
   Task,
   TaskFilter,
@@ -15,14 +14,17 @@ export class JsonFileTaskRepository implements TaskRepository {
     this.boardsDir = `${dataDir}/boards`;
   }
 
-  private boardPath(boardId: string): string {
-    return `${this.boardsDir}/${boardId}.json`;
+  private taskDir(boardId: string): string {
+    return `${this.boardsDir}/${boardId}`;
   }
 
-  private async readBoardData(boardId: string): Promise<BoardData> {
+  private taskPath(boardId: string, taskId: string): string {
+    return `${this.taskDir(boardId)}/${taskId}.json`;
+  }
+
+  private async ensureBoardExists(boardId: string): Promise<void> {
     try {
-      const raw = await Deno.readTextFile(this.boardPath(boardId));
-      return JSON.parse(raw) as BoardData;
+      await Deno.stat(this.taskDir(boardId));
     } catch (e) {
       if (e instanceof Deno.errors.NotFound) {
         throw new Error(`Board '${boardId}' not found`);
@@ -31,55 +33,55 @@ export class JsonFileTaskRepository implements TaskRepository {
     }
   }
 
-  private async writeBoardData(
-    boardId: string,
-    data: BoardData,
-  ): Promise<void> {
-    await Deno.writeTextFile(
-      this.boardPath(boardId),
-      JSON.stringify(data, null, 2),
-    );
-  }
-
-  private generateId(): string {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    const nnn = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
-    return `t-${y}${m}${d}-${nnn}`;
-  }
-
   async listTasks(boardId: string, filter?: TaskFilter): Promise<Task[]> {
-    const data = await this.readBoardData(boardId);
-    let tasks = data.tasks;
+    await this.ensureBoardExists(boardId);
+    const tasks: Task[] = [];
+    for await (const entry of Deno.readDir(this.taskDir(boardId))) {
+      if (
+        !entry.isFile || !entry.name.endsWith(".json") ||
+        entry.name === "meta.json"
+      ) {
+        continue;
+      }
+      const raw = await Deno.readTextFile(
+        `${this.taskDir(boardId)}/${entry.name}`,
+      );
+      tasks.push(JSON.parse(raw) as Task);
+    }
 
     if (filter) {
+      let filtered = tasks;
       if (filter.status !== undefined) {
-        tasks = tasks.filter((t) => t.status === filter.status);
+        filtered = filtered.filter((t) => t.status === filter.status);
       }
       if (filter.priority !== undefined) {
-        tasks = tasks.filter((t) => t.priority === filter.priority);
+        filtered = filtered.filter((t) => t.priority === filter.priority);
       }
       if (filter.label !== undefined) {
-        tasks = tasks.filter((t) => t.labels.includes(filter.label!));
+        filtered = filtered.filter((t) => t.labels.includes(filter.label!));
       }
+      return filtered;
     }
 
     return tasks;
   }
 
   async getTask(boardId: string, taskId: string): Promise<Task | null> {
-    const data = await this.readBoardData(boardId);
-    return data.tasks.find((t) => t.id === taskId) ?? null;
+    try {
+      const raw = await Deno.readTextFile(this.taskPath(boardId, taskId));
+      return JSON.parse(raw) as Task;
+    } catch (e) {
+      if (e instanceof Deno.errors.NotFound) return null;
+      throw e;
+    }
   }
 
   async createTask(boardId: string, input: CreateTaskInput): Promise<Task> {
-    const data = await this.readBoardData(boardId);
+    await this.ensureBoardExists(boardId);
     const now = new Date().toISOString();
 
     const task: Task = {
-      id: this.generateId(),
+      id: crypto.randomUUID(),
       title: input.title,
       description: input.description ?? "",
       status: input.status ?? "backlog",
@@ -89,15 +91,18 @@ export class JsonFileTaskRepository implements TaskRepository {
       updatedAt: now,
     };
 
-    if (input.worktree !== undefined) {
-      task.worktree = input.worktree;
-    }
+    if (input.worktree !== undefined) task.worktree = input.worktree;
     if (input.sessionContext !== undefined) {
       task.sessionContext = input.sessionContext;
     }
+    if (input.executionHost !== undefined) {
+      task.executionHost = input.executionHost;
+    }
 
-    data.tasks.push(task);
-    await this.writeBoardData(boardId, data);
+    await Deno.writeTextFile(
+      this.taskPath(boardId, task.id),
+      JSON.stringify(task, null, 2),
+    );
     return task;
   }
 
@@ -106,14 +111,10 @@ export class JsonFileTaskRepository implements TaskRepository {
     taskId: string,
     input: UpdateTaskInput,
   ): Promise<Task> {
-    const data = await this.readBoardData(boardId);
-    const idx = data.tasks.findIndex((t) => t.id === taskId);
-
-    if (idx === -1) {
+    const task = await this.getTask(boardId, taskId);
+    if (!task) {
       throw new Error(`Task '${taskId}' not found in board '${boardId}'`);
     }
-
-    const task = data.tasks[idx];
 
     // Optimistic locking
     if (
@@ -134,26 +135,31 @@ export class JsonFileTaskRepository implements TaskRepository {
     if (input.sessionContext !== undefined) {
       task.sessionContext = input.sessionContext;
     }
+    if (input.executionHost !== undefined) {
+      task.executionHost = input.executionHost;
+    }
 
     task.updatedAt = new Date().toISOString();
-    data.tasks[idx] = task;
-    await this.writeBoardData(boardId, data);
+    await Deno.writeTextFile(
+      this.taskPath(boardId, taskId),
+      JSON.stringify(task, null, 2),
+    );
     return task;
   }
 
   async deleteTask(boardId: string, taskId: string): Promise<void> {
-    const data = await this.readBoardData(boardId);
-    data.tasks = data.tasks.filter((t) => t.id !== taskId);
-    await this.writeBoardData(boardId, data);
+    try {
+      await Deno.remove(this.taskPath(boardId, taskId));
+    } catch (e) {
+      if (!(e instanceof Deno.errors.NotFound)) throw e;
+    }
   }
 
   async moveTasks(boardId: string, moves: TaskMove[]): Promise<Task[]> {
-    const data = await this.readBoardData(boardId);
-    const now = new Date().toISOString();
     const result: Task[] = [];
-
+    const now = new Date().toISOString();
     for (const move of moves) {
-      const task = data.tasks.find((t) => t.id === move.taskId);
+      const task = await this.getTask(boardId, move.taskId);
       if (!task) {
         throw new Error(
           `Task '${move.taskId}' not found in board '${boardId}'`,
@@ -161,10 +167,12 @@ export class JsonFileTaskRepository implements TaskRepository {
       }
       task.status = move.status;
       task.updatedAt = now;
+      await Deno.writeTextFile(
+        this.taskPath(boardId, task.id),
+        JSON.stringify(task, null, 2),
+      );
       result.push(task);
     }
-
-    await this.writeBoardData(boardId, data);
     return result;
   }
 }

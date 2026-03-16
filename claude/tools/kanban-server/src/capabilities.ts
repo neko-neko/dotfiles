@@ -8,12 +8,12 @@ import type {
   TaskStatus,
   UpdateTaskInput,
 } from "./types.ts";
-import type { SyncResult } from "./services/sync-service.ts";
 import type {
-  PullResult,
-  PushResult,
-  SyncStatus,
-} from "./services/git-sync-service.ts";
+  LaunchParams,
+  NodeInfo,
+  PeerLaunchResult,
+  PeerStatus,
+} from "./services/peer-service.ts";
 
 // --- Session types (shared between TUI and Web) ---
 
@@ -81,13 +81,6 @@ export interface LaunchResult {
   error?: string;
 }
 
-export interface RemoteStatus {
-  taskId: string;
-  host: string;
-  sessionName: string;
-  status: "running" | "stopped" | "unknown";
-}
-
 // --- Capability Interfaces ---
 
 export interface BoardCapabilities {
@@ -130,39 +123,22 @@ export interface SessionCapabilities {
   ): Promise<ContextDocument>;
 }
 
-export interface LaunchCapabilities {
+export interface PeerCapabilities {
+  pingAll(): Promise<PeerStatus[]>;
+  getNodeInfo(peerName: string): Promise<NodeInfo>;
+  launchOnPeer(
+    peerName: string,
+    params: LaunchParams,
+  ): Promise<PeerLaunchResult>;
   launchLocal(
     projectPath: string,
     sessionId?: string,
     context?: string,
   ): Promise<LaunchResult>;
-  launchRemote(
-    taskId: string,
-    projectPath: string,
-    host?: string,
-    context?: string,
-    taskTitle?: string,
-  ): Promise<LaunchResult>;
-  getRemoteStatus(taskId: string, host?: string): Promise<RemoteStatus>;
-  listRemoteHosts(): Promise<{
-    hosts: Array<{ name: string; host: string; user?: string }>;
-    defaultRemote?: string;
-  }>;
-  pingRemote(
-    host?: string,
-  ): Promise<{ host: string; online: boolean; latencyMs: number }>;
-}
-
-export interface SyncCapabilities {
-  getSyncStatus(): Promise<SyncStatus>;
-  pull(): Promise<PullResult>;
-  push(message: string): Promise<PushResult>;
-  syncFromHandover(boardId: string, branch: string): Promise<SyncResult>;
 }
 
 export type AllCapabilities =
   & BoardCapabilities
   & TaskCapabilities
   & SessionCapabilities
-  & LaunchCapabilities
-  & SyncCapabilities;
+  & PeerCapabilities;

@@ -22,6 +22,7 @@ Deno.test("LaunchMenu renders task title and menu items", testOpts, () => {
     <LaunchMenu
       task={makeTask()}
       projectPath="/home/user/project"
+      nodeName="macbook-main"
       onLaunch={() => {}}
       onCancel={() => {}}
     />,
@@ -33,7 +34,6 @@ Deno.test("LaunchMenu renders task title and menu items", testOpts, () => {
     true,
     `Expected task title in: ${frame}`,
   );
-  // Japanese label for local launch
   assertEquals(
     frame.includes("Claude Code"),
     true,
@@ -42,52 +42,49 @@ Deno.test("LaunchMenu renders task title and menu items", testOpts, () => {
 });
 
 Deno.test(
-  "LaunchMenu shows remote-attach option for remote tasks",
+  "LaunchMenu shows remote node info for tasks running on other nodes",
   testOpts,
   () => {
-    const task = makeTask({ executionHost: "remote" });
+    const task = makeTask({ executionHost: "mac-mini" });
     const { lastFrame, unmount } = render(
       <LaunchMenu
         task={task}
         projectPath="/home/user/project"
+        nodeName="macbook-main"
         onLaunch={() => {}}
         onCancel={() => {}}
       />,
     );
     const frame = lastFrame()!;
     unmount();
-    // Check for the remote session connect option (Japanese)
     assertEquals(
-      frame.includes("\u30EA\u30E2\u30FC\u30C8\u30BB\u30C3\u30B7\u30E7\u30F3"),
+      frame.includes("mac-mini"),
       true,
-      `Expected remote attach option in: ${frame}`,
+      `Expected remote node name in: ${frame}`,
     );
   },
 );
 
 Deno.test(
-  "LaunchMenu shows handover option for done tasks with handover path",
+  "LaunchMenu does not show remote info for self-hosted tasks",
   testOpts,
   () => {
-    const task = makeTask({
-      status: "done",
-      lastHandoverPath: "/home/user/.claude/handover/main/abc123",
-    });
+    const task = makeTask({ executionHost: "macbook-main" });
     const { lastFrame, unmount } = render(
       <LaunchMenu
         task={task}
         projectPath="/home/user/project"
+        nodeName="macbook-main"
         onLaunch={() => {}}
         onCancel={() => {}}
       />,
     );
     const frame = lastFrame()!;
     unmount();
-    // Check for the handover option (Japanese)
     assertEquals(
-      frame.includes("\u5F15\u304D\u7D99\u304E"),
-      true,
-      `Expected handover option in: ${frame}`,
+      frame.includes("実行中"),
+      false,
+      `Should not show remote info for self: ${frame}`,
     );
   },
 );
@@ -97,6 +94,7 @@ Deno.test("LaunchMenu renders hint bar", testOpts, () => {
     <LaunchMenu
       task={makeTask()}
       projectPath="/home/user/project"
+      nodeName="macbook-main"
       onLaunch={() => {}}
       onCancel={() => {}}
     />,

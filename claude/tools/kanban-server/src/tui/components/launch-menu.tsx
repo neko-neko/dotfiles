@@ -10,6 +10,7 @@ import { theme } from "../theme.ts";
 export interface LaunchMenuProps {
   task: Task;
   projectPath: string;
+  nodeName: string;
   onLaunch: (result: LaunchResult) => void;
   onCancel: () => void;
 }
@@ -21,41 +22,24 @@ interface MenuItem {
   available: boolean;
 }
 
-function buildMenuItems(task: Task): MenuItem[] {
+function buildMenuItems(task: Task, nodeName: string): MenuItem[] {
   const items: MenuItem[] = [
     {
       id: "local",
-      label: "Claude Code \u3067\u958B\u304F",
-      description: "WezTerm \u3067\u30ED\u30FC\u30AB\u30EB\u8D77\u52D5",
-      available: true,
-    },
-    {
-      id: "remote",
-      label: "\u30EA\u30E2\u30FC\u30C8\u5B9F\u884C",
-      description: "SSH \u7D4C\u7531\u3067\u30EA\u30E2\u30FC\u30C8\u5B9F\u884C",
-      // Only available if remote hosts are configured; for now always show but may fail
+      label: "Claude Code で開く",
+      description: "ローカル起動",
       available: true,
     },
   ];
 
-  if (task.executionHost === "remote") {
+  // Show remote-attach if task is running on another node
+  if (task.executionHost && task.executionHost !== nodeName) {
     items.push({
-      id: "remote-attach",
-      label:
-        "\u30EA\u30E2\u30FC\u30C8\u30BB\u30C3\u30B7\u30E7\u30F3\u306B\u63A5\u7D9A",
+      id: "remote-info",
+      label: `実行中: ${task.executionHost}`,
       description:
-        "\u5B9F\u884C\u4E2D\u306E\u30EA\u30E2\u30FC\u30C8\u30BB\u30C3\u30B7\u30E7\u30F3\u306B\u63A5\u7D9A",
-      available: true,
-    });
-  }
-
-  if (task.status === "done" && task.lastHandoverPath) {
-    items.push({
-      id: "handover",
-      label: "\u30ED\u30FC\u30AB\u30EB\u306B\u5F15\u304D\u7D99\u304E",
-      description:
-        "Handover \u30C7\u30FC\u30BF\u3067\u30ED\u30FC\u30AB\u30EB\u30BB\u30C3\u30B7\u30E7\u30F3\u3092\u958B\u59CB",
-      available: true,
+        `${task.executionHost} で実行中のセッション（Web UI で管理）`,
+      available: false,
     });
   }
 
@@ -63,9 +47,9 @@ function buildMenuItems(task: Task): MenuItem[] {
 }
 
 export function LaunchMenu(
-  { task, projectPath, onLaunch, onCancel }: LaunchMenuProps,
+  { task, projectPath, nodeName, onLaunch, onCancel }: LaunchMenuProps,
 ) {
-  const menuItems = buildMenuItems(task);
+  const menuItems = buildMenuItems(task, nodeName);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,39 +71,6 @@ export function LaunchMenu(
 
     try {
       if (item.id === "local") {
-        const args = ["cli", "spawn", "--cwd", projectPath, "--", "claude"];
-        if (task.sessionContext?.lastSessionId) {
-          args.push("--resume", task.sessionContext.lastSessionId);
-        }
-        const cmd = new Deno.Command("wezterm", { args });
-        const output = await cmd.output();
-        if (!output.success) {
-          const errText = new TextDecoder().decode(output.stderr);
-          setError(errText || "WezTerm launch failed");
-          setLaunching(false);
-          return;
-        }
-        onLaunch({
-          status: "launched",
-          command: `wezterm ${args.join(" ")}`,
-          taskId: task.id,
-        });
-      } else if (item.id === "remote") {
-        // Remote launch - delegate to capabilities when wired
-        onLaunch({
-          status: "pending",
-          taskId: task.id,
-          host: "remote",
-        });
-      } else if (item.id === "remote-attach") {
-        onLaunch({
-          status: "pending",
-          taskId: task.id,
-          host: "remote",
-          sessionName: task.remoteSessionName ?? `kanban-${task.id}`,
-        });
-      } else if (item.id === "handover") {
-        // Launch with handover context
         const args = ["cli", "spawn", "--cwd", projectPath, "--", "claude"];
         if (task.sessionContext?.lastSessionId) {
           args.push("--resume", task.sessionContext.lastSessionId);
@@ -200,7 +151,7 @@ export function LaunchMenu(
                     : theme.textDim}
                   bold={isSelected}
                 >
-                  {isSelected ? "\u25B6 " : "  "}
+                  {isSelected ? "▶ " : "  "}
                   {item.label}
                 </Text>
               </Box>
@@ -231,7 +182,7 @@ export function LaunchMenu(
       {/* Hint */}
       <Box marginTop={1}>
         <Text color={theme.textDim}>
-          {"j/k navigate \u00B7 Enter launch \u00B7 Esc cancel"}
+          {"j/k navigate · Enter launch · Esc cancel"}
         </Text>
       </Box>
     </Box>

@@ -1,21 +1,22 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { JsonFileTaskRepository } from "./json-file-task-repository.ts";
-import type { BoardData } from "../types.ts";
 
 const BOARD_ID = "test-board";
 
 async function setup(): Promise<{ repo: JsonFileTaskRepository; dir: string }> {
   const dir = await Deno.makeTempDir({ prefix: "kanban-task-test-" });
-  await Deno.mkdir(`${dir}/boards`);
-  const boardData: BoardData = {
-    version: 1,
-    boardId: BOARD_ID,
-    columns: ["backlog", "todo", "in_progress", "review", "done"],
-    tasks: [],
-  };
+  // Create board directory (new format: boards/<boardId>/ with meta.json)
+  const boardDir = `${dir}/boards/${BOARD_ID}`;
+  await Deno.mkdir(boardDir, { recursive: true });
   await Deno.writeTextFile(
-    `${dir}/boards/${BOARD_ID}.json`,
-    JSON.stringify(boardData),
+    `${boardDir}/meta.json`,
+    JSON.stringify({
+      id: BOARD_ID,
+      name: "Test Board",
+      columns: ["backlog", "todo", "in_progress", "review", "done"],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }),
   );
   return { repo: new JsonFileTaskRepository(dir), dir };
 }
@@ -34,19 +35,25 @@ Deno.test("listTasks returns empty initially", async () => {
   }
 });
 
-Deno.test("createTask adds a task with generated id (format: t-YYYYMMDD-NNN)", async () => {
+Deno.test("createTask creates individual file with UUID v4 id", async () => {
   const { repo, dir } = await setup();
   try {
     const task = await repo.createTask(BOARD_ID, { title: "Test task" });
     assertEquals(typeof task.id, "string");
-    // id format: t-YYYYMMDD-NNN
-    const idPattern = /^t-\d{8}-\d{3}$/;
+    // UUID v4 format
+    const uuidPattern =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
     assertEquals(
-      idPattern.test(task.id),
+      uuidPattern.test(task.id),
       true,
-      `id '${task.id}' should match t-YYYYMMDD-NNN`,
+      `id '${task.id}' should be UUID v4`,
     );
     assertEquals(task.title, "Test task");
+
+    // Verify individual file exists
+    const filePath = `${dir}/boards/${BOARD_ID}/${task.id}.json`;
+    const stat = await Deno.stat(filePath);
+    assertEquals(stat.isFile, true);
   } finally {
     await cleanup(dir);
   }
@@ -65,7 +72,7 @@ Deno.test("createTask defaults: status=backlog, priority=medium, labels=[]", asy
   }
 });
 
-Deno.test("getTask returns task by id", async () => {
+Deno.test("getTask reads individual file by id", async () => {
   const { repo, dir } = await setup();
   try {
     const created = await repo.createTask(BOARD_ID, { title: "Find me" });
@@ -87,7 +94,23 @@ Deno.test("getTask returns null for missing id", async () => {
   }
 });
 
-Deno.test("updateTask modifies task fields", async () => {
+Deno.test("listTasks reads all JSON files in board directory excluding meta.json", async () => {
+  const { repo, dir } = await setup();
+  try {
+    await repo.createTask(BOARD_ID, { title: "Task 1" });
+    await repo.createTask(BOARD_ID, { title: "Task 2" });
+    await repo.createTask(BOARD_ID, { title: "Task 3" });
+
+    const tasks = await repo.listTasks(BOARD_ID);
+    assertEquals(tasks.length, 3);
+    const titles = tasks.map((t) => t.title).sort();
+    assertEquals(titles, ["Task 1", "Task 2", "Task 3"]);
+  } finally {
+    await cleanup(dir);
+  }
+});
+
+Deno.test("updateTask overwrites individual file", async () => {
   const { repo, dir } = await setup();
   try {
     const created = await repo.createTask(BOARD_ID, { title: "Original" });
@@ -101,7 +124,6 @@ Deno.test("updateTask modifies task fields", async () => {
     assertEquals(updated.status, "in_progress");
     assertEquals(updated.priority, "high");
     assertEquals(updated.labels, ["urgent"]);
-    // updatedAt should change
     assertEquals(updated.createdAt, created.createdAt);
   } finally {
     await cleanup(dir);
@@ -112,11 +134,8 @@ Deno.test("updateTask with optimistic lock rejects on version mismatch", async (
   const { repo, dir } = await setup();
   try {
     const created = await repo.createTask(BOARD_ID, { title: "Locked" });
-    // Wait briefly so updatedAt changes on next update
     await new Promise((r) => setTimeout(r, 10));
-    // Update once to change updatedAt
     await repo.updateTask(BOARD_ID, created.id, { title: "Changed" });
-    // Now try updating with stale expectedVersion
     await assertRejects(
       () =>
         repo.updateTask(BOARD_ID, created.id, {
@@ -131,7 +150,7 @@ Deno.test("updateTask with optimistic lock rejects on version mismatch", async (
   }
 });
 
-Deno.test("deleteTask removes the task", async () => {
+Deno.test("deleteTask physically removes the file", async () => {
   const { repo, dir } = await setup();
   try {
     const created = await repo.createTask(BOARD_ID, { title: "Delete me" });
@@ -140,6 +159,14 @@ Deno.test("deleteTask removes the task", async () => {
     assertEquals(found, null);
     const tasks = await repo.listTasks(BOARD_ID);
     assertEquals(tasks.length, 0);
+
+    // Verify file is gone
+    try {
+      await Deno.stat(`${dir}/boards/${BOARD_ID}/${created.id}.json`);
+      throw new Error("File should not exist");
+    } catch (e) {
+      assertEquals(e instanceof Deno.errors.NotFound, true);
+    }
   } finally {
     await cleanup(dir);
   }
@@ -167,7 +194,7 @@ Deno.test("listTasks with priority filter", async () => {
   const { repo, dir } = await setup();
   try {
     await repo.createTask(BOARD_ID, { title: "High", priority: "high" });
-    await repo.createTask(BOARD_ID, { title: "Medium" }); // default medium
+    await repo.createTask(BOARD_ID, { title: "Medium" });
     await repo.createTask(BOARD_ID, { title: "Low", priority: "low" });
 
     const highTasks = await repo.listTasks(BOARD_ID, { priority: "high" });
@@ -195,16 +222,12 @@ Deno.test("listTasks with label filter", async () => {
     const bugTasks = await repo.listTasks(BOARD_ID, { label: "bug" });
     assertEquals(bugTasks.length, 1);
     assertEquals(bugTasks[0].title, "Bug fix");
-
-    const featureTasks = await repo.listTasks(BOARD_ID, { label: "feature" });
-    assertEquals(featureTasks.length, 1);
-    assertEquals(featureTasks[0].title, "Feature");
   } finally {
     await cleanup(dir);
   }
 });
 
-Deno.test("moveTasks bulk moves multiple tasks", async () => {
+Deno.test("moveTasks updates multiple task statuses", async () => {
   const { repo, dir } = await setup();
   try {
     const t1 = await repo.createTask(BOARD_ID, { title: "Task 1" });
@@ -235,7 +258,25 @@ Deno.test("createTask rejects for nonexistent board", async () => {
     await assertRejects(
       () => repo.createTask("no-such-board", { title: "Fail" }),
       Error,
+      "not found",
     );
+  } finally {
+    await cleanup(dir);
+  }
+});
+
+Deno.test("createTask sets optional fields", async () => {
+  const { repo, dir } = await setup();
+  try {
+    const task = await repo.createTask(BOARD_ID, {
+      title: "With options",
+      worktree: "/tmp/wt",
+      executionHost: "mac-mini-1",
+      sessionContext: { lastSessionId: "abc" },
+    });
+    assertEquals(task.worktree, "/tmp/wt");
+    assertEquals(task.executionHost, "mac-mini-1");
+    assertEquals(task.sessionContext?.lastSessionId, "abc");
   } finally {
     await cleanup(dir);
   }

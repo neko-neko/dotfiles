@@ -1,13 +1,10 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { JsonFileBoardRepository } from "./json-file-board-repository.ts";
-import type { BoardsIndex } from "../types.ts";
 
 async function setup(): Promise<
   { repo: JsonFileBoardRepository; dir: string }
 > {
   const dir = await Deno.makeTempDir({ prefix: "kanban-test-" });
-  const index: BoardsIndex = { version: 1, boards: [] };
-  await Deno.writeTextFile(`${dir}/boards.json`, JSON.stringify(index));
   await Deno.mkdir(`${dir}/boards`);
   return { repo: new JsonFileBoardRepository(dir), dir };
 }
@@ -85,7 +82,7 @@ Deno.test("getBoard returns null for missing id", async () => {
   }
 });
 
-Deno.test("deleteBoard removes the board", async () => {
+Deno.test("deleteBoard removes the board directory", async () => {
   const { repo, dir } = await setup();
   try {
     await repo.createBoard({ id: "b1", name: "Board 1", path: "/tmp/p1" });
@@ -99,22 +96,27 @@ Deno.test("deleteBoard removes the board", async () => {
   }
 });
 
-Deno.test("createBoard also creates board data file with correct structure", async () => {
+Deno.test("createBoard creates board directory with meta.json", async () => {
   const { repo, dir } = await setup();
   try {
     await repo.createBoard({ id: "b1", name: "Board 1", path: "/tmp/p1" });
-    const raw = await Deno.readTextFile(`${dir}/boards/b1.json`);
-    const data = JSON.parse(raw);
-    assertEquals(data.version, 1);
-    assertEquals(data.boardId, "b1");
-    assertEquals(data.columns, [
+
+    // Verify directory exists
+    const stat = await Deno.stat(`${dir}/boards/b1`);
+    assertEquals(stat.isDirectory, true);
+
+    // Verify meta.json
+    const raw = await Deno.readTextFile(`${dir}/boards/b1/meta.json`);
+    const meta = JSON.parse(raw);
+    assertEquals(meta.id, "b1");
+    assertEquals(meta.name, "Board 1");
+    assertEquals(meta.columns, [
       "backlog",
       "todo",
       "in_progress",
       "review",
       "done",
     ]);
-    assertEquals(data.tasks, []);
   } finally {
     await cleanup(dir);
   }

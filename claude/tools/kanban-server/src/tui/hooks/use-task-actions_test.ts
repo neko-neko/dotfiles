@@ -1,36 +1,23 @@
 import { assertEquals } from "@std/assert";
 import { TaskActions } from "./use-task-actions.ts";
 import { JsonFileTaskRepository } from "../../repositories/json-file-task-repository.ts";
-import type { BoardData, BoardsIndex } from "../../types.ts";
 
 async function setupTempBoard(): Promise<
   { dir: string; cleanup: () => Promise<void> }
 > {
   const dir = await Deno.makeTempDir();
-  const boardsDir = `${dir}/boards`;
-  await Deno.mkdir(boardsDir, { recursive: true });
+  const boardDir = `${dir}/boards/test`;
+  await Deno.mkdir(boardDir, { recursive: true });
 
-  const index: BoardsIndex = {
-    version: 1,
-    boards: [{
+  await Deno.writeTextFile(
+    `${boardDir}/meta.json`,
+    JSON.stringify({
       id: "test",
       name: "Test",
-      path: "/tmp",
+      columns: ["backlog", "todo", "in_progress", "review", "done"],
       createdAt: "",
       updatedAt: "",
-    }],
-  };
-  await Deno.writeTextFile(`${dir}/boards.json`, JSON.stringify(index));
-
-  const boardData: BoardData = {
-    version: 1,
-    boardId: "test",
-    columns: ["backlog", "todo", "in_progress", "review", "done"],
-    tasks: [],
-  };
-  await Deno.writeTextFile(
-    `${boardsDir}/test.json`,
-    JSON.stringify(boardData),
+    }),
   );
 
   return { dir, cleanup: () => Deno.remove(dir, { recursive: true }) };

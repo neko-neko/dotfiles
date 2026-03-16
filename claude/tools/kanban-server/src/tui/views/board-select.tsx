@@ -5,7 +5,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Box, Text, useInput } from "ink";
 import { ConfirmInput, Select, TextInput } from "@inkjs/ui";
-import type { Board, BoardData } from "../../types.ts";
+import type { Board } from "../../types.ts";
+import { loadBoardTasks } from "../hooks/use-board.ts";
 import { JsonFileBoardRepository } from "../../repositories/mod.ts";
 import { theme } from "../theme.ts";
 
@@ -101,15 +102,12 @@ export function BoardSelect({ dataDir, onSelect }: BoardSelectProps) {
       const withCounts: BoardWithCounts[] = await Promise.all(
         list.map(async (board) => {
           try {
-            const text = await Deno.readTextFile(
-              `${dataDir}/boards/${board.id}.json`,
-            );
-            const data = JSON.parse(text) as BoardData;
+            const tasks = await loadBoardTasks(dataDir, board.id);
             const counts: Record<string, number> = {};
-            for (const task of data.tasks) {
+            for (const task of tasks) {
               counts[task.status] = (counts[task.status] ?? 0) + 1;
             }
-            return { ...board, counts, total: data.tasks.length };
+            return { ...board, counts, total: tasks.length };
           } catch {
             return { ...board, counts: {}, total: 0 };
           }

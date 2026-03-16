@@ -1,7 +1,7 @@
 // src/tui/hooks/use-board_test.ts
 import { assertEquals } from "@std/assert";
-import type { BoardData, Task } from "../../types.ts";
-import { groupTasksByStatus, loadBoardData } from "./use-board.ts";
+import type { Task } from "../../types.ts";
+import { groupTasksByStatus, loadBoardTasks } from "./use-board.ts";
 
 Deno.test("groupTasksByStatus groups tasks correctly", () => {
   const tasks: Task[] = [
@@ -86,34 +86,40 @@ Deno.test("groupTasksByStatus sorts high priority first within group", () => {
   assertEquals(todoTasks[2].priority, "low");
 });
 
-Deno.test("loadBoardData reads tasks from temp directory", async () => {
+Deno.test("loadBoardTasks reads individual task files from board directory", async () => {
   const tmpDir = await Deno.makeTempDir();
-  const boardsDir = `${tmpDir}/boards`;
-  await Deno.mkdir(boardsDir, { recursive: true });
+  const boardDir = `${tmpDir}/boards/test`;
+  await Deno.mkdir(boardDir, { recursive: true });
 
-  const boardData: BoardData = {
-    version: 1,
-    boardId: "test",
-    columns: ["backlog", "todo", "in_progress", "review", "done"],
-    tasks: [
-      {
-        id: "t-1",
-        title: "Task 1",
-        description: "desc",
-        status: "todo",
-        priority: "high",
-        labels: ["test"],
-        createdAt: "2026-03-14",
-        updatedAt: "2026-03-14",
-      },
-    ],
+  // Write meta.json (should be excluded)
+  await Deno.writeTextFile(
+    `${boardDir}/meta.json`,
+    JSON.stringify({
+      id: "test",
+      name: "Test",
+      columns: [],
+      createdAt: "",
+      updatedAt: "",
+    }),
+  );
+
+  // Write task file
+  const task: Task = {
+    id: "t-1",
+    title: "Task 1",
+    description: "desc",
+    status: "todo",
+    priority: "high",
+    labels: ["test"],
+    createdAt: "2026-03-14",
+    updatedAt: "2026-03-14",
   };
-  await Deno.writeTextFile(`${boardsDir}/test.json`, JSON.stringify(boardData));
+  await Deno.writeTextFile(`${boardDir}/t-1.json`, JSON.stringify(task));
 
-  const result = await loadBoardData(tmpDir, "test");
+  const result = await loadBoardTasks(tmpDir, "test");
 
-  assertEquals(result.tasks.length, 1);
-  assertEquals(result.tasks[0].title, "Task 1");
+  assertEquals(result.length, 1);
+  assertEquals(result[0].title, "Task 1");
 
   await Deno.remove(tmpDir, { recursive: true });
 });

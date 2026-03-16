@@ -2,7 +2,7 @@
 // Provides pure data helpers for loading and grouping board tasks.
 // Reads JSON files directly from the kanban data directory (no HTTP dependency).
 
-import type { BoardData, Priority, Task, TaskStatus } from "../../types.ts";
+import type { Priority, Task, TaskStatus } from "../../types.ts";
 
 const PRIORITY_ORDER: Record<Priority, number> = {
   high: 0,
@@ -44,16 +44,18 @@ export function groupTasksByStatus(
 }
 
 /**
- * Loads a board's JSON data directly from the filesystem.
+ * Loads all tasks from a board directory (new individual-file format).
+ * Reads boards/<boardId>/<taskId>.json files, excluding meta.json.
  *
  * @param dataDir - Root kanban data directory (e.g. `~/.claude/kanban`)
- * @param boardId - Board identifier (filename without `.json`)
- * @throws {Deno.errors.NotFound} if the board file does not exist
+ * @param boardId - Board identifier (directory name)
+ * @returns Array of tasks
+ * @throws {Deno.errors.NotFound} if the board directory does not exist
  */
-export async function loadBoardData(
+export async function loadBoardTasks(
   dataDir: string,
   boardId: string,
-): Promise<BoardData> {
+): Promise<Task[]> {
   // Validate inputs to prevent path traversal
   if (
     !boardId || boardId.includes("/") || boardId.includes("\\") ||
@@ -62,7 +64,19 @@ export async function loadBoardData(
     throw new Error(`Invalid boardId: ${boardId}`);
   }
 
-  const path = `${dataDir}/boards/${boardId}.json`;
-  const text = await Deno.readTextFile(path);
-  return JSON.parse(text) as BoardData;
+  const boardDir = `${dataDir}/boards/${boardId}`;
+  const tasks: Task[] = [];
+
+  for await (const entry of Deno.readDir(boardDir)) {
+    if (
+      !entry.isFile || !entry.name.endsWith(".json") ||
+      entry.name === "meta.json"
+    ) {
+      continue;
+    }
+    const raw = await Deno.readTextFile(`${boardDir}/${entry.name}`);
+    tasks.push(JSON.parse(raw) as Task);
+  }
+
+  return tasks;
 }

@@ -16,9 +16,7 @@ export interface Task {
   labels: string[];
   worktree?: string;
   sessionContext?: SessionContext;
-  executionHost?: "local" | "remote";
-  remoteSessionName?: string;
-  lastHandoverPath?: string;
+  executionHost?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,18 +27,6 @@ export interface Board {
   path: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface BoardData {
-  version: number;
-  boardId: string;
-  columns: TaskStatus[];
-  tasks: Task[];
-}
-
-export interface BoardsIndex {
-  version: number;
-  boards: Board[];
 }
 
 export interface CreateBoardInput {
@@ -57,9 +43,7 @@ export interface CreateTaskInput {
   labels?: string[];
   worktree?: string;
   sessionContext?: SessionContext;
-  executionHost?: "local" | "remote";
-  remoteSessionName?: string;
-  lastHandoverPath?: string;
+  executionHost?: string;
 }
 
 export interface UpdateTaskInput {
@@ -70,11 +54,59 @@ export interface UpdateTaskInput {
   labels?: string[];
   worktree?: string;
   sessionContext?: SessionContext;
-  executionHost?: "local" | "remote";
-  remoteSessionName?: string;
-  lastHandoverPath?: string;
+  executionHost?: string;
   expectedVersion?: string;
 }
+
+// Session types for multi-node sync
+export type SessionStatus =
+  | "starting"
+  | "in-progress"
+  | "awaiting-review"
+  | "done"
+  | "failed";
+
+export interface Session {
+  id: string;
+  taskId: string;
+  boardId: string;
+  host: string;
+  ownerNode: string;
+  status: SessionStatus;
+  claudeSessionId?: string;
+  handoverPath?: string;
+  worktree?: string;
+  branch?: string;
+  launchCommand?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSessionInput {
+  taskId: string;
+  boardId: string;
+  host: string;
+  ownerNode: string;
+  worktree?: string;
+  branch?: string;
+  launchCommand?: string;
+}
+
+export interface UpdateSessionInput {
+  status?: SessionStatus;
+  claudeSessionId?: string;
+  handoverPath?: string;
+  worktree?: string;
+  branch?: string;
+}
+
+export const SESSION_TRANSITIONS: Record<SessionStatus, SessionStatus[]> = {
+  "starting": ["in-progress", "failed"],
+  "in-progress": ["awaiting-review", "done", "failed"],
+  "awaiting-review": ["done"],
+  "done": [],
+  "failed": [],
+};
 
 export interface TaskFilter {
   status?: TaskStatus;

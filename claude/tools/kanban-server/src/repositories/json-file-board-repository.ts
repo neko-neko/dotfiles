@@ -1,10 +1,4 @@
-import type {
-  Board,
-  BoardData,
-  BoardsIndex,
-  CreateBoardInput,
-  TaskStatus,
-} from "../types.ts";
+import type { Board, CreateBoardInput, TaskStatus } from "../types.ts";
 import type { BoardRepository } from "./board-repository.ts";
 
 const DEFAULT_COLUMNS: TaskStatus[] = [
@@ -15,74 +9,105 @@ const DEFAULT_COLUMNS: TaskStatus[] = [
   "done",
 ];
 
+interface BoardMeta {
+  id: string;
+  name: string;
+  columns: TaskStatus[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export class JsonFileBoardRepository implements BoardRepository {
-  private readonly indexPath: string;
   private readonly boardsDir: string;
 
   constructor(private readonly dataDir: string) {
-    this.indexPath = `${dataDir}/boards.json`;
     this.boardsDir = `${dataDir}/boards`;
   }
 
-  private async readIndex(): Promise<BoardsIndex> {
-    const raw = await Deno.readTextFile(this.indexPath);
-    return JSON.parse(raw) as BoardsIndex;
-  }
-
-  private async writeIndex(index: BoardsIndex): Promise<void> {
-    await Deno.writeTextFile(this.indexPath, JSON.stringify(index, null, 2));
+  private metaPath(boardId: string): string {
+    return `${this.boardsDir}/${boardId}/meta.json`;
   }
 
   async listBoards(): Promise<Board[]> {
-    const index = await this.readIndex();
-    return index.boards;
+    const boards: Board[] = [];
+    try {
+      for await (const entry of Deno.readDir(this.boardsDir)) {
+        if (!entry.isDirectory) continue;
+        try {
+          const raw = await Deno.readTextFile(
+            `${this.boardsDir}/${entry.name}/meta.json`,
+          );
+          const meta = JSON.parse(raw) as BoardMeta;
+          boards.push({
+            id: meta.id,
+            name: meta.name,
+            path: this.dataDir,
+            createdAt: meta.createdAt,
+            updatedAt: meta.updatedAt,
+          });
+        } catch {
+          // Skip directories without valid meta.json
+        }
+      }
+    } catch (e) {
+      if (e instanceof Deno.errors.NotFound) return [];
+      throw e;
+    }
+    return boards;
   }
 
   async getBoard(id: string): Promise<Board | null> {
-    const index = await this.readIndex();
-    return index.boards.find((b) => b.id === id) ?? null;
+    try {
+      const raw = await Deno.readTextFile(this.metaPath(id));
+      const meta = JSON.parse(raw) as BoardMeta;
+      return {
+        id: meta.id,
+        name: meta.name,
+        path: this.dataDir,
+        createdAt: meta.createdAt,
+        updatedAt: meta.updatedAt,
+      };
+    } catch (e) {
+      if (e instanceof Deno.errors.NotFound) return null;
+      throw e;
+    }
   }
 
   async createBoard(input: CreateBoardInput): Promise<Board> {
-    const index = await this.readIndex();
-
-    if (index.boards.some((b) => b.id === input.id)) {
+    // Check for duplicate
+    const existing = await this.getBoard(input.id);
+    if (existing) {
       throw new Error(`Board with id '${input.id}' already exists`);
     }
 
     const now = new Date().toISOString();
-    const board: Board = {
+    const boardDir = `${this.boardsDir}/${input.id}`;
+    await Deno.mkdir(boardDir, { recursive: true });
+
+    const meta: BoardMeta = {
+      id: input.id,
+      name: input.name,
+      columns: [...DEFAULT_COLUMNS],
+      createdAt: now,
+      updatedAt: now,
+    };
+    await Deno.writeTextFile(
+      `${boardDir}/meta.json`,
+      JSON.stringify(meta, null, 2),
+    );
+
+    return {
       id: input.id,
       name: input.name,
       path: input.path,
       createdAt: now,
       updatedAt: now,
     };
-
-    index.boards.push(board);
-    await this.writeIndex(index);
-
-    const boardData: BoardData = {
-      version: 1,
-      boardId: input.id,
-      columns: [...DEFAULT_COLUMNS],
-      tasks: [],
-    };
-    await Deno.writeTextFile(
-      `${this.boardsDir}/${input.id}.json`,
-      JSON.stringify(boardData, null, 2),
-    );
-
-    return board;
   }
 
   async deleteBoard(id: string): Promise<void> {
-    const index = await this.readIndex();
-    index.boards = index.boards.filter((b) => b.id !== id);
-    await this.writeIndex(index);
-
     try {
-      await Deno.remove(`${this.boardsDir}/${id}.json`);
+      await Deno.remove(`${this.boardsDir}/${id}`, { recursive: true });
     } catch (e) {
       if (!(e instanceof Deno.errors.NotFound)) {
         throw e;

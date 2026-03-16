@@ -1,6 +1,12 @@
 import { Hono } from "@hono/hono";
 import type { TaskRepository } from "../repositories/task-repository.ts";
-import type { CreateTaskInput, TaskFilter, TaskStatus, Priority, UpdateTaskInput } from "../types.ts";
+import type {
+  CreateTaskInput,
+  Priority,
+  TaskFilter,
+  TaskStatus,
+  UpdateTaskInput,
+} from "../types.ts";
 
 export function taskRoutes(taskRepo: TaskRepository): Hono {
   const app = new Hono();
@@ -26,7 +32,10 @@ export function taskRoutes(taskRepo: TaskRepository): Hono {
 
     const hasFilter = status || priority || label;
     try {
-      const tasks = await taskRepo.listTasks(boardId, hasFilter ? filter : undefined);
+      const tasks = await taskRepo.listTasks(
+        boardId,
+        hasFilter ? filter : undefined,
+      );
       return c.json(tasks);
     } catch (e) {
       if (e instanceof Error && e.message.includes("not found")) {

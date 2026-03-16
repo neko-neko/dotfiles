@@ -38,7 +38,11 @@ Deno.test("POST /boards creates a board (201)", async () => {
     const res = await app.request("/boards", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: "b1", name: "My Board", path: "/tmp/project" }),
+      body: JSON.stringify({
+        id: "b1",
+        name: "My Board",
+        path: "/tmp/project",
+      }),
     });
     assertEquals(res.status, 201);
     const body = await res.json();

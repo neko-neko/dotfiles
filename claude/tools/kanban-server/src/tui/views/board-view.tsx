@@ -13,13 +13,10 @@ import type {
   TaskFilter,
   TaskStatus,
 } from "../../types.ts";
-import type { ProjectState } from "../../services/sync-service.ts";
 import { JsonFileTaskRepository } from "../../repositories/mod.ts";
-import { SyncService } from "../../services/sync-service.ts";
-import { GitSyncService } from "../../services/git-sync-service.ts";
 import {
   groupTasksByStatus,
-  loadBoardData,
+  loadBoardTasks,
   STATUS_ORDER,
 } from "../hooks/use-board.ts";
 import { TaskActions } from "../hooks/use-task-actions.ts";
@@ -98,20 +95,17 @@ export function BoardView(
     HandoverContent | null
   >(null);
 
-  // --- TaskActions & SyncService instances ---
-  const { actions, syncService } = useMemo(() => {
+  // --- TaskActions instance ---
+  const actions = useMemo(() => {
     const repo = new JsonFileTaskRepository(dataDir);
-    return {
-      actions: new TaskActions(repo, boardId),
-      syncService: new SyncService(repo),
-    };
+    return new TaskActions(repo, boardId);
   }, [dataDir, boardId]);
 
   // --- Data loading ---
   const loadTasks = useCallback(async () => {
     try {
-      const data = await loadBoardData(dataDir, boardId);
-      setTasks(data.tasks);
+      const tasks = await loadBoardTasks(dataDir, boardId);
+      setTasks(tasks);
       setError(null);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -153,21 +147,7 @@ export function BoardView(
     return () => controller.abort();
   }, [dataDir, boardId, loadTasks]);
 
-  // --- Sync status polling ---
-  useEffect(() => {
-    const gitSync = new GitSyncService(dataDir);
-    const check = async () => {
-      try {
-        const status = await gitSync.getStatus();
-        setSyncDirty(status.dirty);
-      } catch {
-        // ignore — data dir may not be a git repo
-      }
-    };
-    check();
-    const interval = setInterval(check, 30000);
-    return () => clearInterval(interval);
-  }, [dataDir]);
+  // Sync status: syncthing handles sync now, no git polling needed
 
   // --- Mouse support ---
   const { stdin, isRawModeSupported } = useStdin();
@@ -466,7 +446,8 @@ export function BoardView(
     [],
   );
 
-  // --- Handover sync handler ---
+  // --- Handover sync handler (disabled: SyncService removed, syncthing handles sync) ---
+  // deno-lint-ignore no-unused-vars
   const handleSync = useCallback(async () => {
     try {
       // Get current git branch
@@ -521,34 +502,23 @@ export function BoardView(
         return;
       }
 
-      let projectState: ProjectState;
+      // deno-lint-ignore no-explicit-any
+      let projectState: any;
       try {
         projectState = JSON.parse(projectStateText);
       } catch {
         showToast("Invalid project-state.json", theme.coral);
         return;
       }
-      const result = await syncService.syncFromProjectState(
-        boardId,
-        projectState,
-        projectStatePath,
-      );
-
+      // SyncService removed — syncthing handles data sync
+      void projectState;
       await loadTasks();
-
-      const parts: string[] = [];
-      if (result.created > 0) parts.push(`${result.created} created`);
-      if (result.updated > 0) parts.push(`${result.updated} updated`);
-      if (result.errors.length > 0) {
-        parts.push(`${result.errors.length} errors`);
-      }
-      const summary = parts.length > 0 ? parts.join(", ") : "no changes";
-      showToast(`Synced: ${summary}`, theme.sage);
+      showToast("Handover data loaded (syncthing handles sync)", theme.sage);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
       showToast(`Sync failed: ${msg}`, theme.coral);
     }
-  }, [syncService, boardId, loadTasks, showToast]);
+  }, [boardId, loadTasks, showToast]);
 
   // --- Global keybinds (only active in normal mode) ---
   useInput(
@@ -707,35 +677,6 @@ export function BoardView(
       // Search
       if (input === "/") {
         setMode("searching");
-        return;
-      }
-
-      // Git pull
-      if (input === "P") {
-        const gitSync = new GitSyncService(dataDir);
-        gitSync.pull().then((r) => {
-          showToast(
-            r.pulled ? "Pulled" : `Pull: ${r.error}`,
-            r.pulled ? theme.sage : theme.coral,
-          );
-          if (r.pulled) loadTasks();
-        });
-        return;
-      }
-
-      // Git push
-      if (input === "U") {
-        const gitSync = new GitSyncService(dataDir);
-        gitSync.commitAndPush("kanban: auto-sync").then((r) => {
-          showToast(
-            r.pushed
-              ? "Pushed"
-              : (r.committed
-                ? "Committed locally"
-                : r.error ?? "Nothing to push"),
-            r.pushed ? theme.sage : theme.amber,
-          );
-        });
         return;
       }
 

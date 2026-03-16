@@ -1,64 +1,81 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import { loadConfig } from "./config.ts";
-import type { KanbanConfig } from "./config.ts";
 
-Deno.test("loadConfig reads config.json and returns typed config with remotes", async () => {
-  const tmpDir = await Deno.makeTempDir();
-  const config = {
-    port: 9999,
-    dataDir: "/custom/data",
-    remotes: {
-      "my-server": {
-        host: "my-server.local",
-        user: "deploy",
-        repos: { app: "/srv/app" },
-        zellijLayout: "compact",
-      },
-    },
-    defaultRemote: "my-server",
-  };
-  await Deno.writeTextFile(`${tmpDir}/config.json`, JSON.stringify(config));
-
-  const result = await loadConfig(tmpDir);
-
-  assertEquals(result.port, 9999);
-  assertEquals(result.dataDir, "/custom/data");
-  assertEquals(result.remotes["my-server"].host, "my-server.local");
-  assertEquals(result.remotes["my-server"].user, "deploy");
-  assertEquals(result.remotes["my-server"].repos["app"], "/srv/app");
-  assertEquals(result.remotes["my-server"].zellijLayout, "compact");
-  assertEquals(result.defaultRemote, "my-server");
-
-  await Deno.remove(tmpDir, { recursive: true });
+Deno.test("loadConfig returns config with nodeName and peers", async () => {
+  const dir = await Deno.makeTempDir();
+  await Deno.writeTextFile(
+    `${dir}/config.json`,
+    JSON.stringify({
+      nodeName: "test-node",
+      peers: [{ name: "peer-1", host: "peer-1.ts.net", port: 3456 }],
+    }),
+  );
+  const config = await loadConfig(dir);
+  assertEquals(config.nodeName, "test-node");
+  assertEquals(config.peers.length, 1);
+  assertEquals(config.peers[0].name, "peer-1");
+  assertEquals(config.peers[0].host, "peer-1.ts.net");
+  assertEquals(config.peers[0].port, 3456);
+  await Deno.remove(dir, { recursive: true });
 });
 
-Deno.test("loadConfig returns defaults when config.json is missing", async () => {
-  const tmpDir = await Deno.makeTempDir();
-
-  const result = await loadConfig(tmpDir);
-
-  const expected: KanbanConfig = {
-    port: 3456,
-    dataDir: "~/.claude/kanban",
-    remotes: {},
-    defaultRemote: undefined,
-  };
-  assertEquals(result, expected);
-
-  await Deno.remove(tmpDir, { recursive: true });
+Deno.test("loadConfig throws when nodeName is missing", async () => {
+  const dir = await Deno.makeTempDir();
+  await Deno.writeTextFile(
+    `${dir}/config.json`,
+    JSON.stringify({ port: 3456 }),
+  );
+  await assertRejects(
+    () => loadConfig(dir),
+    Error,
+    "nodeName is required",
+  );
+  await Deno.remove(dir, { recursive: true });
 });
 
-Deno.test("loadConfig returns defaults when remotes field is missing", async () => {
-  const tmpDir = await Deno.makeTempDir();
-  const config = { port: 7777, dataDir: "/some/dir" };
-  await Deno.writeTextFile(`${tmpDir}/config.json`, JSON.stringify(config));
+Deno.test("loadConfig throws when config.json is missing", async () => {
+  const dir = await Deno.makeTempDir();
+  await assertRejects(
+    () => loadConfig(dir),
+    Error,
+    "nodeName is required",
+  );
+  await Deno.remove(dir, { recursive: true });
+});
 
-  const result = await loadConfig(tmpDir);
+Deno.test("loadConfig uses defaults for optional fields", async () => {
+  const dir = await Deno.makeTempDir();
+  await Deno.writeTextFile(
+    `${dir}/config.json`,
+    JSON.stringify({ nodeName: "n" }),
+  );
+  const config = await loadConfig(dir);
+  assertEquals(config.port, 3456);
+  assertEquals(config.dataDir, "~/.claude/kanban");
+  assertEquals(config.peers, []);
+  assertEquals(config.syncthingWatchIntervalMs, 5000);
+  assertEquals(config.peerPollIntervalMs, 10000);
+  await Deno.remove(dir, { recursive: true });
+});
 
-  assertEquals(result.port, 7777);
-  assertEquals(result.dataDir, "/some/dir");
-  assertEquals(result.remotes, {});
-  assertEquals(result.defaultRemote, undefined);
-
-  await Deno.remove(tmpDir, { recursive: true });
+Deno.test("loadConfig reads peer launchCommand", async () => {
+  const dir = await Deno.makeTempDir();
+  await Deno.writeTextFile(
+    `${dir}/config.json`,
+    JSON.stringify({
+      nodeName: "main",
+      peers: [{
+        name: "mini",
+        host: "mini.ts.net",
+        port: 3456,
+        launchCommand: "zellij action new-tab -- claude",
+      }],
+    }),
+  );
+  const config = await loadConfig(dir);
+  assertEquals(
+    config.peers[0].launchCommand,
+    "zellij action new-tab -- claude",
+  );
+  await Deno.remove(dir, { recursive: true });
 });

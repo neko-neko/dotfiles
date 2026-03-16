@@ -1,8 +1,6 @@
 import { Hono } from "@hono/hono";
 import type { BoardRepository } from "../repositories/board-repository.ts";
 import type { TaskRepository } from "../repositories/task-repository.ts";
-import { SyncService } from "../services/sync-service.ts";
-import type { ProjectState } from "../services/sync-service.ts";
 import type { TaskStatus } from "../types.ts";
 
 export function actionRoutes(
@@ -10,28 +8,6 @@ export function actionRoutes(
   taskRepo: TaskRepository,
 ): Hono {
   const app = new Hono();
-  const syncService = new SyncService(taskRepo);
-
-  // POST /boards/:boardId/sync — sync from project-state.json
-  app.post("/boards/:boardId/sync", async (c) => {
-    const boardId = c.req.param("boardId");
-    const body = await c.req.json<{
-      projectState?: ProjectState;
-      handoverFile?: string;
-    }>();
-
-    if (!body.projectState) {
-      return c.json({ error: "projectState is required" }, 400);
-    }
-
-    const handoverFile = body.handoverFile ?? "";
-    const result = await syncService.syncFromProjectState(
-      boardId,
-      body.projectState,
-      handoverFile,
-    );
-    return c.json(result);
-  });
 
   // POST /launch — launch WezTerm with Claude
   app.post("/launch", async (c) => {
@@ -313,7 +289,7 @@ export function actionRoutes(
   }
 
   // GET /sessions/list — list Claude Code sessions for a project
-  app.get("/sessions/list", async (c) => {
+  app.get("/claude-sessions/list", async (c) => {
     const project = c.req.query("project");
     if (!project || typeof project !== "string") {
       return c.json({ error: "project query param is required" }, 400);
@@ -474,7 +450,7 @@ export function actionRoutes(
   });
 
   // GET /sessions/:sessionId/messages — get conversation messages for a session
-  app.get("/sessions/:sessionId/messages", async (c) => {
+  app.get("/claude-sessions/:sessionId/messages", async (c) => {
     const sessionId = c.req.param("sessionId");
     const project = c.req.query("project");
     const limitStr = c.req.query("limit");

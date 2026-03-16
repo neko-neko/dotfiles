@@ -1,10 +1,13 @@
 import type { BoardRepository } from "./repositories/board-repository.ts";
 import type { TaskRepository } from "./repositories/task-repository.ts";
-import type { GitSyncService } from "./services/git-sync-service.ts";
-import type { SshService } from "./services/ssh-service.ts";
 import type { KanbanConfig } from "./config.ts";
-import { SyncService } from "./services/sync-service.ts";
-import type { ProjectState } from "./services/sync-service.ts";
+import type {
+  LaunchParams,
+  NodeInfo,
+  PeerLaunchResult,
+  PeerService,
+  PeerStatus,
+} from "./services/peer-service.ts";
 import type {
   AllCapabilities,
   BoardSummary,
@@ -13,7 +16,6 @@ import type {
   HandoverContent,
   HandoverSession,
   LaunchResult,
-  RemoteStatus,
   SessionMessages,
 } from "./capabilities.ts";
 import type {
@@ -35,12 +37,9 @@ function encodeProjectPath(projectPath: string): string {
 export function createCapabilities(
   boardRepo: BoardRepository,
   taskRepo: TaskRepository,
-  gitSync: GitSyncService,
-  sshService: SshService,
+  peerService: PeerService,
   config: KanbanConfig,
 ): AllCapabilities {
-  const syncService = new SyncService(taskRepo);
-
   return {
     // --- Board ---
     async listBoards(): Promise<Board[]> {
@@ -675,166 +674,24 @@ export function createCapabilities(
       }
     },
 
-    async launchRemote(
-      taskId: string,
-      projectPath: string,
-      host?: string,
-      context?: string,
-      taskTitle?: string,
-    ): Promise<LaunchResult> {
-      if (!taskId) throw new Error("taskId is required");
-      if (!projectPath) throw new Error("projectPath is required");
-
-      const hostName = host ?? config.defaultRemote;
-      if (!hostName) {
-        throw new Error(
-          "no host specified and no defaultRemote configured",
-        );
-      }
-      const remote = config.remotes[hostName];
-      if (!remote) throw new Error(`unknown host: ${hostName}`);
-
-      const sessionName = `kanban-${taskId}`;
-      const sshOpts = { user: remote.user };
-
-      await sshService.execSsh(
-        remote.host,
-        `cd ${projectPath} && git pull`,
-        sshOpts,
-      );
-      if (remote.repos.kanban) {
-        await sshService.execSsh(
-          remote.host,
-          `cd ${remote.repos.kanban} && git pull`,
-          sshOpts,
-        );
-      }
-      if (context) {
-        const remotePath = `/tmp/kanban-context-${taskId}.md`;
-        const tmpFile = await Deno.makeTempFile({ prefix: "kanban-ctx-" });
-        await Deno.writeTextFile(tmpFile, context);
-        await sshService.scpTo(remote.host, tmpFile, remotePath, sshOpts);
-        await Deno.remove(tmpFile);
-      }
-
-      const titleArg = taskTitle ? ` --title '${taskTitle}'` : "";
-      const launchCmd =
-        `cd ${projectPath} && zellij attach ${sessionName} --create -- claude${titleArg}`;
-      await sshService.execSsh(
-        remote.host,
-        `nohup bash -c '${
-          launchCmd.replace(/'/g, "'\\''")
-        }' > /dev/null 2>&1 &`,
-        sshOpts,
-      );
-
-      return { status: "launched", host: hostName, sessionName, taskId };
+    // --- Peer ---
+    async pingAll(): Promise<PeerStatus[]> {
+      return await peerService.pingAll();
     },
 
-    async getRemoteStatus(
-      taskId: string,
-      host?: string,
-    ): Promise<RemoteStatus> {
-      const hostName = host ?? config.defaultRemote;
-      if (!hostName) throw new Error("no host specified");
-      const remote = config.remotes[hostName];
-      if (!remote) throw new Error(`unknown host: ${hostName}`);
-
-      const sessionName = `kanban-${taskId}`;
-      const result = await sshService.execSsh(
-        remote.host,
-        `zellij list-sessions 2>/dev/null | grep -q '^${sessionName}' && echo running || echo stopped`,
-        { user: remote.user },
-      );
-      let status: "running" | "stopped" | "unknown" = "unknown";
-      if (result.success) {
-        const out = result.stdout.trim();
-        if (out === "running") status = "running";
-        else if (out === "stopped") status = "stopped";
-      }
-      return { taskId, host: hostName, sessionName, status };
+    async getNodeInfo(peerName: string): Promise<NodeInfo> {
+      const peer = config.peers.find((p) => p.name === peerName);
+      if (!peer) throw new Error(`Peer '${peerName}' not found`);
+      return await peerService.getNodeInfo(peer);
     },
 
-    listRemoteHosts() {
-      const hosts = Object.entries(config.remotes).map(([name, r]) => ({
-        name,
-        host: r.host,
-        user: r.user,
-      }));
-      return Promise.resolve({ hosts, defaultRemote: config.defaultRemote });
-    },
-
-    async pingRemote(host?: string) {
-      const hostName = host ?? config.defaultRemote;
-      if (!hostName) throw new Error("no host specified");
-      const remote = config.remotes[hostName];
-      if (!remote) throw new Error(`unknown host: ${hostName}`);
-      const result = await sshService.ping(remote.host, remote.user);
-      return {
-        host: hostName,
-        online: result.online,
-        latencyMs: result.latencyMs,
-      };
-    },
-
-    // --- Sync ---
-    async getSyncStatus() {
-      return await gitSync.getStatus();
-    },
-    async pull() {
-      return await gitSync.pull();
-    },
-    async push(message: string) {
-      return await gitSync.commitAndPush(message);
-    },
-    async syncFromHandover(boardId: string, branch: string) {
-      const homeDir = Deno.env.get("HOME") ?? "";
-      const handoverBranchDir = `${homeDir}/.claude/handover/${branch}`;
-
-      let entries: Deno.DirEntry[];
-      try {
-        entries = [];
-        for await (const entry of Deno.readDir(handoverBranchDir)) {
-          if (entry.isDirectory) entries.push(entry);
-        }
-      } catch {
-        return {
-          created: 0,
-          updated: 0,
-          errors: [`No handover data for branch '${branch}'`],
-        };
-      }
-
-      if (entries.length === 0) {
-        return {
-          created: 0,
-          updated: 0,
-          errors: [`No handover data for branch '${branch}'`],
-        };
-      }
-
-      entries.sort((a, b) => b.name.localeCompare(a.name));
-      const latestDir = `${handoverBranchDir}/${entries[0].name}`;
-      const projectStatePath = `${latestDir}/project-state.json`;
-
-      let projectState: ProjectState;
-      try {
-        projectState = JSON.parse(
-          await Deno.readTextFile(projectStatePath),
-        );
-      } catch {
-        return {
-          created: 0,
-          updated: 0,
-          errors: ["project-state.json not found or invalid"],
-        };
-      }
-
-      return await syncService.syncFromProjectState(
-        boardId,
-        projectState,
-        projectStatePath,
-      );
+    async launchOnPeer(
+      peerName: string,
+      params: LaunchParams,
+    ): Promise<PeerLaunchResult> {
+      const peer = config.peers.find((p) => p.name === peerName);
+      if (!peer) throw new Error(`Peer '${peerName}' not found`);
+      return await peerService.launchOnPeer(peer, params);
     },
   };
 }
