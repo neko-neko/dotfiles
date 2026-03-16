@@ -8,11 +8,15 @@ font-feature = liga
 font-feature = dlig
 font-size = 12
 
-# Fallback for Japanese glyphs (font-family 複数宣言はフォールバックチェーンとして解釈される)
-font-family = Hiragino Sans
+# Japanese glyphs — HackGen (monospace, 全角:半角 = 2:1 厳密)
+font-family = HackGen
+font-codepoint-map = U+3000-U+303F,U+3040-U+309F,U+30A0-U+30FF,U+4E00-U+9FFF,U+FF00-U+FFEF=HackGen
+font-codepoint-map = U+3400-U+4DBF,U+20000-U+2A6DF=HackGen
 
 # Window
+window-padding-y = 2,8
 window-padding-balance = true
+window-padding-color = extend
 fullscreen = false
 macos-titlebar-style = tabs
 macos-non-native-fullscreen = true
