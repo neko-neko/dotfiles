@@ -125,7 +125,7 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **INVOKE 2:** 直後に Skill tool で `superpowers:brainstorming` を invoke する
 - **INVOKE 3:** 設計書ドラフト完成後、コミット前に `superpowers:using-git-worktrees` を invoke し、開発用 worktree とブランチを作成する
 - **Autonomy:** INTERACTIVE
-- **動作:** supplement が先に context に載った状態で brainstorming を実行する。supplement により TaskCreate 禁止・インタラクティブ制約が適用され、clarifying questions 後に影響範囲調査・暗黙ルール抽出・テスト観点列挙が実行される。設計書ドラフト完成後、worktree を作成し、ベースラインテスト通過後に設計書を worktree 内にコミットする
+- **動作:** supplement が先に context に載った状態で brainstorming を実行する。supplement により TaskCreate 禁止・インタラクティブ制約が適用され、clarifying questions 後に **並列探索エージェント（code-explorer + code-architect）を起動してコードベースをサブ context で深く調査** し、その結果をもとに暗黙ルール抽出・テスト観点列挙が実行される。設計書ドラフト完成後、worktree を作成し、ベースラインテスト通過後に設計書を worktree 内にコミットする
 - **自動遷移条件:** worktree 作成済み かつ 設計書が worktree 内にコミット済み
 - **成果物:** `docs/plans/*-design.md`、worktree パス、ブランチ名
 - **失敗時:** ユーザーが中断 -> STOP。クリーンアップ不要
@@ -293,6 +293,7 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 |---------|--------|---------|
 | 1: Design | ユーザーが中断 | STOP。クリーンアップ不要 |
 | 1: Design | worktree テスト失敗 | PAUSE。続行 or STOP を提案 |
+| 1: Design | 探索エージェント失敗 | soft failure。メイン context で Grep/Read にフォールバック |
 | 2: Spec Review | エージェントエラー | 該当エージェントをスキップ、残りの結果で続行 |
 | 2: Spec Review | 3回レビュー不合格 | PAUSE。設計の根本的見直しを提案 |
 | 3: Plan | writing-plans 失敗 | 失敗内容を報告、PAUSE |
