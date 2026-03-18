@@ -4,6 +4,7 @@ description: >-
   実装計画書レビューワークフロー。3つの観点（clarity, feasibility, consistency）で
   実装計画書を並列レビューし、統合レポートから承認された指摘を修正する。
   --codex 指定時は MCP Codex によるレビューとメタレビューを追加する。
+  --iterations N 指定時は各観点を N 回独立レビューし、過半数一致の findings のみ採用する（デフォルト: 3）。
 user-invocable: true
 ---
 
@@ -25,10 +26,13 @@ user-invocable: true
 | `<path>` | 指定されたパスの実装計画書を使用 |
 | `--codex` | Phase 2 に Codex 並列実行を追加し、Phase 3.5 メタレビューを有効化する。パス引数と組み合わせ可能 |
 | `--ui` | Phase 2 に UI タスク仕様レビューエージェントを追加する。パス引数・`--codex` と組み合わせ可能 |
+| `--iterations N` | N-way 投票を有効化する（デフォルト: 3）。各観点エージェントを N 回独立に起動し、過半数一致の findings のみ採用する。パス引数・`--codex`・`--ui` と組み合わせ可能 |
 
 `--codex` はパス引数と組み合わせて使用できる。`--codex` が指定された場合、変数 `codex_enabled` を true とし、Phase 2 と Phase 3.5 で参照する。`--codex` が指定されていない場合、3観点のみでレビューする。
 
 `--ui` が指定された場合、変数 `ui_enabled` を true とし、Phase 2 で参照する。
+
+`--iterations N` が指定された場合、変数 `iterations` に N を格納する。未指定の場合 `iterations = 3`（デフォルト）。`iterations < 1` の場合は `1` に補正する。`iterations == 1` の場合、Phase 2.5 をスキップし従来動作と同一になる。
 
 ### 実装計画書取得
 
@@ -54,7 +58,7 @@ ls docs/plans/$(echo "$doc_path" | grep -oP '\d{4}-\d{2}-\d{2}' | head -1)*-desi
 
 ## Phase 2: Parallel Review (3+1+ui perspectives)
 
-3つ（`codex_enabled` 時は+1、`ui_enabled` 時はさらに+1）のレビューを **並列** で起動する。すべて `run_in_background: true` を使用し、結果を収集する。
+3つの観点を `iterations` 回ずつ（`codex_enabled` 時は Codex ×1、`ui_enabled` 時は UI ×1 を追加）**並列** で起動する。合計エージェント数: 3 × iterations + (codex ? 1 : 0) + (ui ? 1 : 0)。すべて `run_in_background: true` を使用し、結果を収集する。
 
 ### 2-1. implementation-review-clarity
 
@@ -67,6 +71,8 @@ Agent tool を使用する。`subagent_type` に `implementation-review-clarity`
 
 findings を JSON で返すよう指示する。
 
+`iterations > 1` の場合、同一の prompt で `iterations` 回起動する。各イテレーションは独立した Agent tool 呼び出しとし、全て `run_in_background: true` で並列起動する。
+
 ### 2-2. implementation-review-feasibility
 
 Agent tool を使用する。`subagent_type` に `implementation-review-feasibility` を指定し、prompt に `doc_path` と `doc_content` を含め、以下の観点でレビューさせる:
@@ -77,6 +83,8 @@ Agent tool を使用する。`subagent_type` に `implementation-review-feasibil
 - 工数見積もりの妥当性
 
 findings を JSON で返すよう指示する。
+
+`iterations > 1` の場合、同一の prompt で `iterations` 回起動する。各イテレーションは独立した Agent tool 呼び出しとし、全て `run_in_background: true` で並列起動する。
 
 ### 2-3. implementation-review-consistency
 
@@ -94,6 +102,8 @@ Agent tool を使用する。`subagent_type` に `implementation-review-consiste
 - 設計書と実装計画書の間で用語・命名が統一されているか
 
 findings を JSON で返すよう指示する。
+
+`iterations > 1` の場合、同一の prompt で `iterations` 回起動する。各イテレーションは独立した Agent tool 呼び出しとし、全て `run_in_background: true` で並列起動する。
 
 ### 2-4. Codex レビュー（`codex_enabled` 時のみ）
 
@@ -118,6 +128,8 @@ MCP 呼び出しが失敗した場合は「MCP Codex への接続に失敗しま
 
 Codex の出力はフリーテキスト形式。
 
+Codex は N-way 投票の対象外。`iterations` の値に関わらず 1 回のみ実行する。
+
 ### 2-5. implementation-review-ui-spec（`ui_enabled` 時のみ）
 
 `ui_enabled` が true の場合のみ実行する。Agent tool を使用する。`subagent_type` に `implementation-review-ui-spec` を指定し、prompt に `doc_path` と `doc_content` を含め、以下の観点でレビューさせる:
@@ -127,6 +139,8 @@ Codex の出力はフリーテキスト形式。
 `design_doc_path` が存在する場合、prompt に設計書の内容も含め、設計書の UI 仕様がタスクに正しく反映されているか検証させる。
 
 findings を JSON で返すよう指示する。
+
+UI は N-way 投票の対象外。`iterations` の値に関わらず 1 回のみ実行する。
 
 ### Trace 記録（Phase 2 エージェントトレース）
 
@@ -148,7 +162,7 @@ findings を JSON で返すよう指示する。
    source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
    TRACE_SESSION_ID="${SESSION_ID:-unknown}"
    duration_ms=$(( $(date +%s%3N) - agent_start_time ))
-   trace_agent_end "$TRACE_FILE" "implementation-review" "<agent_name>" 2 $duration_ms <findings_count> "<parse_method>"
+   trace_agent_end "$TRACE_FILE" "implementation-review" "<agent_name>" 2 $duration_ms <findings_count> "<parse_method>" "<iteration_number>"
    ```
 
 4. エージェントエラー時は `trace_error` を呼ぶ:
@@ -166,6 +180,52 @@ findings を JSON で返すよう指示する。
 各エージェントの応答から JSON `{"findings": [...]}` をパースする。失敗した場合は正規表現フォールバックを試み、それでも失敗ならエラーとして扱う。
 
 Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
+
+## Phase 2.5: Consensus Vote（`iterations > 1` の場合のみ）
+
+`iterations == 1` の場合、本 Phase をスキップし Phase 3 へ進む。
+
+**開始時アナウンス:** 「Phase 2.5: Consensus Vote (iterations=N)」
+
+### 投票アルゴリズム
+
+観点ごとに以下を実行する:
+
+1. **基準イテレーション選択**: findings 数が最多のイテレーションを基準（base）とする
+2. **投票**: base の各 finding について、他イテレーションに意味的に同一の finding があるかチェックする。`vote_count` が `ceil(iterations / 2)` 以上なら `consensus = true`
+3. **補完**: base にないが他イテレーション間で過半数一致する finding を追加採用する
+
+### Semantic Similarity 判定
+
+2つの findings が「同じ問題を指摘している」かの判定基準:
+
+1. **同一 section**: findings の `section` フィールドが一致または近接する
+2. **意味的類似**: description の核心（何が問題か）が一致する。完全一致は不要
+3. **severity は不問**: 同じ問題でも severity が異なることがある。consensus に入った場合は最も高い severity を採用する
+
+判定はメインエージェント（スキル実行者）自身が行う。findings は構造化 JSON で返されるため、section の一致で候補を絞り、description を比較する。
+
+### エラーハンドリング
+
+| 状態 | 処理 |
+|------|------|
+| 成功イテレーション >= 2 | 成功分のみで投票（過半数基準は成功数ベース） |
+| 成功イテレーション == 1 | 投票不可。フォールバック: 単一結果をそのまま使用。ユーザーに警告表示 |
+| 成功イテレーション == 0 | 全失敗。既存のエラーハンドリングに移行 |
+| findings 0 件のイテレーション | 「問題なし」と投票したとみなす。他の finding の vote_count は下がる |
+| consensus_findings が 0 件 | レビュー「合格」として Phase 3 へ進む |
+
+### 出力
+
+consensus_findings を Phase 3 に渡す。各 finding に `vote_count` フィールドを付与する。
+
+### Trace 記録
+
+```bash
+source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
+TRACE_SESSION_ID="${SESSION_ID:-unknown}"
+trace_consensus "$TRACE_FILE" "implementation-review" "<perspective>" <iterations> <total_findings> <consensus_count> <rejected_count> '<rejection_reasons_json>'
+```
 
 ## Phase 3: Report
 
@@ -204,6 +264,8 @@ severity で降順ソート: high > medium > low
 
 ---
 ```
+
+`iterations > 1` の場合、各 finding に vote count を付記する: `(N/N votes)`。`iterations == 1` の場合は vote count を表示しない。
 
 findings が 0 件の場合 → 「指摘事項はありません。レビュー完了です。」と報告して終了する。
 
@@ -406,6 +468,7 @@ git diff
 - レビュー対象外のファイルを変更する
 - findings を勝手にフィルタリング・省略する（全件レポートする）
 - 整合性の問題を無視して完了とする
+- iterations > 1 で consensus 投票結果を無視する
 
 **Always:**
 - Phase 遷移時にアナウンスする

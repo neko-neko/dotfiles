@@ -68,12 +68,17 @@ trace_agent_start() {
     "{\"pipeline\":\"${pipeline}\",\"agent\":\"${agent}\",\"phase\":${phase}}"
 }
 
-# Tier 3: Agent end
+# Tier 3: Agent end (iteration is optional, for backward compatibility)
 trace_agent_end() {
   local trace_file="$1" pipeline="$2" agent="$3" phase="$4" \
         duration_ms="$5" findings_count="$6" parse_method="$7"
+  local iteration="${8:-}"
+  local iter_field=""
+  if [[ -n "$iteration" ]]; then
+    iter_field=",\"iteration\":${iteration}"
+  fi
   _trace_write "$trace_file" "agent_end" \
-    "{\"pipeline\":\"${pipeline}\",\"agent\":\"${agent}\",\"phase\":${phase},\"duration_ms\":${duration_ms},\"findings_count\":${findings_count},\"parse_method\":\"${parse_method}\"}"
+    "{\"pipeline\":\"${pipeline}\",\"agent\":\"${agent}\",\"phase\":${phase},\"duration_ms\":${duration_ms},\"findings_count\":${findings_count},\"parse_method\":\"${parse_method}\"${iter_field}}"
 }
 
 # Tier 1: User decision with findings snapshot
@@ -98,6 +103,14 @@ trace_error() {
   safe_message=$(printf '%s' "$message" | sed 's/\\/\\\\/g; s/"/\\"/g' | head -c 500)
   _trace_write "$trace_file" "error" \
     "{\"pipeline\":\"${pipeline}\",\"agent\":\"${agent}\",\"error_type\":\"${error_type}\",\"message\":\"${safe_message}\"}"
+}
+
+# Tier 2: Consensus vote result
+trace_consensus() {
+  local trace_file="$1" pipeline="$2" perspective="$3" iterations="$4" \
+        total="$5" consensus="$6" rejected="$7" reasons="$8"
+  _trace_write "$trace_file" "consensus" \
+    "{\"pipeline\":\"${pipeline}\",\"perspective\":\"${perspective}\",\"iterations\":${iterations},\"total_findings\":${total},\"consensus_findings\":${consensus},\"rejected_findings\":${rejected},\"rejection_reasons\":${reasons}}"
 }
 
 # Tier 2: Handover event

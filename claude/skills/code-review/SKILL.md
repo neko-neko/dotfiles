@@ -4,6 +4,7 @@ description: >-
   多角的コードレビューワークフロー。6つの観点（simplify, code-quality, code-security,
   code-performance, code-test, ai-antipattern）で並列レビューし、統合レポートから承認された指摘を修正する。
   --codex 指定時は MCP Codex による並列レビューとメタレビューを追加する。
+  --iterations N 指定時は各観点を N 回独立レビューし、過半数一致の findings のみ採用する（デフォルト: 3）。
 user-invocable: true
 ---
 
@@ -26,8 +27,11 @@ user-invocable: true
 | `--staged` | staged changes (`git diff --cached`) |
 | その他の値 | そのまま git commit range として使用 |
 | `--codex` | Phase 2 に Codex 並列実行を追加し、Phase 3.5 メタレビューを有効化する。他の引数と組み合わせ可能 |
+| `--iterations N` | N-way 投票を有効化する（デフォルト: 3）。各観点エージェントを N 回独立に起動し、過半数一致の findings のみ採用する。他の引数と組み合わせ可能 |
 
 `--codex` は他の引数（`--branch`, `--staged`, commit range）と組み合わせて使用できる。`--codex` が指定された場合、変数 `codex_enabled` を true とし、Phase 2 と Phase 3.5 で参照する。`--codex` が指定されていない場合、従来通り6観点のみでレビューする。
+
+`--iterations N` が指定された場合、変数 `iterations` に N を格納する。未指定の場合 `iterations = 3`（デフォルト）。`iterations < 1` の場合は `1` に補正する。`iterations == 1` の場合、Phase 2.5 をスキップし従来動作と同一になる。
 
 ### 差分取得
 
@@ -37,7 +41,7 @@ user-invocable: true
 
 ## Phase 2: Parallel Review (6+1 perspectives)
 
-6つ（`codex_enabled` が true の場合は7つ）のレビューを **並列** で起動する。すべて `run_in_background: true` を使用し、結果を収集する。
+5つの Agent 観点を `iterations` 回ずつ、simplify ×1（`codex_enabled` 時は Codex ×1 を追加）で **並列** 起動する。合計エージェント数: 5 × iterations + 1 (simplify) + (codex ? 1 : 0)。すべて `run_in_background: true` を使用し、結果を収集する。
 
 ### 2-1. simplify
 
@@ -49,9 +53,13 @@ Skill tool で `/simplify` を invoke する。引数にスコープ情報を渡
 
 simplify は独自のフォーマットで結果を返す。テキストとして受け取り、Phase 3 で手動パースする。
 
+simplify は Skill invoke のため N-way 投票の対象外。`iterations` の値に関わらず 1 回のみ実行する。
+
 ### 2-2 ~ 2-6. code-review-quality / code-review-security / code-review-performance / code-review-test / code-review-ai-antipattern
 
 各エージェントに対して Agent tool を使用する。`subagent_type` にエージェント名（`code-review-quality`, `code-review-security`, `code-review-performance`, `code-review-test`, `code-review-ai-antipattern`）を指定し、prompt に `changed_files` と `diff_content` を含め、findings を JSON で返すよう指示する。
+
+`iterations > 1` の場合、各エージェント（code-review-quality, code-review-security, code-review-performance, code-review-test, code-review-ai-antipattern）について、同一の prompt で `iterations` 回起動する。各イテレーションは独立した Agent tool 呼び出しとし、全て `run_in_background: true` で並列起動する。
 
 ### 2-7. Codex レビュー（`codex_enabled` 時のみ）
 
@@ -85,6 +93,8 @@ MCP 呼び出しが失敗した場合は「MCP Codex への接続に失敗しま
 
 Codex の出力はフリーテキスト形式。
 
+Codex は N-way 投票の対象外。`iterations` の値に関わらず 1 回のみ実行する。
+
 ### Trace 記録（Phase 2 エージェントトレース）
 
 各エージェント起動時に trace を記録する。handover セッションディレクトリが存在する場合のみ実行する。
@@ -105,7 +115,7 @@ Codex の出力はフリーテキスト形式。
    source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
    TRACE_SESSION_ID="${SESSION_ID:-unknown}"
    duration_ms=$(( $(date +%s%3N) - agent_start_time ))
-   trace_agent_end "$TRACE_FILE" "code-review" "<agent_name>" 2 $duration_ms <findings_count> "<parse_method>"
+   trace_agent_end "$TRACE_FILE" "code-review" "<agent_name>" 2 $duration_ms <findings_count> "<parse_method>" "<iteration_number>"
    ```
    `parse_method` は `json_direct`（JSON パース成功）、`regex_fallback`（正規表現フォールバック）、`failed`（両方失敗）のいずれか。
 
@@ -124,6 +134,53 @@ Codex の出力はフリーテキスト形式。
 各エージェント（simplify 以外）の応答から JSON `{"findings": [...]}` をパースする。失敗した場合は正規表現フォールバックを試み、それでも失敗ならエラーとして扱う。
 
 Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合は simplify と同様にテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
+
+## Phase 2.5: Consensus Vote（`iterations > 1` の場合のみ）
+
+`iterations == 1` の場合、本 Phase をスキップし Phase 3 へ進む。
+
+**開始時アナウンス:** 「Phase 2.5: Consensus Vote (iterations=N)」
+
+### 投票アルゴリズム
+
+観点ごとに以下を実行する:
+
+1. **基準イテレーション選択**: findings 数が最多のイテレーションを基準（base）とする
+2. **投票**: base の各 finding について、他イテレーションに意味的に同一の finding があるかチェックする。`vote_count` が `ceil(iterations / 2)` 以上なら `consensus = true`
+3. **補完**: base にないが他イテレーション間で過半数一致する finding を追加採用する
+
+### Semantic Similarity 判定
+
+2つの findings が「同じ問題を指摘している」かの判定基準:
+
+1. **同一 file**: findings の `file` フィールドが一致する
+2. **近接 line**: findings の `line` が近い（差 ±10 行以内）、または同一関数内
+3. **意味的類似**: description の核心（何が問題か）が一致する。完全一致は不要
+4. **severity は不問**: 同じ問題でも severity が異なることがある。consensus に入った場合は最も高い severity を採用する
+
+判定はメインエージェント（スキル実行者）自身が行う。findings は構造化 JSON で返されるため、file の一致で候補を絞り、line の近接度と description を比較する。
+
+### エラーハンドリング
+
+| 状態 | 処理 |
+|------|------|
+| 成功イテレーション >= 2 | 成功分のみで投票（過半数基準は成功数ベース） |
+| 成功イテレーション == 1 | 投票不可。フォールバック: 単一結果をそのまま使用。ユーザーに警告表示 |
+| 成功イテレーション == 0 | 全失敗。既存のエラーハンドリングに移行 |
+| findings 0 件のイテレーション | 「問題なし」と投票したとみなす。他の finding の vote_count は下がる |
+| consensus_findings が 0 件 | レビュー「合格」として Phase 3 へ進む |
+
+### 出力
+
+consensus_findings を Phase 3 に渡す。各 finding に `vote_count` フィールドを付与する。simplify の findings は投票対象外のため、そのまま Phase 3 に渡す。
+
+### Trace 記録
+
+```bash
+source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
+TRACE_SESSION_ID="${SESSION_ID:-unknown}"
+trace_consensus "$TRACE_FILE" "code-review" "<perspective>" <iterations> <total_findings> <consensus_count> <rejected_count> '<rejection_reasons_json>'
+```
 
 ## Phase 3: Report
 
@@ -164,6 +221,8 @@ severity で降順ソート: high > medium > low
 ---
 対応する指摘番号を選択してください（例: 1,2,4 / all / none）
 ```
+
+`iterations > 1` の場合、各 finding に vote count を付記する: `(N/N votes)`。simplify の findings には vote count を表示しない。`iterations == 1` の場合は vote count を表示しない。
 
 findings が 0 件の場合 → 「指摘事項はありません。レビュー完了です。」と報告して終了する。
 
@@ -335,6 +394,7 @@ git diff
 - ユーザー承認なしに修正を適用する
 - レビュー対象外のファイルを変更する
 - findings を勝手にフィルタリング・省略する（全件レポートする）
+- iterations > 1 で consensus 投票結果を無視する
 - テスト失敗を無視して完了とする
 
 **Always:**
