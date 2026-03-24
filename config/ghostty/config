@@ -22,7 +22,7 @@ macos-titlebar-style = tabs
 macos-non-native-fullscreen = true
 
 # Terminal
-scrollback-limit = 10000
+scrollback-limit = 52428800
 shell-integration = zsh
 mouse-shift-capture = true
 
