@@ -42,6 +42,11 @@ else
     util::warning "Tailscale login skipped. You can run 'tailscale login' later."
     return 1
   fi
+  # FORCE=1 時を含め、ログイン後に実際の接続状態を検証
+  if ! "${TAILSCALE_CLI}" status &>/dev/null; then
+    util::error "Tailscale is still not connected after login."
+    return 1
+  fi
 fi
 
 # --- 4. 接続情報表示 ---

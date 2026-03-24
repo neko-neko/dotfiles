@@ -72,8 +72,9 @@ if [[ ! -d "${KANBAN_DIR}" ]]; then
 fi
 
 # --- 6. 共有フォルダ登録 ---
-existing=$(st_api GET "/rest/config/folders/${FOLDER_ID}" 2>/dev/null)
-if [[ -n "${existing}" && "${existing}" != "null" ]]; then
+st_api GET "/rest/config/folders/${FOLDER_ID}" >/dev/null 2>&1
+folder_check_status=$?
+if [[ ${folder_check_status} -eq 0 ]]; then
   util::info "Folder '${FOLDER_ID}' already exists in Syncthing. Skipping."
 else
   util::info "Registering folder '${FOLDER_ID}' in Syncthing..."
