@@ -1,14 +1,14 @@
-# Theme (system light/dark 連動)
+# Theme
 theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
-# Primary font (bold/italic はデフォルト動作に任せ、フォールバックチェーンを継承させる)
+# Primary font
 font-family = Monaspace Neon
 font-feature = calt
 font-feature = liga
 font-feature = dlig
 font-size = 12
 
-# Japanese glyphs — HackGen (monospace, 全角:半角 = 2:1 厳密)
+# Japanese glyphs — HackGen
 font-family = HackGen
 font-codepoint-map = U+3000-U+303F,U+3040-U+309F,U+30A0-U+30FF,U+4E00-U+9FFF,U+FF00-U+FFEF=HackGen
 font-codepoint-map = U+3400-U+4DBF,U+20000-U+2A6DF=HackGen
@@ -17,22 +17,22 @@ font-codepoint-map = U+3400-U+4DBF,U+20000-U+2A6DF=HackGen
 window-padding-y = 2,8
 window-padding-balance = true
 window-padding-color = extend
-fullscreen = false
+maximize = true
 macos-titlebar-style = tabs
 macos-non-native-fullscreen = true
 
 # Terminal
-scrollback-limit = 52428800
+scrollback-limit = 30000000
 shell-integration = zsh
 mouse-shift-capture = true
 
-# Bell (system: dock bounce + badge, audio: play sound, attention: request focus)
+# Bell
 bell-features = system,audio,attention
 
 # Link
 link-url = true
 
-# Notifications (長時間コマンド完了時)
+# Notifications
 notify-on-command-finish = unfocused
 
 # Quick Terminal
