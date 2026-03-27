@@ -1,7 +1,7 @@
 ---
 name: smoke-test
 description: >-
-  Playwright ベースのローカルスモークテスト。dev サーバー起動 → アドホックテスト生成・実行 →
+  Browser Use CLI ベースのローカルスモークテスト。dev サーバー起動 → アドホックテスト生成・実行 →
   VRT 差分チェック → E2E 実行 + フレーキー検出の4ステップを実行する。
   単体でも他のワークフローからの invoke でも利用可能。
 user-invocable: true
@@ -9,7 +9,7 @@ user-invocable: true
 
 # Smoke Test
 
-ローカル環境で Playwright を使い、実装した機能の動作確認・VRT 差分チェック・E2E フレーキー検出を自律的に実行する。
+ローカル環境で Browser Use CLI を使い、実装した機能の動作確認・VRT 差分チェック・E2E フレーキー検出を自律的に実行する。
 
 **開始時アナウンス:** 「Smoke Test を開始します。Step 1: Environment Setup」
 
@@ -57,9 +57,9 @@ Dev サーバーを起動しアクセス可能にする。
 
 ### サーバー起動と確認
 
-サーバー起動には webapp-testing スキルの `with_server.py` パターンを活用する。
+サーバー起動にはバックグラウンドプロセスとして起動する（`run_in_background: true`）。
 
-起動確認: Playwright で `localhost:<port>` にアクセスし、`networkidle` 待機する。30秒タイムアウト → PAUSE。
+起動確認: `browser-use open http://localhost:<port>` でアクセスし、ページ読み込みを確認する。`browser-use state` でページ要素が取得できることを検証する。30秒タイムアウト → PAUSE。
 
 **アナウンス:** 「Step 1 完了。サーバー起動確認済み (port: <N>)。Step 2: Ad-hoc Smoke Test に進みます」
 
@@ -67,7 +67,18 @@ Dev サーバーを起動しアクセス可能にする。
 
 ## Step 2: Ad-hoc Smoke Test
 
-設計書と実装差分からスモークテストシナリオを自動生成・実行する。
+設計書と実装差分からスモークテストシナリオを自動生成し、Browser Use CLI で直接実行する。
+
+### 前提条件チェック
+
+`browser-use --version` を実行し、Browser Use CLI がインストールされているか確認する。
+
+未インストールの場合:
+```
+browser-use が見つかりません。以下でインストールしてください:
+  uvx browser-use install
+```
+→ PAUSE。
 
 ### 差分取得
 
@@ -76,24 +87,39 @@ Dev サーバーを起動しアクセス可能にする。
 | `--diff-base <branch>` 指定 | `git diff <branch>...HEAD` |
 | (なし) | `git diff HEAD~1` |
 
-`--design <path>` 指定時は設計書も Read で読み込み、シナリオ生成の精度を向上させる。
+`--design <path>` 指定時は設計書も Read で読み込み、Impact Analysis セクションを抽出してシナリオ生成の精度と影響範囲テストに活用する。
 
 ### シナリオ生成
 
-以下の4観点でシナリオを生成する。
+以下の5観点でシナリオを自然言語で生成する。
 
 1. **ナビゲーション確認** — ページ遷移・表示が正常であること
 2. **ユーザーインタラクション** — クリック、入力、フォーム送信が動作すること
 3. **エラー不在確認** — コンソールエラー・ネットワークエラーが発生しないこと
 4. **レスポンシブ確認** — desktop: 1280x720, mobile: 375x667 の両方で表示が崩れないこと
+5. **影響波及テスト** — Impact Analysis の Reverse Dependencies / Side Effect Risks に基づき、変更の波及先が正常に動作すること
 
 ### 実行
 
-Playwright Python スクリプトとして `/tmp/smoke-test-<timestamp>/` に生成する（1シナリオ = 1ファイル）。
+LLM が Browser Use CLI コマンドを Bash ツール経由で逐次実行し、各シナリオを検証する。
 
-各ステップでスクリーンショットを取得する。
+**使用コマンド:**
+- `browser-use open <url>` — ページ遷移
+- `browser-use state` — 現在のページ要素一覧を取得（クリック可能な要素のインデックス付き）
+- `browser-use click <index>` — 要素をクリック
+- `browser-use type "<text>"` — テキスト入力
+- `browser-use screenshot <filename>` — スクリーンショット保存
+- `browser-use close` — ブラウザを閉じる
 
-失敗時: スクリプトを修正し再実行する（最大2回）。2回失敗 → FAIL。
+**実行フロー（各シナリオ）:**
+1. `browser-use open <target_url>` でページ遷移
+2. `browser-use state` でページ状態を取得
+3. 操作（click/type）を実行
+4. `browser-use state` で操作結果を確認
+5. `browser-use screenshot smoke-<scenario_name>.png` で証跡を保存
+6. LLM が state の内容とスクリーンショットから PASS/FAIL を判定
+
+**失敗時:** シナリオを修正し再実行する（最大2回）。2回失敗 → FAIL。
 
 **アナウンス:** 「Step 2 完了。<N>/<M> シナリオ PASS。Step 3: VRT Diff Check に進みます」
 
@@ -237,11 +263,11 @@ SKIP / PASS / DIFF_DETECTED
 |------|--------|---------|
 | 1 | サーバー起動コマンド検出不可 | AskUserQuestion → 回答なし → PAUSE |
 | 1 | サーバー起動タイムアウト（30秒） | PAUSE |
-| 2 | Playwright スクリプト実行エラー | 修正 → 再実行（最大2回） |
+| 2 | Browser Use CLI 実行エラー | 修正 → 再実行（最大2回） |
 | 2 | アプリケーションバグ | レポートに記録、FAIL |
 | 3 | VRT コマンド実行エラー | レポートに記録、スキップ |
 | 4 | E2E テスト実行エラー（テスト外の問題） | レポートに記録、スキップ |
-| 全体 | Playwright 未インストール | インストール提案、PAUSE |
+| 全体 | Browser Use CLI 未インストール | `uvx browser-use install` を提案、PAUSE |
 
 ---
 
