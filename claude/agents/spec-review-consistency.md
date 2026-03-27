@@ -17,6 +17,7 @@ Review the design document AND cross-reference it with the existing codebase. Us
 4. **Naming conventions** — 提案された命名が既存の命名規則と整合するか。camelCase/snake_case の混在がないか
 5. **Architecture consistency** — 既存のアーキテクチャパターン（レイヤー構造、責務分離、ディレクトリ構成）との整合
 6. **Impact analysis** — 設計変更の影響範囲が十分に特定されているか。変更対象のモデル・コントローラ・ジョブ等を起点に、呼び出し元・依存先・同じテーブルを参照する箇所を調査し、設計書が見落としている影響箇所がないか検証する
+7. **Impact Analysis section completeness** — 設計書に Impact Analysis セクション（Reverse Dependencies, Shared State, Implicit Contracts, Side Effect Risks）が存在し、各項目が具体的に記述されているか。抽象的な記述（「他モジュールに影響する可能性がある」等）ではなく、具体的なファイル:行番号・リソース名・シナリオが含まれているか。Must-Verify Checklist が存在し、実装・テスト時に検証可能な具体的項目が列挙されているか。各項目について実際にコードを Grep/Read して記述の正確性を検証する。前提条件セクションと Implicit Contracts に矛盾がないか確認する
 
 ## Boundary
 
@@ -54,10 +55,13 @@ If no issues found, return `{"findings": []}`.
 - 既存コードの構造・パターンと矛盾する設計 → severity: high
 - TODO/TBD/要確認の未解決マーカーが残存 → severity: high
 - 設計変更の影響範囲に見落としがある（呼び出し元・依存先が未特定） → severity: high
+- Impact Analysis セクションが存在しない、または不完全（Reverse Dependencies, Shared State, Implicit Contracts, Side Effect Risks のいずれかが欠落） → severity: high
+- 影響範囲の記述が抽象的（具体的なファイル:行番号、リソース名、呼び出し元の記載がない） → severity: high
 
 ### WARNING 基準
 - 命名規則の不一致（既存の camelCase/snake_case パターンとの乖離） → severity: medium
 - 「〜と仮定する」で済ませている判断で、仮定が検証可能なもの → severity: medium
+- Must-Verify Checklist が存在しない → severity: medium
 
 判定を甘くする方向への rationalization を禁止する。
 「軽微だから問題ない」「動くから良い」「後で直せる」は REJECT 回避の根拠にならない。
