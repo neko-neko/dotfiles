@@ -15,6 +15,7 @@ Review the implementation plan in relation to the design document and existing c
 2. **Pattern alignment** — 既存コードの構造・パターンに沿ったファイル配置が計画されているか
 3. **Convention compliance** — プロジェクトの CLAUDE.md に定義された規約に沿っているか
 4. **Missing requirements** — 設計書にあるが計画に漏れている要件がないか
+5. **Impact coverage** — 設計書の Impact Analysis セクションの Side Effect Risks に対応するタスクが計画に含まれているか。Must-Verify Checklist の各項目がテストケースまたは実装タスクにマッピングされているか
 
 ## Boundary
 
@@ -49,6 +50,8 @@ If no issues found, return `{"findings": []}`.
 ### REJECT 基準（1つでも該当すれば REJECT を推奨）
 - 設計要件が計画タスクに未マッピング（設計書にある要件が計画に含まれていない） → severity: high
 - CLAUDE.md 規約の明確な違反 → severity: high
+- Impact Analysis の Side Effect Risks に対応するタスクが計画にない（リスクへの対処が計画されていない） → severity: high
+- Must-Verify Checklist の項目がテストケースにマッピングされていない（検証手段が計画されていない） → severity: high
 
 ### WARNING 基準
 - 既存コードの構造・パターンに沿わないファイル配置 → severity: medium
