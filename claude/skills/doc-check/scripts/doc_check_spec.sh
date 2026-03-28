@@ -1,3 +1,38 @@
+Describe "lib/doc-utils.sh"
+  readonly UTILS_LIB="${SHELLSPEC_PROJECT_ROOT}/claude/skills/doc-check/scripts/lib/doc-utils.sh"
+  readonly UTILS_FIXTURES_DIR="${SHELLSPEC_PROJECT_ROOT}/claude/skills/doc-check/scripts/fixtures"
+
+  Include "$UTILS_LIB"
+
+  Describe "parse_depends_on via lib"
+    It "is available after sourcing doc-utils.sh"
+      When call parse_depends_on "$UTILS_FIXTURES_DIR/docs/api.md"
+      The output should include "src/api/handler.ts"
+    End
+  End
+
+  Describe "match_glob via lib"
+    It "is available after sourcing doc-utils.sh"
+      When call match_glob "src/*.ts" "src/a.ts"
+      The status should be success
+    End
+  End
+
+  Describe "extract_md_links via lib"
+    It "is available after sourcing doc-utils.sh"
+      When call extract_md_links "$UTILS_FIXTURES_DIR/docs/overview.md" "$UTILS_FIXTURES_DIR"
+      The output should include "docs/api.md"
+    End
+  End
+
+  Describe "_relpath via lib"
+    It "is available after sourcing doc-utils.sh"
+      When call _relpath "/foo/bar/baz.md" "/foo/bar"
+      The output should eq "baz.md"
+    End
+  End
+End
+
 Describe "doc-check.sh"
   readonly FIXTURES_DIR="${SHELLSPEC_PROJECT_ROOT}/claude/skills/doc-check/scripts/fixtures"
   readonly DOC_CHECK_SCRIPT="${SHELLSPEC_PROJECT_ROOT}/claude/skills/doc-check/scripts/doc-check.sh"

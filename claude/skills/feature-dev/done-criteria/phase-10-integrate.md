@@ -1,12 +1,12 @@
 ---
-phase: 9
+phase: 10
 name: integrate
 max_retries: 3
 ---
 
 ## Criteria
 
-### D9-01: ユーザーが統合方法を選択済み
+### D10-01: ユーザーが統合方法を選択済み
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -15,7 +15,7 @@ max_retries: 3
 - **fail_diagnosis_hint**: ユーザーへの選択肢提示が行われたか確認。提示されたが応答がない場合は PAUSE 状態を確認する
 - **depends_on_artifacts**: []
 
-### D9-02: 選択されたアクションが完了
+### D10-02: 選択されたアクションが完了
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -28,7 +28,7 @@ max_retries: 3
 - **fail_diagnosis_hint**: merge 失敗の場合はコンフリクトを確認（`git status`）。PR 作成失敗の場合は `gh auth status` で認証状態を確認。worktree 削除失敗の場合は `wt list` で状態を確認し `wt remove` を手動実行。ブランチが存在しない場合は `git branch -a` で全ブランチを確認する
 - **depends_on_artifacts**: []
 
-### D9-03: マージコンフリクトがない + 未コミット変更がない
+### D10-03: マージコンフリクトがない + 未コミット変更がない
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:

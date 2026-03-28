@@ -257,6 +257,26 @@ SKIP / PASS / DIFF_DETECTED
 
 ---
 
+## Execution Evidence
+
+スモークテストの有効な実行を証明するため、以下のアーティファクトが**必須**で生成されなければならない。
+これらが欠けている場合、監査ゲートは FAIL とする。
+
+| アーティファクト | 説明 | 生成元 |
+|---------------|------|-------|
+| `smoke-test-report.md` | 所定フォーマットのレポート（Step 2 テーブル必須） | Report Generation |
+| `smoke-*.png` (1枚以上) | browser-use screenshot で取得した証跡 | Step 2 実行時 |
+
+### 無効な実行パターン
+
+以下のいずれかに該当する場合、監査ゲートは実行を無効と判定する:
+
+1. `smoke-test-report.md` が存在しない、または所定フォーマット（Step 2 テーブルにシナリオ・観点・結果・スクリーンショット列）に準拠していない
+2. `smoke-*.png` スクリーンショットが1枚も存在しない
+3. レポート内のシナリオ結果が browser-use 以外のツール（rspec, jest, pytest 等）の出力に基づいている
+
+---
+
 ## Error Handling
 
 | Step | エラー | リカバリ |
@@ -279,6 +299,9 @@ SKIP / PASS / DIFF_DETECTED
 - VRT ベースラインをユーザー承認なしに更新する
 - フレーキーテストを実装バグとして FAIL にする
 - feature-dev の内部状態（artifacts, phase 番号等）に直接アクセスする
+- rspec / jest / vitest / pytest 等の既存テストスイートを browser-use ベースのスモークテストの代替として実行する。スモークテストは browser-use CLI による UI 操作検証であり、既存のユニットテスト・統合テストとは別物である
+- 環境問題（Docker 起動失敗、サーバー起動不可等）を理由に smoke-test の手順を独自に変更・簡略化する。環境問題は PAUSE で報告し、ユーザーに解決を委ねること
+- `--smoke` がパイプラインから指定されている場合に Phase をスキップする提案をする。`--smoke` はユーザーの明示的な意思表示であり、スキップ判断はユーザーにのみ許される
 
 ### Always
 

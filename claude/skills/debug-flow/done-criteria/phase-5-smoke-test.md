@@ -38,3 +38,18 @@ max_retries: 3
 - **pass_condition**: 手順3の全必須カテゴリにシナリオが1件以上存在し、かつ手順4の全ユーザーフローにシナリオが対応していること。カテゴリ欠落が0件、フロー未対応が0件
 - **fail_diagnosis_hint**: 欠落しているカテゴリを特定し、該当カテゴリのスモークテストシナリオを追加する。ユーザーフロー未対応の場合は RCA Report の該当フローを参照してシナリオを作成する。Evidence Plan のプロジェクト特性が実態と異なる場合は Evidence Plan の更新を検討する
 - **depends_on_artifacts**: [artifacts/smoke-test/, docs/plans/*-rca.md]
+
+### D5-04: スモークテスト実行証跡が有効である
+- **severity**: blocker
+- **verify_type**: automated
+- **verification**:
+  以下の3点を機械的に検証する:
+  1. `smoke-test-report.md` が作業ディレクトリに存在し、所定フォーマット（Step 2 テーブルに「シナリオ」「観点」「結果」「スクリーンショット」列が存在）に準拠している
+  2. `smoke-*.png` ファイルが1枚以上存在する
+  3. レポート内の Step 2 テーブルの「スクリーンショット」列が実在する `smoke-*.png` ファイルを参照している
+- **pass_condition**: 3点すべてを満たすこと
+- **fail_diagnosis_hint**:
+  - レポート未存在 → smoke-test スキルが正しく実行されていない。既存テストスイート（rspec, jest 等）の実行で代替されていないか確認する。代替されていた場合、それは無効な実行であり、smoke-test スキルを正しく再実行する必要がある
+  - フォーマット不備 → レポートを再生成する
+  - スクリーンショット未存在 → browser-use CLI が実行されていない可能性。環境問題であれば PAUSE としてユーザーに報告する
+- **depends_on_artifacts**: [smoke-test-report.md, smoke-*.png]

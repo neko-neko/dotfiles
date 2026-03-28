@@ -1,21 +1,21 @@
 ---
-phase: 8
+phase: 9
 name: test-review
 max_retries: 3
 ---
 
 ## Criteria
 
-### D8-01: レビューが全3観点で実行された
+### D9-01: レビューが全3観点で実行された
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
-  レビュー結果ファイル（`artifacts/reviews/phase-8-review.json` またはレビューログ）を読み取り、3観点（coverage, quality, design-alignment）の実行記録を確認する。
+  レビュー結果ファイル（`artifacts/reviews/phase-9-review.json` またはレビューログ）を読み取り、3観点（coverage, quality, design-alignment）の実行記録を確認する。
 - **pass_condition**: 3観点全ての実行記録が存在すること。記録された観点数が3
 - **fail_diagnosis_hint**: 欠落している観点を特定し、/test-review の起動オプションを確認。観点の指定漏れか、レビューエージェントの実行途中中断かを切り分ける
 - **depends_on_artifacts**: [artifacts/reviews/]
 
-### D8-02: ユーザー承認済み findings の修正が全て適用済み
+### D9-02: ユーザー承認済み findings の修正が全て適用済み
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -27,7 +27,7 @@ max_retries: 3
 - **fail_diagnosis_hint**: 未適用の finding を特定し、対象ファイルの該当行を確認。修正の適用漏れか、修正が別の形で反映されているかを確認。`git log --oneline` で修正コミットが存在するか確認する
 - **depends_on_artifacts**: [artifacts/reviews/, tests/]
 
-### D8-03: 設計書の全テスト観点がテストコードでカバーされている
+### D9-03: 設計書の全テスト観点がテストコードでカバーされている
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:

@@ -1,21 +1,21 @@
 ---
-phase: 7
+phase: 8
 name: code-review
 max_retries: 3
 ---
 
 ## Criteria
 
-### D7-01: レビューが全7観点で実行された
+### D8-01: レビューが全7観点で実行された
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
-  レビュー結果ファイル（`artifacts/reviews/phase-7-review.json` またはレビューログ）を読み取り、7観点（simplify, code-quality, code-security, code-performance, code-test, ai-antipattern, code-impact）の実行記録を確認する。
+  レビュー結果ファイル（`artifacts/reviews/phase-8-review.json` またはレビューログ）を読み取り、7観点（simplify, code-quality, code-security, code-performance, code-test, ai-antipattern, code-impact）の実行記録を確認する。
 - **pass_condition**: 7観点全ての実行記録が存在すること。記録された観点数が7
 - **fail_diagnosis_hint**: 欠落している観点を特定し、/code-review の起動オプションを確認。観点の指定漏れか、レビューエージェントの実行途中中断かを切り分ける
 - **depends_on_artifacts**: [artifacts/reviews/]
 
-### D7-02: ユーザー承認済み findings の修正が全て適用済み
+### D8-02: ユーザー承認済み findings の修正が全て適用済み
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -27,7 +27,7 @@ max_retries: 3
 - **fail_diagnosis_hint**: 未適用の finding を特定し、対象ファイルの該当行を確認。修正の適用漏れか、修正が別の形で反映されているかを確認。`git log --oneline` で修正コミットが存在するか確認する
 - **depends_on_artifacts**: [artifacts/reviews/, src/]
 
-### D7-03: 未コミット変更なし + ブランチが最新 main から乖離 50 commit 以内
+### D8-03: 未コミット変更なし + ブランチが最新 main から乖離 50 commit 以内
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
