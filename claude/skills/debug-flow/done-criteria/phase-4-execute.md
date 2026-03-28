@@ -1,0 +1,109 @@
+---
+phase: 4
+name: execute
+max_retries: 3
+---
+
+## Criteria
+
+### D4-01: 全タスクに対応するコード変更が存在する
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. 計画書の全タスクIDをリストアップする
+  2. `git diff --name-only` で変更されたファイル一覧を取得する
+  3. 各タスクIDに対し、変更ファイルの中に対応するコード変更が1件以上存在するか照合する
+  4. コード変更が存在しないタスクIDをリストアップする
+- **pass_condition**: 手順4のリストが0件（全タスクに対応するコード変更あり）
+- **fail_diagnosis_hint**: コード変更のないタスクIDを特定し、計画書の該当タスクを確認。実装漏れか、タスクの内容がドキュメントのみの変更で git diff に現れない形式かを切り分ける
+- **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
+
+### D4-02: ビルド/コンパイルが成功する
+- **severity**: blocker
+- **verify_type**: automated
+- **verification**:
+  プロジェクトのビルドコマンド（`npm run build`, `cargo build`, `go build ./...` 等）を実行し、exit code を記録する。ビルドコマンドは package.json, Cargo.toml, go.mod, Makefile 等から特定する。
+- **pass_condition**: ビルドコマンドの exit code が 0
+- **fail_diagnosis_hint**: ビルドエラーログの最初のエラーメッセージを確認。型エラー、import 解決失敗、依存パッケージ不在のいずれかを特定し、該当ファイルと行番号を報告する
+- **depends_on_artifacts**: [src/, artifacts/build/]
+
+### D4-03: lint/型チェックにエラーがない
+- **severity**: blocker
+- **verify_type**: automated
+- **verification**:
+  プロジェクトの linter/型チェッカー（`npm run lint`, `eslint`, `tsc --noEmit`, `cargo clippy`, `ruff check` 等）を実行し、エラー件数を記録する。
+- **pass_condition**: linter/型チェッカーの exit code が 0、かつ error レベルの指摘が 0件
+- **fail_diagnosis_hint**: エラー指摘のファイルパスと行番号を確認。型エラーは型定義の不整合、lint エラーはコーディング規約違反を確認。`--fix` オプションで自動修正可能か判定する
+- **depends_on_artifacts**: [src/, artifacts/lint/]
+
+### D4-04: 全テストスイートが通過
+- **severity**: blocker
+- **verify_type**: automated
+- **verification**:
+  プロジェクトのテストコマンド（`npm test`, `cargo test`, `pytest`, `go test ./...` 等）を実行し、テスト結果サマリー（total, passed, failed, skipped）を記録する。
+- **pass_condition**: テストコマンドの exit code が 0、かつ failed テスト数が 0
+- **fail_diagnosis_hint**: 失敗したテスト名とエラーメッセージを確認。既存テストの退行か新規テストの初回失敗かを `git diff -- tests/` で切り分ける。退行の場合は `git stash && テスト実行` でベースラインとの差分を確認する
+- **depends_on_artifacts**: [tests/, artifacts/test-results/]
+
+### D4-05: 計画書のテストケースに対応するテストコードが存在する
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. 計画書のテストケースセクションから全テストケースをリストアップする
+  2. テストコードディレクトリ（tests/, __tests__/, spec/ 等）から全テスト関数/メソッド名を `Grep` で抽出する
+  3. 各計画書テストケースに対応するテストコードが1件以上存在するか照合する
+  4. 対応テストコードが存在しないテストケースをリストアップする
+- **pass_condition**: 手順4のリストが0件（全テストケースに対応テストコードあり）
+- **fail_diagnosis_hint**: 対応テストコードのないテストケースを特定し、テストファイルの命名規則とテストケースの記述を照合。テスト関数名が計画書のテストケース名と異なる命名規則の場合は内容ベースで対応を確認する
+- **depends_on_artifacts**: [docs/plans/*-fix-plan.md, tests/]
+
+### D4-06: 実装が影響範囲を遵守している
+- **severity**: quality
+- **verify_type**: inspection
+- **verification**:
+  1. RCA Report で定義された影響範囲（Impact Scope）を読み取る
+  2. `git diff --name-only` で変更ファイルを取得し、各ファイルが属するコンポーネントを特定する
+  3. 変更がコンポーネント境界を越えた直接依存（import/require）を新規に追加していないか確認する
+- **pass_condition**: RCA Report で定義された境界を越える新規直接依存の追加が0件
+- **fail_diagnosis_hint**: 境界違反の import/require 文を特定し、RCA Report のコンポーネント図と照合。インターフェース層を経由すべき依存が直接参照になっているケースを確認する
+- **depends_on_artifacts**: [docs/plans/*-rca.md, src/]
+
+### D4-07: RCA Report → 計画書 → 実装の一気通貫トレーサビリティ
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. RCA Report の Fix Strategy から修正対象をリストアップする
+  2. 各要件に対応する計画書タスクIDを特定する
+  3. 各タスクIDに対応する実装ファイル/関数を特定する（`git diff` + コード検索）
+  4. 要件→タスク→実装の3段マッピングに欠落がないか確認する
+  5. 実装に存在するが要件・タスクに対応しない「余剰実装」がないか確認する
+- **pass_condition**: 手順4で3段マッピングの欠落が0件、手順5で計画書タスクに対応しない余剰実装ファイルが0件
+- **fail_diagnosis_hint**: マッピング欠落の箇所（要件→タスク間か、タスク→実装間か）を特定。余剰実装がある場合は RCA Report/計画書への追記か、余剰コードの削除かを判断する
+- **depends_on_artifacts**: [docs/plans/*-rca.md, docs/plans/*-fix-plan.md, src/]
+
+### D4-08: 新規追加テストがトートロジーでない
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. `git diff --name-only -- tests/ __tests__/ spec/` で新規追加/変更されたテストファイルを列挙する
+  2. 各テストファイルの assertion 文（expect, assert, should 等）を抽出する
+  3. assertion が実装コードのロジックを経由しているか確認する（テスト対象の関数/メソッドを呼び出した結果を検証しているか）
+  4. assertion が定数同士の比較（`expect(1).toBe(1)`）、モック戻り値の検証のみ（実コードパスを通らない）、空テスト（assertion なし）でないか確認する
+- **pass_condition**: 手順4に該当するトートロジーテストが0件。全テストが実装コードパスを1つ以上通過する assertion を含む
+- **fail_diagnosis_hint**: トートロジーテストのファイルパスと行番号を特定。モックの過剰使用、assertion の欠落、テスト対象関数の未呼び出しのいずれかを確認。実装コードの実際の振る舞いを検証する assertion に書き換える
+- **depends_on_artifacts**: [tests/, src/]
+
+### D4-09: テストケースが要件カバレッジと影響範囲の網羅性を持つ
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. RCA Report の Impact Scope を列挙し、各要件にIDを付与する
+  2. impact-analyzer 出力の影響範囲（ファイル/モジュール）を列挙する
+  3. 各要件IDに対応するテストケースが1件以上存在するか照合する
+  4. 再現テストが修正後に PASS に変わることを確認する
+  5. 各影響範囲のファイル/モジュールに対するテストが存在するか照合する
+  6. 影響を受ける既存コードの既存テストが削除・無効化されていないか確認する（`git diff` で `.skip`, `.only` の追加、テスト関数のコメントアウト/削除を検出）
+- **pass_condition**: 手順3で全要件に対応テストあり、手順4で再現テストが PASS、手順5で全影響範囲に対応テストあり、手順6で既存テストの削除/無効化が0件
+- **fail_diagnosis_hint**: 手順3で欠落している要件IDを特定し対応テストを追加する。手順4で欠落している影響範囲のファイルを特定し、既存テストの有無と新規テスト追加の必要性を判断する。手順5で検出された削除/無効化の理由を確認し、意図的でない場合は復元する
+- **depends_on_artifacts**: [docs/plans/*-rca.md, tests/, src/]
+- **forward_check**: Phase 6 (Code Review) で指摘される「テスト不足」を事前に防止する
