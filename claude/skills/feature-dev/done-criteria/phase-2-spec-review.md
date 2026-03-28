@@ -2,6 +2,7 @@
 phase: 2
 name: spec-review
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

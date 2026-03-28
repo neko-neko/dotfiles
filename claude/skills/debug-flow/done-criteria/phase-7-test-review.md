@@ -2,6 +2,7 @@
 phase: 7
 name: test-review
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

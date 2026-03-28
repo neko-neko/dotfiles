@@ -7,6 +7,12 @@ description: >-
 
 # Audit Gate Protocol
 
+<HARD-GATE>
+このプロトコルは任意ではない。各フェーズ完了後の Audit Gate 実行は必須である。
+done-criteria の `audit: required` フェーズで phase-auditor を起動せずに遷移した場合、
+パイプラインの品質保証は無効となる。
+</HARD-GATE>
+
 ## 1. Audit Gate フロー
 
 Phase N 完了後、以下の 6 ステップで Audit Gate を実行する。

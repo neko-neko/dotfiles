@@ -2,6 +2,7 @@
 phase: 6
 name: doc-audit
 max_retries: 2
+audit: required
 ---
 
 ## Criteria

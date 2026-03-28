@@ -2,6 +2,7 @@
 phase: 6
 name: code-review
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

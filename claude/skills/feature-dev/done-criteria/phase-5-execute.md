@@ -2,6 +2,7 @@
 phase: 5
 name: execute
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

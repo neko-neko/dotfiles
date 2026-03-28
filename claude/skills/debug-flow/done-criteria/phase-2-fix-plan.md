@@ -2,6 +2,7 @@
 phase: 2
 name: fix-plan
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

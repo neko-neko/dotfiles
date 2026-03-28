@@ -2,6 +2,7 @@
 phase: 7
 name: smoke-test
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

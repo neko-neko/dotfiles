@@ -2,6 +2,7 @@
 phase: 10
 name: integrate
 max_retries: 3
+audit: lite
 ---
 
 ## Criteria

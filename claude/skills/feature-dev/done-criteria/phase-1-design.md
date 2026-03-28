@@ -2,6 +2,7 @@
 phase: 1
 name: design
 max_retries: 3
+audit: required
 ---
 
 ## Criteria

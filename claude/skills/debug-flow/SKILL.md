@@ -19,6 +19,28 @@ user-invocable: true
 
 **開始時アナウンス:** 「Debug Flow を開始します。Phase 1: Root Cause Analysis」
 
+<HARD-GATE>
+## Mandatory Audit Gate — フェーズ遷移の絶対条件
+
+フェーズ遷移は Audit Gate を経由しなければならない。例外なし。
+
+各フェーズの作業完了後、次フェーズへ遷移する前に:
+1. `./done-criteria/phase-N-{name}.md` を Read で読み込む
+2. frontmatter の `audit` フィールドを確認する
+3. `audit: required` → phase-auditor を Agent ツールで起動し、PASS verdict を得る
+4. `audit: lite` → オーケストレーターが done-criteria の基準を直接検証する
+5. `audit` 未定義 → `required` として扱う
+
+以下はスキップの理由にならない:
+- 「前のフェーズで十分に検証した」
+- 「シンプルな変更だから不要」
+- 「レビュースキルが既に品質を確認した」
+- 「時間/トークンを節約したい」
+
+phase-auditor の verdict なしに Phase N+1 のアナウンスや作業開始を行った場合、
+それは**プロトコル違反**である。
+</HARD-GATE>
+
 ## Input
 
 `/debug-flow` の引数、または会話で提供されたバグ報告/症状。最低要件: **何が起きているか**（エラーメッセージ、異常動作）+ **再現手順**（可能な範囲）。

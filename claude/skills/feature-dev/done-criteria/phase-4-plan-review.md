@@ -2,6 +2,7 @@
 phase: 4
 name: plan-review
 max_retries: 3
+audit: required
 ---
 
 ## Criteria
