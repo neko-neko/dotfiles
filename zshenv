@@ -76,6 +76,11 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH="${HOME}/.local/bin:$PATH"
 
 # ------------------------------
+# Browser-Use
+# ------------------------------
+export PATH="${HOME}/.browser-use-env/bin:$PATH"
+
+# ------------------------------
 # fzf Settings
 # ------------------------------
 export FZF_DEFAULT_OPTS='
