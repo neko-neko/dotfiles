@@ -81,10 +81,10 @@ next_phase: {N+1 or skip先}
 | 2 Spec Review | オーケストレーター自身 | 設計書を修正 |
 | 3 Plan | オーケストレーター自身 | 計画書を修正 |
 | 4 Plan Review | オーケストレーター自身 | 計画書を修正 |
-| 5 Execute | 実装サブエージェント | fix_instructions をタスク単位に分解し、該当タスクの実装サブエージェントを再起動 |
-| 6 Smoke Test | 実装サブエージェント | Phase 5 の実装サブエージェントを再起動 |
-| 7 Code Review | 実装サブエージェント | Phase 5 の実装サブエージェントを再起動 |
-| 8 Test Review | 実装サブエージェント | Phase 5 の実装サブエージェントを再起動 |
+| 5 Execute | `feature-implementer` | fix_instructions をタスク単位に分解し、`subagent_type: "feature-implementer"` で起動（TDD skills 自動注入） |
+| 6 Smoke Test | `feature-implementer` | Phase 5 の `feature-implementer` を再起動 |
+| 7 Code Review | `feature-implementer` | Phase 5 の `feature-implementer` を再起動 |
+| 8 Test Review | `feature-implementer` | Phase 5 の `feature-implementer` を再起動 |
 | 9 Integrate | オーケストレーター自身 | Audit Gate Lite のため Agent 不要 |
 
 ## 4. Fix Context テンプレート

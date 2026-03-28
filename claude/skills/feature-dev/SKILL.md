@@ -209,8 +209,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 - **INVOKE:** `superpowers:subagent-driven-development`
 - **Autonomy:** AUTONOMOUS+GATE
-- **TDD 注入:** `subagent-driven-development` が生成する各サブエージェントのプロンプトに、「実装コードを書く前に Skill tool で `superpowers:test-driven-development` を invoke せよ」という指示を含めること
-- **動作:** レビュー通過済み計画書に基づき、サブエージェントで TDD プロセスに従って実装を実行する
+- **実装エージェント:** `subagent-driven-development` が生成する各実装サブエージェントは `subagent_type: "feature-implementer"` で起動すること。`feature-implementer` は `skills: [superpowers:test-driven-development]` を frontmatter で宣言しており、TDD スキルがコンテキストに自動注入される。
+- **動作:** レビュー通過済み計画書に基づき、`feature-implementer` エージェントが TDD プロセスに従って実装を実行する
 - **自動遷移条件:** 全タスク完了
 - **成果物:** コミット済みコード
 - **失敗時:** 3回タスク失敗で PAUSE。設計ギャップをエスカレーション
@@ -399,7 +399,7 @@ pipeline state に以下を追加:
 | 2 | `/spec-review` | custom skill |
 | 3 | `superpowers:writing-plans` | superpower |
 | 4 | `/implementation-review` | custom skill |
-| 5 | `superpowers:subagent-driven-development`, `superpowers:test-driven-development` (サブエージェント内) | superpower |
+| 5 | `superpowers:subagent-driven-development` + `feature-implementer` agent (TDD skills 自動注入) | superpower + agent |
 | 6 | `/smoke-test` | custom skill |
 | 7 | `/code-review` | custom skill |
 | 8 | `/test-review` | custom skill |

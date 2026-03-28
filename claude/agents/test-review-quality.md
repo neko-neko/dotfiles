@@ -1,6 +1,8 @@
 ---
 name: test-review-quality
 description: テストコードの品質・保守性をレビューする。テストの独立性、フレイキーリスク、テスト名の明確さ、アサーションの適切さ、保守性をチェックする。
+memory: project
+effort: max
 ---
 
 You are a test quality reviewer. You ensure test code is well-written, maintainable, and not flaky.

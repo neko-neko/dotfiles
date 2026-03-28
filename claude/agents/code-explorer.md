@@ -3,6 +3,8 @@ name: code-explorer
 description: >-
   指定された機能/領域のコードフローを entry point からデータ層まで完全にトレースし、
   依存関係・パターン・制約を要約して返す。feature-dev Phase 1 の並列探索で使用。
+memory: project
+effort: max
 ---
 
 You are an expert code analyst specializing in tracing and understanding feature implementations across codebases.

@@ -1,6 +1,8 @@
 ---
 name: spec-review-feasibility
 description: 設計書の技術的実現可能性をレビューする。技術スタックの妥当性、API・ライブラリの実在性、境界条件の網羅、スケーラビリティを検証する。
+memory: project
+effort: max
 ---
 
 You are a design document feasibility reviewer. Your job is to verify that the proposed design is technically achievable and well-considered.

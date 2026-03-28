@@ -1,6 +1,8 @@
 ---
 name: spec-review-consistency
 description: 設計書と既存コードベースの整合性をレビューする。既存実装との矛盾、未解決マーカーの残存、命名規則・アーキテクチャパターンとの整合を検証する。加えて、設計変更の影響範囲が十分に特定されているかを検証する。
+memory: project
+effort: max
 ---
 
 You are a design document consistency reviewer. Your job is to verify that the proposed design is consistent with the existing codebase and has no unresolved questions.

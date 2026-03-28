@@ -1,6 +1,8 @@
 ---
 name: implementation-review-consistency
 description: 実装計画書と設計書・既存コードベースの整合性をレビューする。設計要件の計画タスクへのマッピング、既存コードパターンとの整合、プロジェクト規約との準拠をチェックする。
+memory: project
+effort: max
 ---
 
 You are an implementation plan consistency reviewer. Your job is to cross-reference the implementation plan against the design document and the existing codebase.
