@@ -59,7 +59,7 @@ Phase 4: Plan Review ─── /implementation-review [INTERACTIVE]
     | 不合格 -> ユーザーヒアリング -> 修正 -> 再レビュー
     v
 Phase 5: Execute ─────── superpowers:subagent-driven-development [AUTONOMOUS+GATE]
-    | 全タスク完了 -> 自動遷移（--smoke 時は Phase 6 へ、それ以外は Phase 7 へ）
+    | 全タスク完了 -> 自動遷移（--smoke 時 or UI検出時は Phase 6 へ、それ以外は Phase 7 へ）
     v
 Phase 6: Smoke Test ──── /smoke-test [--smoke 指定時 or UI自動検出時] [AUTONOMOUS+GATE]
     | PASS -> 自動遷移
@@ -78,13 +78,13 @@ Phase 9: Integrate ───── superpowers:finishing-a-development-branch [I
 
 ## Audit Gate Protocol
 
-各フェーズ完了後に Audit Gate を実行する。詳細は `./references/audit-gate-protocol.md` を参照。
+各フェーズ完了後に Audit Gate を実行する。以下はクイックリファレンス。完全な仕様は `./references/audit-gate-protocol.md` を参照。
 
 ### 共通手順（全フェーズ共通）
 1. 成果物パスを `artifacts` に記録
 2. `./done-criteria/phase-N-{name}.md` を Read で読み込む
 3. Evidence Plan が存在する場合、該当アクティビティの collection 要件が Executor に注入済みか確認
-4. Agent ツールで `phase-auditor` を起動（Audit Context を注入。テンプレートは `./references/audit-gate-protocol.md` セクション 2 参照）
+4. Audit Agent を起動（`--swarm` 有効時は Audit Team。詳細は後述「Audit Team」セクション + `./references/audit-gate-protocol.md` セクション 2, 10 参照）
 5. 返却値の JSON 有効性を検証（不正なら1回再起動、2回目不正で PAUSE）
 6. verdict に基づき遷移:
    - PASS: quality_warnings をユーザーに提示し次フェーズへ
@@ -98,7 +98,7 @@ Phase 9: Integrate ───── superpowers:finishing-a-development-branch [I
 ### Phase 9: Audit Gate Lite
 Phase 9 は Agent を起動せず、`./done-criteria/phase-9-integrate.md` の基準をオーケストレーターが直接検証。
 
-### Evidence Plan 生成
+### Evidence Plan 生成（正規定義はここ。protocol には消費ロジックのみ）
 Phase 1 Audit Gate 完了後に Evidence Plan を生成（phase-auditor が自動実行）。Phase 4 Audit Gate 完了後に再評価（設計書 hash 変更時のみ）。Evidence Plan は `docs/plans/` にコミットする。
 
 ### Evidence Collection（add-on）
@@ -325,7 +325,7 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 {
   "pipeline": "feature-dev",
   "current_phase": 3,
-  "args": { "codex": true, "e2e": false, "iterations": 3, "swarm": false },
+  "args": { "codex": true, "e2e": false, "smoke": false, "ui": false, "iterations": 3, "swarm": false },
   "artifacts": {
     "design_doc": "docs/plans/2026-03-06-xxx-design.md",
     "plan_doc": null,

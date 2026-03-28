@@ -34,3 +34,8 @@ When dispatched for fix tasks (from Audit Gate fix_instruction):
 ## Return Format
 
 When a return format is specified in your prompt, output results in that exact format.
+
+Fix Task のデフォルト返却スキーマ（オーケストレーターが注入）:
+```json
+{ "fix_status": "completed|partial|blocked", "completed_fixes": [], "blocked_fixes": [], "changes_summary": "" }
+```
