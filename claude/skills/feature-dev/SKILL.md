@@ -74,6 +74,41 @@ Phase 9: Integrate ───── superpowers:finishing-a-development-branch [I
   Complete
 ```
 
+## Audit Gate Protocol
+
+各フェーズ完了後に Audit Gate を実行する。詳細は `./references/audit-gate-protocol.md` を参照。
+
+### 共通手順（全フェーズ共通）
+1. 成果物パスを `artifacts` に記録
+2. `./done-criteria/phase-N-{name}.md` を Read で読み込む
+3. Evidence Plan が存在する場合、該当アクティビティの collection 要件が Executor に注入済みか確認
+4. Agent ツールで `phase-auditor` を起動（Audit Context を注入。テンプレートは `./references/audit-gate-protocol.md` セクション 2 参照）
+5. 返却値の JSON 有効性を検証（不正なら1回再起動、2回目不正で PAUSE）
+6. verdict に基づき遷移:
+   - PASS: quality_warnings をユーザーに提示し次フェーズへ
+   - FAIL + escalation: 即 PAUSE
+   - FAIL + attempt < max_retries: Fix Dispatch → 再監査ループ
+   - FAIL + attempt >= max_retries: 累積診断レポート提示 → PAUSE
+
+### Phase 9: Audit Gate Lite
+Phase 9 は Agent を起動せず、`./done-criteria/phase-9-integrate.md` の基準をオーケストレーターが直接検証。
+
+### Evidence Plan 生成
+Phase 1 Audit Gate 完了後に Evidence Plan を生成（phase-auditor が自動実行）。Phase 4 Audit Gate 完了後に再評価（設計書 hash 変更時のみ）。Evidence Plan は `docs/plans/` にコミットする。
+
+### Evidence Collection（add-on）
+Phase 5 以降の Executor 起動時、Evidence Plan から該当アクティビティの collection 要件を抽出しプロンプトに追加する。
+
+### Phase 5 Re-gate + Re-review
+Phase 7/8 でコード変更がある場合、Phase 7/8 の Audit Gate の前に:
+1. git diff でコード変更を検知
+2. Phase 5 Audit Gate を full mode で再実行
+3. Phase 6 Audit Gate を再実行（--smoke 有効時）
+4. /code-review（または /test-review）を再実行
+5. findings があれば修正 → Step 2 に戻る
+6. findings がなければ Phase 7/8 Audit Gate へ
+詳細は `./references/audit-gate-protocol.md` セクション 8 を参照。
+
 ## Trace 記録（フェーズ遷移）
 
 各 Phase の開始時と終了時に trace を記録する。handover セッションディレクトリが存在する場合のみ実行する。
@@ -131,6 +166,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **失敗時:** ユーザーが中断 -> STOP。クリーンアップ不要
 - **GATE:** worktree テスト失敗時に PAUSE。続行 or STOP をユーザーに提案
 
+**Phase 1 完了 → Audit Gate**: `./done-criteria/phase-1-design.md` に基づき監査。activity_type: implementation。Evidence Plan 初回生成。
+
 ### Phase 2: Spec Review
 
 - **INVOKE:** `/spec-review`
@@ -142,6 +179,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **失敗時:** ユーザーヒアリング -> 修正 -> 再レビュー。3回不合格で PAUSE、設計の根本的見直しを提案
 - **Handover:** 必須。レビュー完了後に `/handover` を実行する
 
+**Phase 2 完了 → Audit Gate**: `./done-criteria/phase-2-spec-review.md` に基づき監査。activity_type: review-fix。
+
 ### Phase 3: Plan
 
 - **INVOKE:** `superpowers:writing-plans`
@@ -150,6 +189,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **自動遷移条件:** 計画書がコミット済み
 - **成果物:** `docs/plans/*-plan.md`, `docs/plans/*-test-cases.md`
 - **失敗時:** 失敗内容を報告、PAUSE
+
+**Phase 3 完了 → Audit Gate**: `./done-criteria/phase-3-plan.md` に基づき監査。activity_type: implementation。
 
 ### Phase 4: Plan Review
 
@@ -162,6 +203,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **失敗時:** ユーザーヒアリング -> 修正 -> 再レビュー。3回不合格で PAUSE、計画の根本的見直しを提案
 - **Handover:** 必須。レビュー完了後に `/handover` を実行する
 
+**Phase 4 完了 → Audit Gate**: `./done-criteria/phase-4-plan-review.md` に基づき監査。activity_type: review-fix。Evidence Plan 再評価（設計書 hash 変更時）。
+
 ### Phase 5: Execute
 
 - **INVOKE:** `superpowers:subagent-driven-development`
@@ -172,6 +215,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **成果物:** コミット済みコード
 - **失敗時:** 3回タスク失敗で PAUSE。設計ギャップをエスカレーション
 - **GATE:** タスク失敗が累積した場合に PAUSE
+
+**Phase 5 完了 → Audit Gate**: `./done-criteria/phase-5-execute.md` に基づき監査。activity_type: implementation。
 
 ### Phase 6: Smoke Test
 
@@ -185,6 +230,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **失敗時:** FAIL → アプリケーションバグの修正を試行（最大2回）。修正不能なら PAUSE
 - **GATE:** 終了ステータスが FAIL または PAUSE の場合に PAUSE
 
+**Phase 6 完了 → Audit Gate**: `./done-criteria/phase-6-smoke-test.md` に基づき監査。activity_type: smoke-test。
+
 ### Phase 7: Code Review
 
 - **INVOKE:** `/code-review`
@@ -195,6 +242,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **成果物:** レビュー修正済みコード
 - **失敗時:** 修正後テスト失敗 -> 最大2回リトライ、それでも失敗なら PAUSE
 - **Handover:** 必須。レビュー完了後に `/handover` を実行する
+
+**Phase 7 完了 → Audit Gate**: `./done-criteria/phase-7-code-review.md` に基づき監査。activity_type: review-fix。コード変更がある場合は Re-gate + Re-review を先行実行。
 
 ### Phase 8: Test Review
 
@@ -209,6 +258,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **失敗時:** テスト追加後の既存テスト破損 -> PAUSE。影響範囲を報告
 - **Handover:** 必須。レビュー完了後に `/handover` を実行する
 
+**Phase 8 完了 → Audit Gate**: `./done-criteria/phase-8-test-review.md` に基づき監査。activity_type: test-fix。コード変更がある場合は Re-gate + Re-review を先行実行。
+
 ### Phase 9: Integrate
 
 - **INVOKE:** `superpowers:finishing-a-development-branch`
@@ -217,6 +268,8 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **自動遷移条件:** ユーザーの選択が完了
 - **成果物:** merge 済みコード、または PR
 - **失敗時:** マージコンフリクト -> コンフリクトを報告、手動解決を提案
+
+**Phase 9 完了 → Audit Gate Lite**: オーケストレーターが `./done-criteria/phase-9-integrate.md` を直接検証。
 
 ## Handover
 
@@ -249,6 +302,14 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
   }
 }
 ```
+
+### Handover State（Audit Gate 拡張）
+pipeline state に以下を追加:
+- `audit_state.current_attempt`: 現在の監査リトライ回数
+- `audit_state.max_retries`: done-criteria の max_retries 値
+- `audit_state.cumulative_diagnosis`: 累積診断 JSON 配列
+- `audit_state.last_fix_dispatch`: 最後の Fix Dispatch 情報
+- `artifacts.evidence_plan`: Evidence Plan ファイルパス
 
 ### 再開
 

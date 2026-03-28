@@ -108,6 +108,20 @@
 | Context 逼迫 | PAUSE | `/handover` を実行してパイプライン状態を保存 |
 | `--codex` 指定時に MCP Codex 接続失敗 | AUTO | 警告し codex なしで続行 |
 
+### Audit Gate
+
+| Situation | Action | Rationale |
+|-----------|--------|-----------|
+| Audit Gate: verdict PASS | AUTO | 全 blocker 基準 PASS。quality_warnings をユーザーに提示し次フェーズへ |
+| Audit Gate: verdict FAIL, attempt < max_retries | AUTO | Fix Dispatch → 再監査のループを自動実行 |
+| Audit Gate: verdict FAIL, attempt >= max_retries | PAUSE | 累積診断レポートを提示しユーザー判断を委任 |
+| Audit Gate: escalation != null | PAUSE | 前フェーズの成果物に根本原因。残 attempt に関わらず即 PAUSE |
+| Audit Gate: fix_status blocked | PAUSE | 修正不能。即 PAUSE |
+| Audit Gate: Agent output invalid (2回目) | PAUSE | Audit Agent の出力が不正。手動確認を依頼 |
+| Re-gate: Phase 5 PASS + Phase 6 PASS | AUTO | Re-review を実行 |
+| Re-gate: re-review で findings なし | AUTO | Phase 7/8 Audit Gate へ |
+| Re-gate: re-review が3回連続 findings | PAUSE | 根本的な設計見直しを促す |
+
 ## Autonomy Mode 定義
 
 | Mode | 説明 |
