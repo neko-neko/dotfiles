@@ -68,7 +68,7 @@ max_retries: 3
   1. `git worktree list` を実行し、現在のブランチがメインブランチ以外の worktree であることを確認
   2. テストコマンド（package.json の test スクリプト、Cargo test、pytest 等）を実行し、exit code を記録する
 - **pass_condition**: worktree が存在し（`git worktree list` の出力行数が2以上）、テストコマンドの exit code が 0
-- **fail_diagnosis_hint**: worktree が存在しない場合は `git worktree add` の実行を確認。テスト失敗の場合はベースブランチ（main/master）に未修正の既存テスト失敗がないか `git stash && テスト実行` で切り分ける
+- **fail_diagnosis_hint**: worktree が存在しない場合は `wt switch -c` の実行を確認。テスト失敗の場合はベースブランチ（main/master）に未修正の既存テスト失敗がないか `git stash && テスト実行` で切り分ける
 - **depends_on_artifacts**: []
 
 ### D1-07: 設計書が git commit 済み

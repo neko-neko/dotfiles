@@ -102,13 +102,15 @@ S1・S2 で確認した内容を、設計書に以下のセクションとして
 
 brainstorming の step 5（Write design doc）で設計書をコミットする **前に**、以下を実行する:
 
-1. `superpowers:using-git-worktrees` を invoke し、開発用 worktree とブランチを作成する
+1. `worktrunk:worktrunk` を invoke し、`wt switch -c <branch> [-b <base>]` で開発用 worktree とブランチを作成する
    - ブランチ名はフィーチャー名から自動生成される
-2. worktree 作成後、ベースラインテストを実行する（using-git-worktrees が自動実行）
+   - ベースブランチは設計フェーズのコンテキストから判断する（`/continue` 時は handover の記録から復元。新規時はデフォルト=メインブランチ）
+2. worktrunk の pre-start フックが依存関係インストールを自動処理する（プロジェクトの `.config/wt.toml` に定義済みの場合）
+3. ベースラインテストを実行する
    - テスト通過 → 設計書を worktree 内にコミットし、次へ進む
    - テスト失敗 → PAUSE。続行 or STOP をユーザーに提案
-3. 以降の全作業（設計書コミット、レビュー、計画、実装等）は worktree 内で行う
-4. worktree パスとブランチ名を `artifacts.worktree_path` と `artifacts.branch_name` に記録する
+4. 以降の全作業（設計書コミット、レビュー、計画、実装等）は worktree 内で行う
+5. worktree パスとブランチ名を `artifacts.worktree_path` と `artifacts.branch_name` に記録する
 
 ## 完了条件
 

@@ -67,7 +67,7 @@ Phase 6: Code Review ──────────── /code-review [INTERACT
 Phase 7: Test Review ──────────── /test-review [--e2e 指定時のみ] [INTERACTIVE]
     | レビュー通過 -> handover -> 自動遷移
     v
-Phase 8: Integrate ────────────── superpowers:finishing-a-development-branch [INTERACTIVE]
+Phase 8: Integrate ────────────── worktrunk:worktrunk [INTERACTIVE]
     |
     v
   Complete
@@ -173,7 +173,7 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
      - 仮説が棄却された場合、新仮説を立案（最大3回。3回失敗でアーキテクチャ問題として PAUSE）
   4. **再現テスト作成:** 根本原因を証明する最小再現テスト（failing test）を作成
   5. **RCA Report 作成:** 調査結果を構造化文書にまとめる（構造は後述）
-  6. **worktree 作成:** `superpowers:using-git-worktrees` を invoke し、修正用 worktree とブランチを作成
+  6. **worktree 作成:** `worktrunk:worktrunk` を invoke し、`wt switch -c <branch> [-b <base>]` で修正用 worktree とブランチを作成。ベースブランチはコンテキストから判断する（`/continue` 時は handover の記録から復元）
   7. **コミット:** RCA Report と再現テストを worktree 内にコミット
 - **`--swarm` 有効時（Investigation Team）:**
   並列探索をサブエージェントではなくエージェントチームで実行する。
@@ -326,11 +326,15 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
 
 ### Phase 8: Integrate
 
-- **INVOKE:** `superpowers:finishing-a-development-branch`
+- **INVOKE:** `worktrunk:worktrunk`（`wt merge` 選択時）
 - **Autonomy:** INTERACTIVE
-- **動作:** merge / PR / keep / discard のいずれかをユーザーに選択させる
+- **動作:** 以下の4オプションをユーザーに提示し、選択に従い実行する:
+  1. **`wt merge`**: `worktrunk` スキルを invoke → `wt merge` 実行。スカッシュ→リベース→FF マージ→worktree 削除を一括処理。pre-merge フックでテスト・ビルド検証が自動実行される
+  2. **PR 作成**: `git push -u` + `gh pr create` で PR を作成。PR 作成後に `wt remove` で worktree を削除
+  3. **ブランチ保持**: 何もしない。worktree もブランチもそのまま保持
+  4. **破棄**: `wt remove` で worktree とブランチを削除
 - **自動遷移条件:** ユーザーの選択が完了
-- **成果物:** merge 済みコード、または PR
+- **成果物:** merge 済みコード、PR、またはブランチ保持/破棄の確認
 - **失敗時:** マージコンフリクト -> コンフリクトを報告、手動解決を提案
 
 **Phase 8 完了 → Audit Gate Lite**: オーケストレーターが `./done-criteria/phase-8-integrate.md` を直接検証。
@@ -457,12 +461,12 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
 
 | Phase | スキル | 種別 |
 |-------|--------|------|
-| 1 | `superpowers:using-git-worktrees` | superpower |
+| 1 | `worktrunk:worktrunk` | plugin |
 | 2 | `superpowers:writing-plans` | superpower |
 | 3 | `/implementation-review` | custom skill |
 | 4 | `superpowers:subagent-driven-development` + `feature-implementer` agent (TDD skills 自動注入) | superpower + agent |
 | 5 | `/smoke-test` | custom skill |
 | 6 | `/code-review` | custom skill |
 | 7 | `/test-review` | custom skill |
-| 8 | `superpowers:finishing-a-development-branch` | superpower |
+| 8 | `worktrunk:worktrunk`（+ `gh` for PR） | plugin |
 | any | `/handover` | custom skill |

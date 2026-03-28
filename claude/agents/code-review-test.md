@@ -13,6 +13,12 @@ Review the diff to identify:
 1. Changed implementation code that lacks corresponding tests
 2. Changed test code that has quality issues
 
+## Filtering
+
+- 確信度 80% 未満の問題は報告しない。推測ベースの指摘は除外する
+- 同一パターンの問題が複数箇所にある場合、1件の finding にまとめ、件数と代表箇所を記載する
+- スタイル好みや主観的な「こう書いた方がきれい」は報告しない。プロジェクト規約違反のみ報告する
+
 ## Review Checklist
 
 1. **Coverage gaps** — 変更された実装コードに対するテストが存在するか。新規関数・分岐にテストがあるか

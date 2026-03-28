@@ -45,7 +45,7 @@ Feature Spec
     |
     v
 Phase 1: Design ──────── superpowers:brainstorming [INTERACTIVE]
-    | 設計書ドラフト完成 -> worktree 作成 -> 設計書コミット -> 自動遷移
+    | 設計書ドラフト完成 -> worktrunk で worktree 作成 -> 設計書コミット -> 自動遷移
     v
 Phase 2: Spec Review ─── /spec-review [INTERACTIVE]
     | レビュー通過 -> handover -> 自動遷移
@@ -70,7 +70,7 @@ Phase 7: Code Review ─── /code-review [INTERACTIVE]
 Phase 8: Test Review ─── /test-review [--e2e 指定時のみ] [INTERACTIVE]
     | レビュー通過 -> handover -> 自動遷移
     v
-Phase 9: Integrate ───── superpowers:finishing-a-development-branch [INTERACTIVE]
+Phase 9: Integrate ───── worktrunk:worktrunk [INTERACTIVE]
     |
     v
   Complete
@@ -163,9 +163,9 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 - **INVOKE 1:** Read tool で `./references/brainstorming-supplement.md`（このスキルのディレクトリからの相対パス）を読み込む（brainstorming の事前制約・追加ステップを context に載せる）
 - **INVOKE 2:** 直後に Skill tool で `superpowers:brainstorming` を invoke する
-- **INVOKE 3:** 設計書ドラフト完成後、コミット前に `superpowers:using-git-worktrees` を invoke し、開発用 worktree とブランチを作成する
+- **INVOKE 3:** 設計書ドラフト完成後、コミット前に `worktrunk:worktrunk` を invoke し、`wt switch -c <branch> [-b <base>]` で開発用 worktree とブランチを作成する。ベースブランチは設計フェーズのコンテキストから判断する（`/continue` 時は handover の記録から復元）
 - **Autonomy:** INTERACTIVE
-- **動作:** supplement が先に context に載った状態で brainstorming を実行する。supplement により TaskCreate 禁止・インタラクティブ制約が適用され、clarifying questions 後に **並列探索エージェント（code-explorer + code-architect + impact-analyzer）を起動してコードベースをサブ context で深く調査** し、その結果をもとに暗黙ルール抽出・テスト観点列挙が実行される。設計書ドラフト完成後、worktree を作成し、ベースラインテスト通過後に設計書を worktree 内にコミットする
+- **動作:** supplement が先に context に載った状態で brainstorming を実行する。supplement により TaskCreate 禁止・インタラクティブ制約が適用され、clarifying questions 後に **並列探索エージェント（code-explorer + code-architect + impact-analyzer）を起動してコードベースをサブ context で深く調査** し、その結果をもとに暗黙ルール抽出・テスト観点列挙が実行される。設計書ドラフト完成後、worktrunk（`wt switch -c`）で worktree を作成し、ベースラインテスト通過後に設計書を worktree 内にコミットする
 - **`--swarm` 有効時（Exploration Team）:**
   並列探索をサブエージェントではなくエージェントチームで実行する。
   1. TeamCreate で Exploration Team を作成（チーム名: `exploration-{feature}`）
@@ -300,11 +300,15 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 
 ### Phase 9: Integrate
 
-- **INVOKE:** `superpowers:finishing-a-development-branch`
+- **INVOKE:** `worktrunk:worktrunk`（`wt merge` 選択時）
 - **Autonomy:** INTERACTIVE
-- **動作:** merge / PR / keep / discard のいずれかをユーザーに選択させる
+- **動作:** 以下の4オプションをユーザーに提示し、選択に従い実行する:
+  1. **`wt merge`**: `worktrunk` スキルを invoke → `wt merge` 実行。スカッシュ→リベース→FF マージ→worktree 削除を一括処理。pre-merge フックでテスト・ビルド検証が自動実行される
+  2. **PR 作成**: `git push -u` + `gh pr create` で PR を作成。PR 作成後に `wt remove` で worktree を削除
+  3. **ブランチ保持**: 何もしない。worktree もブランチもそのまま保持
+  4. **破棄**: `wt remove` で worktree とブランチを削除
 - **自動遷移条件:** ユーザーの選択が完了
-- **成果物:** merge 済みコード、または PR
+- **成果物:** merge 済みコード、PR、またはブランチ保持/破棄の確認
 - **失敗時:** マージコンフリクト -> コンフリクトを報告、手動解決を提案
 
 **Phase 9 完了 → Audit Gate Lite**: オーケストレーターが `./done-criteria/phase-9-integrate.md` を直接検証。
@@ -433,7 +437,7 @@ pipeline state に以下を追加:
 
 | Phase | スキル | 種別 |
 |-------|--------|------|
-| 1 | `superpowers:brainstorming`, `superpowers:using-git-worktrees` | superpower |
+| 1 | `superpowers:brainstorming`, `worktrunk:worktrunk` | superpower + plugin |
 | 2 | `/spec-review` | custom skill |
 | 3 | `superpowers:writing-plans` | superpower |
 | 4 | `/implementation-review` | custom skill |
@@ -441,5 +445,5 @@ pipeline state に以下を追加:
 | 6 | `/smoke-test` | custom skill |
 | 7 | `/code-review` | custom skill |
 | 8 | `/test-review` | custom skill |
-| 9 | `superpowers:finishing-a-development-branch` | superpower |
+| 9 | `worktrunk:worktrunk`（+ `gh` for PR） | plugin |
 | any | `/handover` | custom skill |

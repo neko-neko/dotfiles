@@ -96,8 +96,11 @@
 
 | Situation | Action | Rationale |
 |-----------|--------|-----------|
-| 統合方法の選択肢提示 | PAUSE | merge/PR/keep/discard はユーザーが選択する |
-| ユーザーが選択 | AUTO | 選択に従い実行 |
+| 統合方法の選択肢提示 | PAUSE | wt merge / PR / ブランチ保持 / 破棄はユーザーが選択する |
+| ユーザーが wt merge を選択 | AUTO | worktrunk スキルを invoke し `wt merge` を実行 |
+| ユーザーが PR を選択 | AUTO | `git push -u` + `gh pr create` → `wt remove` |
+| ユーザーがブランチ保持を選択 | AUTO | 何もしない |
+| ユーザーが破棄を選択 | AUTO | `wt remove` を実行 |
 | マージコンフリクト | PAUSE | コンフリクトを報告し手動解決を提案 |
 | 統合完了 | AUTO | パイプライン完了 |
 
