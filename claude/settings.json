@@ -218,7 +218,16 @@
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "worktrunk@worktrunk": true
+  },
+  "extraKnownMarketplaces": {
+    "worktrunk": {
+      "source": {
+        "source": "github",
+        "repo": "max-sixty/worktrunk"
+      }
+    }
   },
   "language": "japanese",
   "skipDangerousModePermissionPrompt": true
