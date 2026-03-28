@@ -82,6 +82,7 @@ brew 'git'
 brew 'git-delta'
 brew 'git-lfs'
 brew 'lazygit'
+brew 'worktrunk'
 
 # Cloud & DevOps
 brew 'argocd'

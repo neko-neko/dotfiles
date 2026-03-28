@@ -81,6 +81,11 @@ export PATH="${HOME}/.local/bin:$PATH"
 export PATH="${HOME}/.browser-use-env/bin:$PATH"
 
 # ------------------------------
+# Worktrunk
+# ------------------------------
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+# ------------------------------
 # fzf Settings
 # ------------------------------
 export FZF_DEFAULT_OPTS='
