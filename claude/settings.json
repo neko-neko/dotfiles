@@ -155,7 +155,9 @@
       "Bash(ghq:*)",
       "Bash(delta:*)",
       "Bash(gibo:*)",
-      "WebFetch(domain:*)"
+      "WebFetch(domain:*)",
+      "Edit",
+      "Write"
     ],
     "deny": [
       "Bash(sops:*)",
@@ -163,7 +165,7 @@
       "Bash(ssh:*)",
       "Bash(scp:*)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "bypassPermissions"
   },
   "hooks": {
     "PreToolUse": [
