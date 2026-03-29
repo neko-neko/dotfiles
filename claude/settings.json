@@ -222,13 +222,20 @@
     "frontend-design@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
     "worktrunk@worktrunk": true,
-    "linear@claude-plugins-official": true
+    "linear@claude-plugins-official": true,
+    "pm-execution@pm-skills": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
       "source": {
         "source": "github",
         "repo": "max-sixty/worktrunk"
+      }
+    },
+    "pm-skills": {
+      "source": {
+        "source": "github",
+        "repo": "phuryn/pm-skills"
       }
     }
   },
