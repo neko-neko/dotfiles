@@ -18,7 +18,7 @@ audit: required
 - **depends_on_artifacts**: [docs/debug/]
 - **forward_check**: Phase 2 (Fix Plan) の入力として RCA Report パスが渡される
 
-### D1-02: Investigation Record の3サブセクションに実質的な内容がある
+### D1-02: Investigation Record の4サブセクションに実質的な内容がある
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -26,7 +26,8 @@ audit: required
   1. Code Flow Trace: entry point からの呼び出しチェーンが1件以上記述されているか（ファイルパス + 関数名の組が1組以上）
   2. Architecture Context: 関連するパターン・規約・暗黙ルールが1件以上記述されているか
   3. Impact Scope: 影響を受けるファイルまたはモジュールが1件以上列挙されているか
-- **pass_condition**: 上記3項目全てが各基準を満たすこと。見出しのみ・汎用的な記述のみの項目が0件
+  4. Symmetry Check: 変更対象が「対」を持つかの判定結果が記述されているか（「対なし」の場合は根拠が必要）
+- **pass_condition**: 上記4項目全てが各基準を満たすこと。見出しのみ・汎用的な記述のみの項目が0件
 - **fail_diagnosis_hint**: FAIL した項目番号を特定し、RCA Report の Investigation Record セクションで該当サブセクションの内容を確認。code-explorer / code-architect / impact-analyzer の出力結果と照合して不足情報を補完する
 - **depends_on_artifacts**: [docs/debug/*-rca.md]
 
@@ -82,3 +83,25 @@ audit: required
 - **pass_condition**: `git status --porcelain` の出力に RCA Report パスが含まれないこと（出力行数 0）
 - **fail_diagnosis_hint**: RCA Report が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。Phase 1 Executor の最終ステップでコミット処理を確認する
 - **depends_on_artifacts**: [docs/debug/*-rca.md]
+
+### D1-08: Symmetry Check が実施され非対称性リスクが評価されている
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. RCA Report の `### 2.4 Symmetry Check` セクションを読み取る
+  2. 以下の4項目が記述されているか確認する:
+     a. 変更対象の計算が「対」を持つかの判定結果（持たない場合はその根拠）
+     b. 対となるパスが存在する場合、各パスのファイルパス・関数名・pair type
+     c. フィルタ/スコープ条件の対称性比較
+     d. 非対称性リスクの有無と影響範囲
+  3. 「対なし」と判定された場合、impact-analyzer の出力（Symmetry Check セクション）を参照し、判定根拠が妥当か確認する
+- **pass_condition**: 手順2の4項目が全て記述されていること。「対なし」の場合は判定根拠が具体的に記述されていること
+- **fail_diagnosis_hint**: Symmetry Check セクションが空または未作成の場合、impact-analyzer の Symmetry Check 出力を RCA Report に転記する。「対なし」の根拠が不十分な場合、impact-analyzer の Reverse Dependencies / Shared State から同一データを扱う他のパスを再確認する
+- **depends_on_artifacts**: [docs/debug/*-rca.md]
+- **forward_check**: Phase 2 (Fix Plan) で非対称性リスクがある場合、対となるパスの修正もタスクに含まれていること
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

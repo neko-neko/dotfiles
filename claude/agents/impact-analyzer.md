@@ -44,6 +44,32 @@ Trace backwards from the change target to find all code that depends on it, iden
 - Consider performance changes (e.g., added DB query → N+1 in caller's loop)
 - Consider security implications (e.g., removed auth check → unauthorized access)
 
+**5. Symmetry Check**
+
+After completing reverse dependency tracing and shared state analysis, check
+whether the change target participates in a paired computation — where two
+code paths produce the same logical dimension from different angles or contexts.
+
+Common pair patterns:
+- Aggregation vs Detail
+- Numerator vs Denominator
+- Write path vs Read path
+- Request vs Response
+- Plan vs Actual
+- Inbound vs Outbound
+- Cache write vs Cache read
+- Serialization vs Deserialization
+- Forward calculation vs Reverse calculation
+
+For the change target:
+1. Identify the core dimension being computed (e.g., total, rate, balance)
+2. From the reverse dependencies and shared state already discovered,
+   identify other code paths that compute or consume the same dimension
+3. Compare filtering/scope conditions between paired paths — flag asymmetries
+   where the change target applies a filter that a paired path does not
+4. Identify all consumers (views, APIs, reports) that expose the same dimension
+   via different computation paths
+
 ## Tool Usage
 
 - **LSP**: シンボル参照・定義元追跡（利用可能な場合優先）
@@ -73,6 +99,16 @@ Bulleted list with `file:line` references:
 ### Side Effect Risks
 Bulleted list with severity:
 - [severity: high/medium/low] risk scenario — trigger condition, blast radius
+
+### Symmetry Check
+- [pair status: paired/unpaired] — if unpaired, state why no counterpart exists
+- Paired paths (if any):
+  - [pair type] `file_A:line` ↔ `file_B:line` — dimension, consistency status
+- Filter asymmetries (if any):
+  - [severity: high/medium/low] `file:line` applies filter X, but paired path
+    `file:line` does not — impact description
+- Consumers exposing the same dimension via different paths (if any):
+  - `consumer_A` uses path X, `consumer_B` uses path Y — consistency risk
 
 ### Must-Verify Checklist
 Actionable checklist items that must be verified during implementation and testing:

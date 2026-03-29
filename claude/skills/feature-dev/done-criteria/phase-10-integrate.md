@@ -38,3 +38,9 @@ audit: lite
 - **pass_condition**: 手順1の出力が空（未コミット変更0件、コンフリクト0件）、かつ手順2の検出結果が0件
 - **fail_diagnosis_hint**: コンフリクトがある場合は `git diff --diff-filter=U` で対象ファイルを特定。未コミット変更がある場合はコミット漏れか意図的な除外かを確認。コンフリクトマーカーが残存している場合はマージ解決の不完全を示す
 - **depends_on_artifacts**: []
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

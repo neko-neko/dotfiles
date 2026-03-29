@@ -8,8 +8,8 @@ Describe "handover-lib.sh"
   # Section 1: validate_project_state()
   # =========================================================================
   Describe "validate_project_state()"
-    It "succeeds for valid v3 JSON"
-      When call validate_project_state "$FIXTURES_DIR/valid-v3.json"
+    It "succeeds for valid v4 JSON"
+      When call validate_project_state "$FIXTURES_DIR/valid-v4.json"
       The status should be success
     End
 
@@ -33,7 +33,7 @@ Describe "handover-lib.sh"
 
     It "fails for unsupported version"
       unsupported_version_json="$(mktemp)"
-      jq '.version = 1' "$FIXTURES_DIR/valid-v3.json" > "$unsupported_version_json"
+      jq '.version = 1' "$FIXTURES_DIR/valid-v4.json" > "$unsupported_version_json"
       When call validate_project_state "$unsupported_version_json"
       The status should be failure
       The stderr should include "unsupported version"
@@ -42,7 +42,7 @@ Describe "handover-lib.sh"
 
     It "fails for invalid status enum"
       invalid_status_json="$(mktemp)"
-      jq '.status = "INVALID"' "$FIXTURES_DIR/valid-v3.json" > "$invalid_status_json"
+      jq '.status = "INVALID"' "$FIXTURES_DIR/valid-v4.json" > "$invalid_status_json"
       When call validate_project_state "$invalid_status_json"
       The status should be failure
       The stderr should include "invalid status"
@@ -204,7 +204,7 @@ Describe "handover-lib.sh"
     End
 
     It "does not include tried lines when attempted_approaches is absent"
-      When call generate_handover_md "$FIXTURES_DIR/valid-v3.json" "$md_output"
+      When call generate_handover_md "$FIXTURES_DIR/valid-v4.json" "$md_output"
       The status should be success
       The contents of file "$md_output" should not include "tried:"
     End
@@ -228,13 +228,13 @@ Describe "handover-lib.sh"
   # =========================================================================
   Describe "compute_session_hash()"
     It "produces consistent hash for same content"
-      hash1="$(compute_session_hash "$FIXTURES_DIR/valid-v3.json")"
-      When call compute_session_hash "$FIXTURES_DIR/valid-v3.json"
+      hash1="$(compute_session_hash "$FIXTURES_DIR/valid-v4.json")"
+      When call compute_session_hash "$FIXTURES_DIR/valid-v4.json"
       The output should eq "$hash1"
     End
 
     It "produces 64-char hex string"
-      When call compute_session_hash "$FIXTURES_DIR/valid-v3.json"
+      When call compute_session_hash "$FIXTURES_DIR/valid-v4.json"
       The output should match pattern "????????????????????????????????????????????????????????????????"
       The length of output should eq 64
     End
@@ -246,7 +246,7 @@ Describe "handover-lib.sh"
   Describe "store_session_hash()"
     It "stores non-empty hash in JSON"
       work_json="$(mktemp)"
-      cp "$FIXTURES_DIR/valid-v3.json" "$work_json"
+      cp "$FIXTURES_DIR/valid-v4.json" "$work_json"
       When call store_session_hash "$work_json"
       The status should be success
       The contents of file "$work_json" should not include '"session_hash": ""'
@@ -264,13 +264,13 @@ Describe "handover-lib.sh"
     End
 
     It "returns 0 (changed) when hash is empty"
-      When call has_state_changed "$FIXTURES_DIR/valid-v3.json"
+      When call has_state_changed "$FIXTURES_DIR/valid-v4.json"
       The status should be success
     End
 
     It "returns 1 (unchanged) after store_session_hash"
       work_json="$(mktemp)"
-      cp "$FIXTURES_DIR/valid-v3.json" "$work_json"
+      cp "$FIXTURES_DIR/valid-v4.json" "$work_json"
       store_session_hash "$work_json"
       When call has_state_changed "$work_json"
       The status should be failure
@@ -365,7 +365,7 @@ Describe "handover-lib.sh"
     setup_session_dir() {
       test_root="$(mktemp -d)"
       mkdir -p "$test_root/.claude/handover/main/session-001"
-      cp "$FIXTURES_DIR/valid-v3.json" "$test_root/.claude/handover/main/session-001/project-state.json"
+      cp "$FIXTURES_DIR/valid-v4.json" "$test_root/.claude/handover/main/session-001/project-state.json"
       mkdir -p "$test_root/.claude/handover/main/session-002"
       cp "$FIXTURES_DIR/all-complete.json" "$test_root/.claude/handover/main/session-002/project-state.json"
     }
@@ -445,7 +445,7 @@ Describe "handover-lib.sh"
     setup_scan() {
       test_root="$(mktemp -d)"
       mkdir -p "$test_root/main/session-001"
-      cp "$FIXTURES_DIR/valid-v3.json" "$test_root/main/session-001/project-state.json"
+      cp "$FIXTURES_DIR/valid-v4.json" "$test_root/main/session-001/project-state.json"
       mkdir -p "$test_root/main/session-002"
       cp "$FIXTURES_DIR/all-complete.json" "$test_root/main/session-002/project-state.json"
     }
@@ -524,7 +524,7 @@ Describe "handover-lib.sh"
   # Section 16: init_project_state()
   # =========================================================================
   Describe "init_project_state()"
-    It "creates valid v3 project-state.json with correct fields"
+    It "creates valid v4 project-state.json with correct fields"
       work_json="$(mktemp)"
       git() {
         case "$2" in
@@ -534,10 +534,12 @@ Describe "handover-lib.sh"
       }
       When call init_project_state "$work_json" "test-session-id"
       The status should be success
-      The contents of file "$work_json" should include '"version": 3'
+      The contents of file "$work_json" should include '"version": 4'
       The contents of file "$work_json" should include '"session_id": "test-session-id"'
       The contents of file "$work_json" should include '"status": "READY"'
       The contents of file "$work_json" should include '"active_tasks": []'
+      The contents of file "$work_json" should include '"phase_observations": []'
+      The contents of file "$work_json" should include '"session_notes": []'
       rm -f "$work_json"
     End
   End

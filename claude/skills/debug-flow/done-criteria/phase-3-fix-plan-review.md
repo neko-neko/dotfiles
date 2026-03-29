@@ -49,3 +49,9 @@ audit: required
 - **fail_diagnosis_hint**: 主観語を含む完了条件は数値閾値やパターンマッチに書き換える。完了条件のないタスクは RCA Report の対応要件から導出する。検証不能な条件は「コマンド X の exit code が 0」「ファイル Y に文字列 Z が含まれる」等の形式に変換する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
 - **forward_check**: Phase 4 Executor がタスク完了を自己判定できる粒度であること
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

@@ -80,3 +80,9 @@ audit: required
 - **pass_condition**: `git status --porcelain` の出力に設計書パスが含まれないこと（出力行数 0）
 - **fail_diagnosis_hint**: 設計書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。Phase 1 Executor の最終ステップでコミット処理を確認する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

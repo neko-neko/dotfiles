@@ -37,3 +37,24 @@ audit: required
 - **pass_condition**: 手順1の出力が空（未コミット変更0件）、かつ手順2のコミット数が50以下
 - **fail_diagnosis_hint**: 未コミット変更がある場合は `git add` + `git commit` の実行漏れを確認。乖離が50超の場合は main ブランチとの rebase を検討。長期ブランチでのコンフリクトリスクが高いため、早期のマージまたはブランチ分割を推奨する
 - **depends_on_artifacts**: []
+
+### D6-04: impact severity high 以上の findings がユーザー判断を経ている
+- **severity**: blocker
+- **verify_type**: automated + inspection
+- **verification**:
+  1. レビュー結果ファイルから category: code-impact かつ severity: high または critical の findings を抽出する
+  2. 該当 findings が0件の場合 → PASS
+  3. 該当 findings が1件以上の場合、各 finding について以下のいずれかの記録があるか確認する:
+     a. 修正済み: 対応するコード変更がコミットに含まれる
+     b. ユーザー明示承認の延期: ユーザーの承認発言が会話ログに存在する
+     c. ユーザー承認の却下: 誤検出の根拠がユーザーに提示され、ユーザーが却下を承認している
+  4. オーケストレーターが自己判断で延期・却下した findings（ユーザー確認なし）がないか確認する
+- **pass_condition**: 手順3の全 findings がa/b/cのいずれかに該当し、手順4でユーザー未確認の延期/却下が0件
+- **fail_diagnosis_hint**: ユーザー未確認の findings を特定し、PAUSE してユーザーに判断を求める。オーケストレーターが自動延期した findings がないか確認する
+- **depends_on_artifacts**: [artifacts/reviews/]
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

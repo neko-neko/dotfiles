@@ -58,6 +58,13 @@ Read the done-criteria file. Parse frontmatter for `max_retries`.
 ### Step 2: Compose Criteria
 Merge Universal Criteria (from file) + Evidence-derived criteria (from Evidence Plan for matching activity_type). Evidence-derived criteria are all severity: blocker, verify_type: automated.
 
+### Step 2b: Deferred Impact Verification
+Evidence Plan に E-DEFERRED-IMPACT が有効で、かつ review-fix アクティビティの場合:
+1. レビュー結果から deferred な impact findings を抽出する
+2. E-DEFERRED-IMPACT の claimed ファイルを読み取る
+3. 各延期 finding について、検証結果が「不一致」であれば severity: blocker の動的基準として追加する
+4. claimed ファイルが存在しない場合、blocker FAIL（collection 漏れ）として報告する
+
 ### Step 3: Evaluate Each Criterion
 For each criterion:
 1. Execute the `verification` steps
@@ -86,6 +93,20 @@ If `cumulative_diagnosis` is provided:
 If a criterion has been `persisting` for 2 consecutive attempts with the same root cause:
 - Set `escalation` field with `root_phase`, `root_artifact`, `root_issue`, `recommendation`
 - A non-null `escalation` signals the orchestrator to immediately PAUSE the pipeline, regardless of remaining retry attempts. This is a hard stop — the issue cannot be resolved within the current phase.
+
+### Step 6.5: Observation Collection
+
+Verdict 出力時に `observations[]` を必ず含めること。以下のルールに従う:
+
+1. **PASS だが懸念あり**: `criteria_results[].status` が PASS でも、diagnosis に改善余地がある場合 → `observations[]` に記録
+2. **FAIL → Fix → PASS**: 修正で PASS になったが根本的な設計懸念が残る場合 → observation として残す
+3. **severity**:
+   - `quality`: 動作するが品質上の改善余地（テスト薄い、カバー間接的）
+   - `warning`: 下流フェーズで問題化するリスク（トレーサビリティ弱い、境界条件未検証）
+4. `observations` が空の場合は `"observations": []`（フィールド常時出力）
+5. フェーズあたり最大5件。超過時は severity: warning を quality より優先して保持
+
+オーケストレーターがこの `observations` を `project-state.json` の `phase_observations[]` に蓄積する。phase-auditor 自身は project-state.json を直接書き換えない。
 
 ## Output Protocol
 
@@ -135,7 +156,15 @@ Return a single JSON object:
     "persisting": ["<IDs>"],
     "regressed": ["<IDs>"],
     "new_failures": ["<IDs>"]
-  }
+  },
+  "observations": [
+    {
+      "criteria_id": "<criterion ID>",
+      "severity": "quality" | "warning",
+      "observation": "<what was observed>",
+      "recommendation": "<recommended action for downstream phases>"
+    }
+  ]
 }
 ```
 
@@ -143,6 +172,7 @@ Return a single JSON object:
 
 - `PASS`: All `blocker` criteria have status `PASS`. Quality failures are recorded in `quality_warnings` but do NOT affect verdict.
 - `FAIL`: Any `blocker` criterion has status `FAIL`.
+- `observations`: verdict に影響しない。PASS/FAIL いずれの場合も、品質所見があれば記録する。
 
 ## Tool Access
 

@@ -44,7 +44,7 @@ user-invocable: true
 
 ```json
 {
-  "version": 3,
+  "version": 4,
   "generated_at": "ISO8601 現在時刻",
   "session_id": "現在のセッションID（不明なら unknown）",
   "status": "READY | ALL_COMPLETE",
@@ -95,6 +95,29 @@ user-invocable: true
       "related_files": ["関連ファイル"]
     }
   ],
+  "phase_observations": [
+    {
+      "phase": 5,
+      "phase_name": "execute",
+      "recorded_at": "ISO8601",
+      "observations": [
+        {
+          "criteria_id": "D5-08",
+          "severity": "quality | warning",
+          "observation": "所見の内容",
+          "recommendation": "推奨アクション"
+        }
+      ]
+    }
+  ],
+  "session_notes": [
+    {
+      "recorded_at": "ISO8601",
+      "category": "insight | directive | concern",
+      "content": "メモの内容",
+      "relates_to_phase": 5
+    }
+  ],
   "session_hash": ""
 }
 ```
@@ -109,6 +132,8 @@ user-invocable: true
    - architecture_changes: 追記（直近10件を保持、古い順に削除）
    - attempted_approaches: 同一タスク ID のタスクでは追記（重複排除、approach が同じエントリは上書き）
    - known_issues: 解決済みなら削除、新規は追加
+   - phase_observations: 同一 phase のエントリは上書き、新規 phase は追加。各 phase の observations は最大5件（severity: warning > quality の順で保持）
+   - session_notes: 追記（content 先頭50文字一致で重複排除）。セッションあたり最大10件
 
 5. `{保存先}/project-state.json` に書き出す
 
@@ -151,6 +176,12 @@ user-invocable: true
 
 ## Architecture Changes (Recent)
 - commit_sha: 要約
+
+## Observations (from Audit)
+- [Phase N] criteria_id: observation（recommendation）
+
+## Session Notes
+- [category] content（Phase N）
 
 ## Known Issues
 - [severity] 問題の説明（なければ「なし」）

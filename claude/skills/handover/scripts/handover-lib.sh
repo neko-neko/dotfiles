@@ -50,8 +50,8 @@ validate_project_state() {
   # Version check
   local version
   version="$(jq -r '.version' "$json_file")"
-  if [[ "$version" != "2" && "$version" != "3" ]]; then
-    _handover_log "ERROR: unsupported version: ${version} (expected 2 or 3)"
+  if [[ "$version" != "4" ]]; then
+    _handover_log "ERROR: unsupported version: ${version} (expected 4)"
     return 1
   fi
 
@@ -208,6 +208,19 @@ generate_handover_md() {
      then [.architecture_changes[] | "- \(.commit_sha): \(.summary)"] | join("\n")
      else "- なし" end),
     "",
+    "## Observations (from Audit)",
+    (if (.phase_observations // [] | length) > 0
+     then [.phase_observations[] |
+       . as $po | (.observations // [])[] |
+       "- [Phase \($po.phase)] \(.criteria_id): \(.observation)（\(.recommendation)）"] | join("\n")
+     else "- なし" end),
+    "",
+    "## Session Notes",
+    (if (.session_notes // [] | length) > 0
+     then [.session_notes[] |
+       "- [\(.category)] \(.content)（Phase \(.relates_to_phase // "N/A")）"] | join("\n")
+     else "- なし" end),
+    "",
     "## Known Issues",
     (if (.known_issues // [] | length) > 0
      then [.known_issues[] | "- [\(.severity)] \(.description)"] | join("\n")
@@ -329,7 +342,7 @@ find_memory_dir() {
 # Initialization helper
 # ---------------------------------------------------------------------------
 
-# Create a minimal empty project-state.json (v3)
+# Create a minimal empty project-state.json (v4)
 # Usage: init_project_state <output_file> <session_id> [workspace_root] [workspace_branch] [is_worktree]
 init_project_state() {
   local output_file="$1"
@@ -342,7 +355,7 @@ init_project_state() {
 
   cat > "$output_file" << JSONEOF
 {
-  "version": 3,
+  "version": 4,
   "generated_at": "${now}",
   "session_id": "${session_id}",
   "status": "READY",
@@ -355,6 +368,8 @@ init_project_state() {
   "recent_decisions": [],
   "architecture_changes": [],
   "known_issues": [],
+  "phase_observations": [],
+  "session_notes": [],
   "session_hash": ""
 }
 JSONEOF

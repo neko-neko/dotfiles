@@ -30,6 +30,19 @@ user-invocable: true
 
 ## 手順
 
+0. **Pipeline Detection**（手順1の前に実行）
+
+   project-state.json の `pipeline` フィールドを確認する:
+   - `pipeline` が `"feature-dev"` または `"debug-flow"` の場合:
+     ```
+     Pipeline: {pipeline} のセッションを検出しました。
+     /{pipeline} を Resume Mode で起動します。
+     ```
+     → Skill tool で `/{pipeline}` を invoke する
+     → continue の処理はここで終了（ワークフローに委譲）
+   - `pipeline` が存在しない、または上記以外の値の場合:
+     → 手順1以降の従来フローを実行する
+
 1. 上記のパス解決で選択されたセッションの `project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
    - JSON として不正な場合 → エラーを報告して終了

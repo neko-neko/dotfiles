@@ -61,3 +61,9 @@ audit: required
 - **fail_diagnosis_hint**: 識別子のない要件や、「何を」しか書かれていない要件を特定し、設計書の該当箇所に「どのように」の観点（入出力定義、振る舞い記述、制約条件）を追記する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 - **forward_check**: Phase 3 (Plan) で設計要件からタスクへの分解が可能な粒度であること
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

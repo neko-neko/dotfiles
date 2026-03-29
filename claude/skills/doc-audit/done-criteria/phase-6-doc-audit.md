@@ -156,3 +156,9 @@ audit: required
 - fail_diagnosis_hint: CLAUDE.md の規約を実コードに合わせて更新する
 - depends_on_artifacts: [artifacts/doc-audit/phase-6-report.json]
 - scope: A は git diff 影響分、B は全体
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

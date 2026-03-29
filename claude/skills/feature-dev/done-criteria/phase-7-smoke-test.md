@@ -54,3 +54,9 @@ audit: required
   - フォーマット不備 → レポートを再生成する
   - スクリーンショット未存在 → browser-use CLI が実行されていない可能性。環境問題であれば PAUSE としてユーザーに報告する
 - **depends_on_artifacts**: [smoke-test-report.md, smoke-*.png]
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

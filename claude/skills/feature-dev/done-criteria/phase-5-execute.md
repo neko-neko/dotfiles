@@ -107,3 +107,9 @@ audit: required
 - **fail_diagnosis_hint**: 手順3で欠落している要件IDを特定し対応テストを追加する。手順4で欠落している影響範囲のファイルを特定し、既存テストの有無と新規テスト追加の必要性を判断する。手順5で検出された削除/無効化の理由を確認し、意図的でない場合は復元する
 - **depends_on_artifacts**: [docs/plans/*-design.md, tests/, src/]
 - **forward_check**: Phase 7 (Code Review) で指摘される「テスト不足」を事前に防止する
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

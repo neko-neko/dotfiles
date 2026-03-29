@@ -54,3 +54,24 @@ audit: required
   - フォーマット不備 → レポートを再生成する
   - スクリーンショット未存在 → browser-use CLI が実行されていない可能性。環境問題であれば PAUSE としてユーザーに報告する
 - **depends_on_artifacts**: [smoke-test-report.md, smoke-*.png]
+
+### D5-05: 同一データのコンシューマ間整合性が検証されている（Cross-View Consistency）
+- **severity**: blocker
+- **verify_type**: inspection
+- **verification**:
+  1. RCA Report の Symmetry Check（または Impact Scope）から、同一データを異なるコンシューマ（画面、API、レポート等）で公開するケースを列挙する
+  2. 該当ケースが0件の場合、スモークテストのシナリオリストと主要影響フローを照合し、コンシューマ間整合性チェックが不要である根拠を確認する
+  3. 該当ケースが1件以上の場合、各ケースについてスモークテストシナリオに以下が含まれるか確認する:
+     a. コンシューマAで指標の値を取得
+     b. コンシューマBで同一条件の同指標の値を取得
+     c. 両者が一致することの検証
+  4. 検証結果（一致/不一致）がレポートに記録されているか確認する
+- **pass_condition**: 該当ケース0件（根拠あり）、または全該当ケースにシナリオが存在しレポートに結果が記録されていること
+- **fail_diagnosis_hint**: 該当ケースのコンシューマペアを特定し、各コンシューマのアクセス方法を確認。スモークテストシナリオにコンシューマ間比較ステップを追加する。Symmetry Check の consumer 一覧がある場合はそれを参照する
+- **depends_on_artifacts**: [docs/debug/*-rca.md, artifacts/smoke-test/]
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。

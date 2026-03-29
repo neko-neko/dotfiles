@@ -19,6 +19,51 @@ user-invocable: true
 
 **開始時アナウンス:** 「Debug Flow を開始します。Phase 1: Root Cause Analysis」
 
+## Resume Gate（最優先で評価）
+
+起動時に以下を確認:
+1. `.claude/handover/` 配下に現在ブランチの READY セッションが存在するか
+2. 複数 READY セッションがある場合、タイムスタンプ（fingerprint）が最新のものを選択
+3. 存在する場合、`project-state.json` の `pipeline` が `"debug-flow"` と一致するか
+
+一致する場合 → **Resume Mode** で起動する（Phase 1 からの通常フローをスキップ）。
+一致しない場合 → 通常の新規起動。
+
+### Resume Mode 実行フロー
+
+1. `project-state.json` を読み込む
+2. `args` からフラグを復元する（`--codex`, `--e2e`, `--smoke`, `--ui`, `--iterations`, `--swarm`）
+3. `phase_observations[]` + `session_notes[]` から soft context を表示する:
+   - `relates_to_phase` が `current_phase` 以降 → 全件表示
+   - `relates_to_phase` が `current_phase` より前 → `directive` / `concern` のみ
+   - 表示順: directive → concern → insight → quality → warning
+4. 再開位置を表示し、ユーザー承認を得る:
+   ```
+   Pipeline: debug-flow ({復元されたフラグ})
+   現在: Phase {N} {name}（{status}）
+
+   [前セッションからの引き継ぎ]
+   - ⚠ {session_notes / phase_observations の要約}
+
+   [監査状態]
+   - Phase {N} Audit: {状態} / attempt {M} of {max_retries}
+
+   この状態から再開します。よろしいですか？
+   ```
+5. 承認後、`current_phase` のフェーズから作業を続行する
+6. 以降は通常のフェーズ遷移ルール・監査ゲートに従う
+
+### フェーズ途中 vs フェーズ間の再開
+
+- **フェーズ途中**（`active_tasks` に `in_progress` あり）: 残タスクから再開。完了時に done-criteria で監査
+- **フェーズ間**（前フェーズ完了、次フェーズ未開始）: 前フェーズの監査ゲートが PASS 済みか確認。未実施なら監査から実行
+
+### Resume Mode で「やらないこと」
+
+- Phase 1 からのやり直し（`completed_phases` はスキップ）
+- 完了済みフェーズの再監査（コミット SHA が git log に存在すれば信頼）
+- 新規起動時の引数パース（`args` は `project-state.json` から復元）
+
 <HARD-GATE>
 ## Mandatory Audit Gate — フェーズ遷移の絶対条件
 
@@ -106,7 +151,7 @@ Phase 8: Integrate ────────────── worktrunk:worktrun
 4. Audit Agent を起動（`--swarm` 有効時は Audit Team。詳細は後述「Audit Team」セクション + `./references/audit-gate-protocol.md` セクション 2, 10 参照）
 5. 返却値の JSON 有効性を検証（不正なら1回再起動、2回目不正で PAUSE）
 6. verdict に基づき遷移:
-   - PASS: quality_warnings をユーザーに提示し次フェーズへ
+   - PASS: quality_warnings をユーザーに提示し、`observations[]` を `project-state.json` の `phase_observations[]` に追記し、次フェーズへ
    - FAIL + escalation: 即 PAUSE
    - FAIL + attempt < max_retries: Fix Dispatch → 再監査ループ
    - FAIL + attempt >= max_retries: 累積診断レポート提示 → PAUSE
@@ -232,7 +277,14 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
 - 副作用リスク
 - 共有状態
 
-### 2.4 Excluded Hypotheses（除外した仮説）
+### 2.4 Symmetry Check（対称性検証）
+- 変更対象の計算が「対」を持つか（持たない場合はその根拠）
+- 対となるパス一覧（ファイルパス、関数名、pair type）
+- フィルタ/スコープ条件の対称性（同一条件が両パスに適用されているか）
+- 同一データを公開するコンシューマ一覧（画面、API、レポート等）と各計算パス
+- 非対称性リスク（片側のみ変更した場合に発生しうる不整合）
+
+### 2.5 Excluded Hypotheses（除外した仮説）
 - 仮説、検証方法、棄却理由（1件以上必須）
 
 ## 3. Root Cause（根本原因）
@@ -324,6 +376,16 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
   4. code-review-impact には RCA Report の Impact Scope セクションを追加コンテキストとして渡す
   5. 各メンバーがレビュー後、他メンバーの findings を相互検証
   6. チーム完了後、統合結果をユーザーに提示
+- **Impact Findings 延期制限:**
+  code-review-impact（または impact エージェント）が severity: high 以上の finding を報告した場合、
+  オーケストレーターはその finding を自動的に延期・却下してはならない。
+  以下のいずれかをユーザーに明示的に確認する:
+  1. **修正する**: finding に従い修正を実施
+  2. **延期する**: ユーザーが影響を理解した上で明示的に承認（承認理由を記録）
+  3. **却下する**: 誤検出の根拠をユーザーに提示し、ユーザーが却下を承認
+
+  オーケストレーターの自己判断による延期は禁止。
+  `--swarm` 有効時の Code Review Team でも同様に適用する。
 - **自動遷移条件:** ユーザーが承認した修正完了
 - **成果物:** レビュー修正済みコード
 - **失敗時:** 修正後テスト失敗 -> 最大2回リトライ、それでも失敗なら PAUSE
@@ -369,6 +431,26 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
 
 Context が逼迫した場合は、どのフェーズであっても即座に `/handover` を実行する。
 
+### Session Notes Collection（handover 前の必須ステップ）
+
+`/handover` invoke 前に、以下の3カテゴリで `project-state.json` の `session_notes[]` に記録すること。
+該当なしの場合は記録不要（空振り OK）。
+
+#### insight（調査洞察）
+- 棄却した仮説から得られた副次的発見
+- 実装中に気づいたが今のフェーズのスコープ外だった問題
+- コードベース探索で得た、設計書に書かれていない暗黙の制約
+
+#### directive（次セッション指示）
+- 次フェーズで重点的に確認すべき観点
+- フラグやオプションに関する補足
+- 特定のファイル・モジュールへの注意喚起
+
+#### concern（品質懸念）
+- 動作するが設計的に不安な箇所
+- テストのフレーキーリスク
+- パフォーマンス・セキュリティの潜在的問題
+
 ### パイプライン状態
 
 `/handover` で保存する `project-state.json` に以下のパイプライン固有情報を含める:
@@ -396,7 +478,9 @@ Context が逼迫した場合は、どのフェーズであっても即座に `/
     "fix_plan_review": null,
     "code_review": null,
     "test_review": null
-  }
+  },
+  "phase_observations": [],
+  "session_notes": []
 }
 ```
 

@@ -40,3 +40,9 @@ audit: required
 - **pass_condition**: 手順5のリストが0件（全テスト観点に対応テストコードあり）
 - **fail_diagnosis_hint**: カバーされていないテスト観点を特定し、テスト区分（正常系/異常系/エッジケース/非機能）ごとの偏りを確認。テスト観点のタイトルとテスト関数名の命名規則が異なる場合は、テスト関数の内容ベースで対応を確認する
 - **depends_on_artifacts**: [docs/plans/*-design.md, tests/]
+
+## Observation Collection
+
+phase-auditor は verdict 出力時に observations[] を必ず含めること。
+PASS 判定の criteria でも quality/warning レベルの所見があれば記録する。
+observations は project-state.json の phase_observations[] に蓄積される。
