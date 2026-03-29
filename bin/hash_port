@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+suffix="${1:-}"
+
+branch=$(git branch --show-current 2>/dev/null || true)
+if [[ -z "$branch" ]]; then
+  branch=$(git rev-parse --short HEAD 2>/dev/null || true)
+  if [[ -z "$branch" ]]; then
+    echo "hash_port: not in a git repository" >&2
+    exit 1
+  fi
+fi
+
+hash=$(echo -n "${branch}${suffix}" | cksum | awk '{print $1}')
+port=$(( (hash % 10000) + 10000 ))
+echo "$port"

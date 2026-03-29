@@ -2,3 +2,4 @@
 --shell bash
 --format documentation
 --default-path claude
+--default-path spec
