@@ -18,15 +18,31 @@ user-invocable: true
 
 ### 単体セッション（チーム所属なし）
 
-1. `{cwd}/.claude/handover/` を走査し、利用可能なセッション（status が `READY`）を収集する
-2. v2 互換: `{cwd}/.claude/project-state.json` が存在する場合、候補に含める（選択後にマイグレーション）
-3. 候補がない場合、`git worktree list` で他の worktree の `.claude/handover/` も検索する。見つかった場合:
-   > CWD にはセッションがありませんが、worktree `{path}` に以下のセッションがあります:
-4. 候補数に応じた処理:
+1. `{cwd}/.claude/handover/` を走査し、利用可能なセッション（status が `READY`）を収集する（グループ: **CWD**）
+2. `git worktree list` で全 worktree パスを取得する
+3. CWD 以外の各 worktree の `{path}/.claude/handover/` を走査し、READY セッションを収集する（グループ: **worktree**）
+4. 全セッションの `workspace.root` を検証する。`git worktree list` の結果に存在しないパスを指すセッションは **orphan** とマークする
+5. 候補数に応じた処理:
    - **0件** → 「再開可能なセッションがありません」と報告して終了
-   - **1件以上** → `AskUserQuestion` で一覧表示し選択させる。表示内容:
+   - **1件以上** → `AskUserQuestion` で以下のグルーピングで一覧表示し選択させる:
+
+     ```
+     📂 現在のディレクトリ (CWD)
+       [1] master/20260330-120000 — 残2件 / 完3件 — 次: Phase 5 実装
+
+     📂 worktree: feature/auth-refactor (.worktrees/auth-refactor)
+       [2] feature/auth-refactor/20260329-140000 — 残3件 / 完1件 — 次: DB マイグレーション
+
+     ⚠ worktree 削除済み
+       [3] feature/old-feature/20260325-100000 — 残2件 / 完0件 — 次: 初期実装
+     ```
+
+     各セッションの表示項目:
      - ブランチ名、fingerprint、完了/残タスク数、次タスクの概要
      - orphan session（`workspace.root` が存在しない）には「⚠ worktree 削除済み」と警告を付ける
+     - `last_touched` が 48 時間以上前のタスクがある場合は「⚠ stale（48h 以上未更新）」と警告を付ける
+
+ステップ 2-3 は CWD の候補数に関係なく常に実行する。
 
 ## 手順
 
@@ -42,6 +58,29 @@ user-invocable: true
      → continue の処理はここで終了（ワークフローに委譲）
    - `pipeline` が存在しない、または上記以外の値の場合:
      → 手順1以降の従来フローを実行する
+
+0.5. **Worktree 切り替え**（選択されたセッションが CWD 以外の場合のみ実行）
+
+   選択されたセッションの所属に応じて分岐する:
+
+   - **既存 worktree のセッション**:
+     1. `wt switch <branch>` を実行して worktree に切り替える
+     2. 切り替え先の `.claude/handover/` から `project-state.json` を読み込む
+     3. 手順 0（Pipeline Detection）に戻る
+
+   - **orphan セッション**（worktree 削除済み）:
+     1. `project-state.json` の `workspace.branch` からブランチ名を取得する
+     2. ブランチが git に存在するか確認する（`git branch --list <branch>`）
+        - **存在しない場合** → 「ブランチも削除されています。セッションを再開できません。」と報告して終了
+     3. ユーザーに確認する: 「worktree が削除されています。`wt switch --create <branch>` で再作成しますか？」
+        - **拒否** → セッション選択に戻る
+        - **承認** → `wt switch --create <branch>` で worktree を再作成する
+     4. orphan セッションのデータ（`project-state.json`, `handover.md`, `trace.jsonl`）を新しい worktree の `.claude/handover/{branch}/{fingerprint}/` にコピーする
+     5. 元の orphan セッションディレクトリを削除する
+     6. 手順 0（Pipeline Detection）に戻る
+
+   - **`wt` 未インストールの場合**:
+     `wt` コマンドが利用できない場合は「`wt` が見つかりません。手動で `cd <worktree-path>` してから `/continue` を再実行してください」と報告して終了する
 
 1. 上記のパス解決で選択されたセッションの `project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
@@ -105,7 +144,7 @@ user-invocable: true
 
 ## Cleanup
 
-continue 実行時に、`{cwd}/.claude/handover/` 配下の `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
+continue 実行時に、CWD および全 worktree の `.claude/handover/` 配下で `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
 
 ## 制約
 
