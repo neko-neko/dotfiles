@@ -118,7 +118,9 @@ user-invocable: true
       "relates_to_phase": 5
     }
   ],
-  "session_hash": ""
+  "session_hash": "",
+  "linear_ticket_id": "Linear チケットID (例: ABC-123)。linear-sync supplement 使用時のみ設定。null または未設定の場合、sync は無効",
+  "linear_document_id": "Linear Document ID。linear-sync supplement が作成した Workflow Report Document の ID。sync_workflow_start で設定される"
 }
 ```
 
@@ -134,6 +136,8 @@ user-invocable: true
    - known_issues: 解決済みなら削除、新規は追加
    - phase_observations: 同一 phase のエントリは上書き、新規 phase は追加。各 phase の observations は最大5件（severity: warning > quality の順で保持）
    - session_notes: 追記（content 先頭50文字一致で重複排除）。セッションあたり最大10件
+   - `linear_ticket_id`: 新しい値で上書き（通常は変わらないが、明示的変更時に対応）
+   - `linear_document_id`: 新しい値で上書き
 
 5. `{保存先}/project-state.json` に書き出す
 
@@ -147,6 +151,14 @@ user-invocable: true
    ```
    `pipeline` は直前のコンテキストから判定する（feature-dev 内なら `"feature-dev"`、単発レビューなら `"standalone"`）。
    `reason` は `"phase_complete"`, `"context_pressure"`, `"autonomous"` のいずれか。
+
+### Linear Sync（オプション）
+
+project-state.json 生成後、`linear_ticket_id` フィールドが設定されている場合:
+
+1. `claude/skills/linear-sync/SKILL.md` の `sync_handover` セクションを Read
+2. セクションの手順に従い、project-state.json のアップロードと中断コメントの投稿を実行
+3. API 失敗時はワークフローをブロックせず、warning を出力して続行
 
 6. `{保存先}/handover.md` を以下のフォーマットで自動生成する:
 
