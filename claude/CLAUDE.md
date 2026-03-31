@@ -34,6 +34,19 @@
 
  - サブエージェントには明確なスコープと完了条件を与え、作業の重複を防ぐこと
  - サブエージェントの出力は検証すること
+ - デフォルトの分業は Research → Synthesis → Implementation → Verification とすること
+ - サブエージェントの調査結果をそのまま次のエージェントへ転送せず、オーケストレーター自身が理解・統合してから次の指示を書くこと
+ - サブエージェント向けプロンプトは自己完結であること。`based on your findings` のような理解責任の再委譲を禁止する
+ - read-only な探索は積極的に並列化し、同一ファイル群への write-heavy な作業は直列化すること
+ - 失敗修正や直前作業の継続は同一エージェント continuation を優先し、独立 verification や方針の全面変更は fresh context のエージェントを使うこと
+
+## Verification Contract
+
+- 非 trivial な変更（3ファイル以上の編集、backend/API 変更、infrastructure 変更）は、完了報告前に独立 verification を必須とする
+- 実装担当者の自己申告・自己検証は第一層 QA に過ぎず、独立 verification の代替にしてはならない
+- `verified` / `PASS` を主張する場合、実際に実行したコマンドと観測した出力を伴うこと。コード読解だけで検証済み扱いにしない
+- happy path だけでなく、境界値・異常系・idempotency・orphan operation・状態保持など、少なくとも1つは adversarial probe を含めること
+- `PARTIAL` は環境制約やツール不足など、実行不能が理由の場合にのみ許可する。不安・未確認・判断保留を `PARTIAL` でごまかさないこと
 
 ## Intent Guard
 

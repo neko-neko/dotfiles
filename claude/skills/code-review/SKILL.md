@@ -14,6 +14,14 @@ user-invocable: true
 
 **開始時アナウンス:** 「Code Review を開始します。Phase 1: Scope Detection」
 
+## Coordinator Discipline
+
+- 複数観点レビューは parallel に実行してよいが、何を直すかの最終判断はオーケストレーターが行う
+- 各 review agent への prompt は自己完結にし、対象 diff、目的、期待出力を明示する
+- findings をそのまま修正せず、重複除去・優先度整理・修正対象ファイルの確定を行ってから着手する
+- 同一ファイル群への修正は直列に行い、verify は修正完了後に独立フェーズとして扱う
+- verification ではテストや linter の結果を正直に扱い、失敗を「一部成功」で済ませない
+
 ## Phase 1: Scope Detection
 
 引数を解析し、レビュー対象の差分を取得する。
@@ -256,10 +264,11 @@ Skill tool で `/simplify` を再度 invoke し、対象ファイルを明示的
 
 **その他の findings (quality, security, performance, test, ai-antipattern, impact, codex) の場合:**
 指摘内容と suggestion に基づき、オーケストレーター自身が直接修正を実装する。修正手順:
-1. 対象ファイルを Read で読み込む
-2. finding の description と suggestion を参照して修正内容を決定する
-3. Edit で修正を適用する
-4. 同一ファイルに複数の findings がある場合は行番号の大きい方から修正する（行ずれ防止）
+1. 選択された findings を重複除去し、1つの修正ブリーフに正規化する
+2. 対象ファイルを Read で読み込む
+3. finding の description と suggestion を参照して修正内容を決定する
+4. Edit で修正を適用する
+5. 同一ファイルに複数の findings がある場合は行番号の大きい方から修正する（行ずれ防止）
 
 ### エラー時
 

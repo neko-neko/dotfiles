@@ -20,6 +20,17 @@ user-invocable: true
 
 **開始時アナウンス:** 「Debug Flow を開始します。Phase 1: Root Cause Analysis」
 
+## Coordinator Discipline
+
+このワークフローのオーケストレーターは、調査と修正の理解責任を subagent に再委譲してはならない。
+
+- デフォルトの進め方は Research → Synthesis → Implementation → Verification
+- subagent prompt は自己完結にする。目的、対象、完了条件、検証方法を必ず含める
+- 調査結果を受けたら、次の修正・レビュー・監査へ流す前に、自分で根本原因と修正方針を再構成する
+- read-only な探索や独立観点のレビューは並列化し、同一 write scope の修正は直列化する
+- 失敗修正や直前作業の継続は continuation を優先し、独立 verification や誤った方針のやり直しは fresh context を使う
+- non-trivial な修正は、実装担当とは独立した verification を通してから完了扱いにする
+
 ## Resume Gate（最優先で評価）
 
 起動時に以下を確認:
@@ -365,7 +376,7 @@ systematic-debugging の Phase 1（Root Cause Investigation）、Phase 2（Patte
 - **INVOKE:** `superpowers:subagent-driven-development`
 - **Autonomy:** AUTONOMOUS+GATE
 - **実装エージェント:** `subagent-driven-development` が生成する各実装サブエージェントは `subagent_type: "feature-implementer"` で起動すること。`feature-implementer` は `skills: [superpowers:test-driven-development]` を frontmatter で宣言しており、TDD スキルがコンテキストに自動注入される。
-- **動作:** レビュー通過済み修正計画に基づき、`feature-implementer` エージェントが TDD プロセスに従って修正を実行する
+- **動作:** レビュー通過済み修正計画に基づき、オーケストレーターが修正対象・根本原因・完了条件・検証方法を self-contained な実装 spec に再構成してから `feature-implementer` に渡し、TDD プロセスに従って修正を実行させる
 - **自動遷移条件:** 全タスク完了
 - **成果物:** コミット済みコード
 - **失敗時:** 3回タスク失敗で PAUSE。RCA ギャップをエスカレーション

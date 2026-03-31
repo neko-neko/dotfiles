@@ -20,6 +20,16 @@ user-invocable: true
 
 **開始時アナウンス:** 「Feature Dev を開始します。Phase 1: Design」
 
+## Coordinator Discipline
+
+このワークフローのオーケストレーターは、subagent の findings を受け取って次の作業へ流す前に、自身で理解・統合する責務を持つ。
+
+- デフォルトの進め方は Research → Synthesis → Implementation → Verification
+- subagent prompt は自己完結にする。目的、対象、完了条件、検証方法を含め、`based on your findings` のような委譲表現は禁止する
+- read-only な探索や独立観点のレビューは並列化し、同一 write scope の実装・修正は直列化する
+- 失敗修正や直前作業の継続は同一エージェント continuation を優先し、独立 verification や方針変更時は fresh context を使う
+- non-trivial な実装は、実装担当とは独立した verification を通してから完了扱いにする
+
 ## Resume Gate（最優先で評価）
 
 起動時に以下を確認:
@@ -337,7 +347,7 @@ trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
 - **INVOKE:** `superpowers:subagent-driven-development`
 - **Autonomy:** AUTONOMOUS+GATE
 - **実装エージェント:** `subagent-driven-development` が生成する各実装サブエージェントは `subagent_type: "feature-implementer"` で起動すること。`feature-implementer` は `skills: [superpowers:test-driven-development]` を frontmatter で宣言しており、TDD スキルがコンテキストに自動注入される。
-- **動作:** レビュー通過済み計画書に基づき、`feature-implementer` エージェントが TDD プロセスに従って実装を実行する
+- **動作:** レビュー通過済み計画書に基づき、オーケストレーターが計画を self-contained な実装 spec に再構成してから `feature-implementer` に渡し、TDD プロセスに従って実装を実行させる。広い調査結果をそのまま転送してはならない
 - **自動遷移条件:** 全タスク完了
 - **成果物:** コミット済みコード
 - **失敗時:** 3回タスク失敗で PAUSE。設計ギャップをエスカレーション
