@@ -109,7 +109,7 @@
 | Situation | Action | Rationale |
 |-----------|--------|-----------|
 | Context 逼迫 | PAUSE | `/handover` を実行してパイプライン状態を保存 |
-| `--codex` 指定時に MCP Codex 接続失敗 | AUTO | 警告し codex なしで続行 |
+| `--codex` 指定時に Codex 接続失敗 | AUTO | 警告し codex なしで続行 |
 
 ### Audit Gate
 

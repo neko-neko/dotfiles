@@ -223,7 +223,8 @@
     "playwright@claude-plugins-official": true,
     "worktrunk@worktrunk": true,
     "linear@claude-plugins-official": true,
-    "pm-execution@pm-skills": true
+    "pm-execution@pm-skills": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
@@ -237,8 +238,18 @@
         "source": "github",
         "repo": "phuryn/pm-skills"
       }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
     }
   },
   "language": "japanese",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "skipDangerousModePermissionPrompt": true
 }

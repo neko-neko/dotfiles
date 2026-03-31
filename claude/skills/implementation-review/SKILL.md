@@ -3,7 +3,7 @@ name: implementation-review
 description: >-
   実装計画書レビューワークフロー。3つの観点（clarity, feasibility, consistency）で
   実装計画書を並列レビューし、統合レポートから承認された指摘を修正する。
-  --codex 指定時は MCP Codex によるレビューとメタレビューを追加する。
+  --codex 指定時は Codex (companion.mjs adversarial-review) による設計判断レビューを追加する。
   --iterations N 指定時は各観点を N 回独立レビューし、過半数一致の findings のみ採用する（デフォルト: 3）。
 user-invocable: true
 ---
@@ -24,11 +24,11 @@ user-invocable: true
 |------|------|
 | (なし) | `docs/plans/*.md`（`*-design.md` を除く）から最終更新日時が最新のファイルを自動検出 |
 | `<path>` | 指定されたパスの実装計画書を使用 |
-| `--codex` | Phase 2 に Codex 並列実行を追加し、Phase 3.5 メタレビューを有効化する。パス引数と組み合わせ可能 |
+| `--codex` | Phase 2 に Codex 設計判断レビュー (adversarial-review) を追加する。パス引数と組み合わせ可能 |
 | `--ui` | Phase 2 に UI タスク仕様レビューエージェントを追加する。パス引数・`--codex` と組み合わせ可能 |
 | `--iterations N` | N-way 投票を有効化する（デフォルト: 3）。各観点エージェントを N 回独立に起動し、過半数一致の findings のみ採用する。パス引数・`--codex`・`--ui` と組み合わせ可能 |
 
-`--codex` はパス引数と組み合わせて使用できる。`--codex` が指定された場合、変数 `codex_enabled` を true とし、Phase 2 と Phase 3.5 で参照する。`--codex` が指定されていない場合、3観点のみでレビューする。
+`--codex` はパス引数と組み合わせて使用できる。`--codex` が指定された場合、変数 `codex_enabled` を true とし、Phase 2 で参照する。`--codex` が指定されていない場合、3観点のみでレビューする。
 
 `--ui` が指定された場合、変数 `ui_enabled` を true とし、Phase 2 で参照する。
 
@@ -107,24 +107,14 @@ findings を JSON で返すよう指示する。
 
 ### 2-4. Codex レビュー（`codex_enabled` 時のみ）
 
-`codex_enabled` が true の場合のみ実行する。`mcp__codex__codex` ツールを `run_in_background: true` で呼び出す。
+`codex_enabled` が true の場合のみ実行する。Bash tool を `run_in_background: true` で呼び出す。
 
-共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン1（ドキュメントレビュー）を参照。
-
-```yaml
-tool: mcp__codex__codex
-params:
-  prompt: |
-    以下の実装計画書をレビューしてください。技術的実現可能性、明確さ、一貫性の観点で問題点を指摘してください。
-
-    <doc_content>
-  sandbox: "read-only"
-  approval-policy: "on-failure"
+```bash
+node "/Users/nishikataseiichi/.claude/plugins/cache/openai-codex/codex/1.0.1/scripts/codex-companion.mjs" \
+  adversarial-review --wait "実装計画書 ${doc_path} の設計判断と前提条件を検証してください"
 ```
 
-レスポンスから `threadId` を保持し、Phase 3.5 のメタレビューで使用する。
-
-MCP 呼び出しが失敗した場合は「MCP Codex への接続に失敗しました。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
+Bash 実行が失敗した場合は「Codex への接続に失敗しました。--codex をスキップします。」と警告し、`codex_enabled` を false に変更して続行する。
 
 Codex の出力はフリーテキスト形式。
 
@@ -179,7 +169,7 @@ UI は N-way 投票の対象外。`iterations` の値に関わらず 1 回のみ
 
 各エージェントの応答から JSON `{"findings": [...]}` をパースする。失敗した場合は正規表現フォールバックを試み、それでも失敗ならエラーとして扱う。
 
-Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex"` で正規化する。
+Codex の出力はフリーテキストの可能性がある。JSON `{"findings": [...]}` のパースを試み、失敗した場合はテキストから個別の指摘事項を抽出し、category `"codex-adversarial"` で正規化する。
 
 ## Phase 2.5: Consensus Vote（`iterations > 1` の場合のみ）
 
@@ -237,7 +227,7 @@ trace_consensus "$TRACE_FILE" "implementation-review" "<perspective>" <iteration
 {
   "section": "セクション名または行範囲",
   "severity": "high | medium | low",
-  "category": "impl-clarity | impl-feasibility | impl-consistency | codex | impl-ui-spec",
+  "category": "impl-clarity | impl-feasibility | impl-consistency | codex-adversarial | impl-ui-spec",
   "description": "指摘内容",
   "suggestion": "改善案"
 }
@@ -269,63 +259,9 @@ severity で降順ソート: high > medium > low
 
 findings が 0 件の場合 → 「指摘事項はありません。レビュー完了です。」と報告して終了する。
 
-### Phase 3.5: Meta Review（`codex_enabled` 時のみ）
-
-`codex_enabled` が true の場合のみ実行する。Phase 3 で生成したレポートと実装計画書を Codex に渡し、メタレビューを実行する。
-
-**開始時アナウンス:** 「Phase 3.5: Codex Meta Review」
-
-#### 実行
-
-`mcp__codex__codex-reply` ツールで Phase 2 の Codex セッションを継続する。共通パターンは Read tool で `./references/mcp-codex-patterns.md`（このスキルのディレクトリからの相対パス）を読み込み、 のパターン3（メタレビュー）を参照。
-
-```yaml
-tool: mcp__codex__codex-reply
-params:
-  threadId: <Phase 2 で取得した threadId>
-  prompt: |
-    先ほどのレビュー結果を踏まえ、以下の2つの観点で分析してください。
-
-    ## 観点1: 見落とし検出
-    レビューレポートに含まれていない問題があれば指摘してください。
-
-    ## 観点2: False Positive 検証
-    レビューレポートの各 finding が正当かどうか検証してください。
-    false positive の疑いがあるものを指摘してください。
-
-    ## Review Report
-    <Phase 3 で生成したレポート全文>
-
-    ## Implementation Plan
-    <doc_content>
-```
-
-`threadId` が取得できなかった場合（Phase 2 の Codex 失敗）はメタレビューをスキップする。
-
-#### 結果の統合
-
-Codex の出力をパースし、レポートに以下を追記する:
-
-```
-### Meta Review (by Codex)
-#### Additional Findings
-N+1. [codex-meta] section — description
-     suggestion: ...
-
-#### False Positive Suspects
-- Finding #N: reason
-```
-
-追加 findings はユーザーの選択対象に含める（番号を既存 findings の続きから振る）。false positive 指摘は参考情報として表示するのみ（自動除外しない）。
-
-#### エラー時
-
-- `mcp__codex__codex-reply` が失敗またはタイムアウトした場合 → 「Codex メタレビューをスキップします」と表示し、Phase 3 のレポートのみで続行する
-- 出力パースが失敗した場合 → Codex の生テキストをそのまま「Meta Review (by Codex)」セクションに表示する
-
 ### Phase 3.7: Dialogue（対話的解決）
 
-Phase 3（および Phase 3.5）で生成されたレポートの findings を2グループに分類する:
+Phase 3 で生成されたレポートの findings を2グループに分類する:
 
 | グループ | 条件 | フロー |
 |---------|------|--------|
@@ -453,11 +389,9 @@ git diff
 | 1 | `docs/plans/` ディレクトリが存在しない | ディレクトリ構成を確認するよう報告 |
 | 2 | エージェントタイムアウト | 該当エージェント結果を空として続行 |
 | 2 | JSON パース失敗 | 正規表現フォールバック、それでも失敗なら空 |
-| 2 | MCP Codex 接続失敗 | 警告表示し Codex なしで続行 |
-| 2 | `mcp__codex__codex` タイムアウト/失敗 | 該当結果を空として続行 |
+| 2 | Codex (companion.mjs) 実行失敗 | 警告表示し Codex なしで続行 |
+| 2 | Codex 出力パース失敗 | 生テキストをそのまま codex-adversarial カテゴリで正規化 |
 | 3 | ユーザー入力が不正 | 再入力を求める |
-| 3.5 | `mcp__codex__codex-reply` 失敗 | メタレビューをスキップし Phase 3 レポートで続行 |
-| 3.5 | 出力パース失敗 | 生テキストをそのまま表示 |
 | 4 | セクション/構造不正 | スキップして次の finding へ |
 | 5 | 整合性チェックで問題検出 | 修正提案、最大2回リトライ |
 
