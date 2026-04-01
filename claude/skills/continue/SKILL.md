@@ -75,7 +75,7 @@ user-invocable: true
      3. ユーザーに確認する: 「worktree が削除されています。`wt switch --create <branch>` で再作成しますか？」
         - **拒否** → セッション選択に戻る
         - **承認** → `wt switch --create <branch>` で worktree を再作成する
-     4. orphan セッションのデータ（`project-state.json`, `handover.md`, `trace.jsonl`）を新しい worktree の `.claude/handover/{branch}/{fingerprint}/` にコピーする
+     4. orphan セッションのデータ（`project-state.json`, `handover.md`）を新しい worktree の `.claude/handover/{branch}/{fingerprint}/` にコピーする
      5. 元の orphan セッションディレクトリを削除する
      6. 手順 0（Pipeline Detection）に戻る
 

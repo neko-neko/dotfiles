@@ -215,49 +215,6 @@ Phase 8/9 でコード変更がある場合、Phase 8/9 の Audit Gate の前に
 7. findings がなければ Phase 8/9 Audit Gate へ
 詳細は `./references/audit-gate-protocol.md` セクション 8 を参照。
 
-## Trace 記録（フェーズ遷移）
-
-各 Phase の開始時と終了時に trace を記録する。handover セッションディレクトリが存在する場合のみ実行する。
-
-### 初期化（Phase 1 開始前）
-
-1. Bash で handover ディレクトリを解決し、TRACE_FILE を設定する:
-   ```bash
-   source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
-   source ~/.dotfiles/claude/skills/handover/scripts/handover-lib.sh
-   TRACE_FILE=$(_trace_resolve_path "$(resolve_handover_dir 2>/dev/null || echo '')")
-   echo "$TRACE_FILE"
-   ```
-
-2. ディレクトリが空文字の場合、このセッション中の trace 記録をすべてスキップする。
-
-### 各 Phase 遷移時
-
-Phase をアナウンスする際に、以下を Bash で実行する:
-
-**Phase 開始時:**
-```bash
-source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
-TRACE_SESSION_ID="${SESSION_ID:-unknown}"
-phase_start_time=$(date +%s%3N)
-trace_phase_start "$TRACE_FILE" "feature-dev" <phase_number> "<phase_name>"
-```
-
-**Phase 終了時（次の Phase に遷移する直前、または pipeline 終了時）:**
-```bash
-source ~/.dotfiles/claude/skills/handover/scripts/trace-lib.sh
-TRACE_SESSION_ID="${SESSION_ID:-unknown}"
-duration_ms=$(( $(date +%s%3N) - phase_start_time ))
-trace_phase_end "$TRACE_FILE" "feature-dev" <phase_number> "<phase_name>" $duration_ms
-```
-
-### リトライ時
-
-レビュー不合格→修正→再レビューが発生した場合:
-```bash
-trace_retry "$TRACE_FILE" "feature-dev" <phase_number> <attempt> "<reason>"
-```
-
 ### Linear Sync 初期化（`--linear` 有効時のみ）
 
 1. `claude/skills/linear-sync/SKILL.md` を Read
