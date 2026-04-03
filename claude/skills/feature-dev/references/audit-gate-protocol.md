@@ -69,7 +69,6 @@ attempt: {current_attempt}
 ### Available Capabilities
 - bash: true
 - browser-automation: {playwright | chrome-in-chrome | none}
-- database-access: {MCP server name | none}
 - api-access: {true | false}
 
 ### Pipeline Configuration

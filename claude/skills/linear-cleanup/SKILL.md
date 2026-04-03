@@ -20,10 +20,10 @@ Linearチームのチケット棚卸しスキル。Linearを Single Source of Tr
 
 ## Prerequisites
 
-- Linear MCP が利用可能であること（`mcp__plugin_linear_linear__*` ツール群）
+- `linear` CLI が利用可能であること
 - チームが1つ以上存在すること
 
-起動時に `mcp__plugin_linear_linear__list_teams` を呼び出し:
+起動時にチーム一覧を取得し:
 - チームが1つ → 自動選択
 - チームが複数 → 一覧を提示して選択を求める
 - チームが0 → エラー終了
@@ -32,7 +32,7 @@ Linearチームのチケット棚卸しスキル。Linearを Single Source of Tr
 
 ### Step 1-1: Linearチケット全件取得
 
-`mcp__plugin_linear_linear__list_issues` を `team` パラメータ指定・`limit: 250` で呼び出す。250件を超える場合は `cursor` で全件取得する。
+チーム指定でチケットを全件取得する。
 
 取得した各チケットについて以下を記録:
 - id, title, status, priority, labels, project, parentId, assignee
@@ -42,7 +42,7 @@ Linearチームのチケット棚卸しスキル。Linearを Single Source of Tr
 
 ### Step 1-2: 主要チケットの詳細取得
 
-status が Done/Cancelled 以外のチケット、および直近30日以内に更新されたチケットについて `mcp__plugin_linear_linear__get_issue` で詳細を取得する。これにより relatedTo, blocks, blockedBy 等の既存 relation 情報を得る。
+status が Done/Cancelled 以外のチケット、および直近30日以内に更新されたチケットについて詳細を取得する。これにより relatedTo, blocks, blockedBy 等の既存 relation 情報を得る。
 
 Agent tool を使い、チケット数に応じて並列で詳細取得する（10件ずつバッチ等）。
 
@@ -180,14 +180,14 @@ Phase 2 の分析結果を以下のフォーマットで変更計画として提
 
 依存関係を考慮した3段階実行:
 
-1. **親子関係の設定**（`save_issue` の `parentId`）— 先に実行。他の relation の前提になりうる
+1. **親子関係の設定** — 先に実行。他の relation の前提になりうる
 2. **以下を並列実行:**
-   - blockedBy 設定（`save_issue` の `blockedBy`）
-   - relatedTo 設定（`save_issue` の `relatedTo`）
-   - ステータス変更（`save_issue` の `state`）
-   - プロジェクト紐付け（`save_issue` の `project`）
-   - コンテキスト追加（`save_issue` の `links`）
-3. **重複統合**（`save_issue` の `state: Done` + `duplicateOf`）— 最後に実行。他の変更が完了してから
+   - blockedBy 設定
+   - relatedTo 設定
+   - ステータス変更
+   - プロジェクト紐付け
+   - コンテキスト追加（links）
+3. **重複統合**（Done + duplicateOf）— 最後に実行。他の変更が完了してから
 
 ### エラーハンドリング
 

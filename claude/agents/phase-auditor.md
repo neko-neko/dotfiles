@@ -194,7 +194,6 @@ Return a single JSON object:
 - Grep: pattern search
 - Glob: file existence checks
 - Bash: test execution, build commands, git commands, DB CLI, curl
-- MCP tools: all session-available MCP tools (DB, browser, etc.)
 
 **Forbidden:**
 - Edit, Write: structural separation of audit and modification

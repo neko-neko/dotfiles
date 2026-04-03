@@ -43,8 +43,7 @@ user-invocable: false
    ```
    結果に対して `/([A-Z]+-\d+)/` で Linear チケットIDを抽出。
 
-2. **推定成功時**: Linear API で存在確認:
-   - `mcp__plugin_linear_linear__get_issue(id: 抽出したID)` を実行
+2. **推定成功時**: Linear でチケット存在を確認:
    - 取得成功 → ユーザーに提示:
      ```
      Linear チケット {id}: {title} に紐づけますか？
@@ -53,8 +52,8 @@ user-invocable: false
    - 取得失敗（存在しない）→ 手順3へ
 
 3. **推定失敗時**: 直近のアサイン済みチケットを検索:
-   - `mcp__plugin_linear_linear__get_authenticated_user()` で現在ユーザーを取得
-   - `mcp__plugin_linear_linear__list_issues(assignee: user_id, state: "In Progress", limit: 5)` で候補取得
+   - 現在の認証ユーザーを取得
+   - アサイン済み In Progress チケットを取得（最大5件）
    - ユーザーに一覧を提示し選択を求める:
      ```
      紐づける Linear チケットを選んでください:
@@ -77,20 +76,15 @@ user-invocable: false
 
 ### 手順
 
-1. **チケットステータスを更新**:
-   - `mcp__plugin_linear_linear__get_issue(id: linear_ticket_id)` でチケット情報取得し、チームIDを特定
-   - `mcp__plugin_linear_linear__list_issue_statuses(team: team_id)` でステータス一覧取得
-   - "In Progress" に相当するステータスを特定（type が "started" のもの）
-   - `mcp__plugin_linear_linear__save_issue(id: linear_ticket_id, state: in_progress_status_name)` で更新
+1. **チケットステータスを In Progress に更新**
 
 2. **Workflow Report Document を作成**:
    - `templates/document.md` を Read し、Document 生成仕様を確認
    - 仕様に従い、初期状態の Document コンテンツを生成（全フェーズ Pending）
-   - `mcp__plugin_linear_linear__create_document(title: "Workflow Report — {ticket_id}", content: generated_content, issue: linear_ticket_id, icon: "📋")` で作成
+   - Document を作成し、チケットに紐付ける（タイトル: "Workflow Report — {ticket_id}"、アイコン: 📋）
    - 返却された Document の ID を `linear_document_id` としてワークフローコンテキストに保持
 
 3. **開始コメントを投稿**:
-   - `mcp__plugin_linear_linear__save_comment(issueId: linear_ticket_id, body: start_comment)` で投稿
    - コメント内容:
      ```markdown
      ## Workflow Started
@@ -141,23 +135,17 @@ user-invocable: false
 ### 手順
 
 1. **エビデンスファイルのアップロード**（evidence_files がある場合）:
-   - 各ファイルについて:
-     - ファイルを Read で読み込む
-     - Bash で base64 エンコード: `base64 -i {path}`
-     - `mcp__plugin_linear_linear__create_attachment(issue: linear_ticket_id, base64Content: encoded, filename: basename, contentType: content_type, title: label)` でアップロード
-     - **失敗時**: warn ログを出力し、エビデンスリストに「(アップロード失敗。ローカル: {path})」を記載。ワークフローは続行。
+   - 各エビデンスファイルをチケットに添付する
+   - **失敗時**: warn ログを出力し、エビデンスリストに「(アップロード失敗。ローカル: {path})」を記載。ワークフローは続行。
 
 2. **フェーズ完了コメントを投稿**:
    - `templates/comment.md` を Read し、コメント生成仕様を確認
    - 仕様に従い、phase_result からコメント本文を生成
-   - **冪等性チェック**: `mcp__plugin_linear_linear__list_comments(issueId: linear_ticket_id, limit: 10)` で直近コメントを取得
-     - `## Phase {N}:` で始まるコメントが存在 → `mcp__plugin_linear_linear__save_comment(id: existing_comment_id, body: new_body)` で更新
-     - 存在しない → `mcp__plugin_linear_linear__save_comment(issueId: linear_ticket_id, body: new_body)` で新規投稿
+   - **冪等性チェック**: 直近コメントを取得し、`## Phase {N}:` で始まるコメントが存在すれば更新、なければ新規投稿
 
 3. **Document を更新**:
    - `templates/document.md` を Read し、Document 生成仕様を確認
-   - これまでの全フェーズ結果を反映した Document コンテンツを再生成
-   - `mcp__plugin_linear_linear__update_document(id: linear_document_id, content: regenerated_content)` で上書き更新
+   - これまでの全フェーズ結果を反映した Document コンテンツを再生成し、上書き更新
 
 ## sync_handover
 
@@ -167,26 +155,21 @@ user-invocable: false
 ### 手順
 
 1. **project-state.json をアップロード**:
-   - Handover で生成された `project-state.json` を Read
-   - Bash で base64 エンコード: `base64 -i {path_to_project_state_json}`
-   - `mcp__plugin_linear_linear__create_attachment(issue: linear_ticket_id, base64Content: encoded, filename: "project-state.json", contentType: "application/json", title: "Handover State ({timestamp})")` でアップロード
+   - project-state.json をチケットに添付する（タイトル: "Handover State ({timestamp})"）
 
 2. **中断コメントを投稿**:
    - `templates/handover-comment.md` を Read し、コメント生成仕様を確認
-   - 仕様に従い、コメント本文を生成
-   - `mcp__plugin_linear_linear__save_comment(issueId: linear_ticket_id, body: handover_comment)` で投稿
+   - 仕様に従い、コメント本文を生成して投稿
 
 3. **Document を更新**:
-   - 現在の状態（Handover 中）を反映した Document コンテンツを再生成
-   - `mcp__plugin_linear_linear__update_document(id: linear_document_id, content: regenerated_content)` で更新
+   - 現在の状態（Handover 中）を反映した Document コンテンツを再生成して更新
 
 ## sync_complete
 
 ### 手順
 
 1. **Document を最終更新**:
-   - 全フェーズ完了状態の Document コンテンツを再生成（Status: Complete）
-   - `mcp__plugin_linear_linear__update_document(id: linear_document_id, content: final_content)` で更新
+   - 全フェーズ完了状態の Document コンテンツを再生成して更新（Status: Complete）
 
 2. **完了コメントを投稿**:
    ```markdown
@@ -197,12 +180,7 @@ user-invocable: false
    **Duration:** {start_time} → {end_time}
    **Result:** 全 {total_phases} フェーズ完了
    ```
-   - `mcp__plugin_linear_linear__save_comment(issueId: linear_ticket_id, body: complete_comment)` で投稿
-
-3. **チケットステータスを更新**:
-   - `mcp__plugin_linear_linear__list_issue_statuses(team: team_id)` でステータス一覧取得
-   - "Done" に相当するステータスを特定（type が "completed" のもの）
-   - `mcp__plugin_linear_linear__save_issue(id: linear_ticket_id, state: done_status_name)` で更新
+3. **チケットステータスを Done に更新**
 
 ## Error Handling
 
