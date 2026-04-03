@@ -5,6 +5,10 @@
     "MISE_YES": "1",
     "DIRENV_LOG_FORMAT": ""
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Bash(ls:*)",
@@ -225,7 +229,8 @@
     "worktrunk@worktrunk": true,
     "linear@claude-plugins-official": true,
     "pm-execution@pm-skills": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "linear-cli@linear-cli": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
@@ -245,12 +250,14 @@
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       }
+    },
+    "linear-cli": {
+      "source": {
+        "source": "github",
+        "repo": "schpet/linear-cli"
+      }
     }
   },
   "language": "japanese",
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
   "skipDangerousModePermissionPrompt": true
 }
