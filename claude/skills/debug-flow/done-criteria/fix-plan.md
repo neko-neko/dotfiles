@@ -1,5 +1,4 @@
 ---
-phase: 2
 name: fix-plan
 max_retries: 3
 audit: required
@@ -7,7 +6,7 @@ audit: required
 
 ## Criteria
 
-### D2-01: 修正計画書ファイルが存在する
+### FPL-01: 修正計画書ファイルが存在する
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -16,7 +15,7 @@ audit: required
 - **fail_diagnosis_hint**: Phase 2 Executor が修正計画書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-fix-plan.md` パターンに合致しているか確認
 - **depends_on_artifacts**: [docs/plans/]
 
-### D2-02: RCA Report の Fix Strategy からタスクへのトレーサビリティ
+### FPL-02: RCA Report の Fix Strategy からタスクへのトレーサビリティ
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -28,7 +27,7 @@ audit: required
 - **fail_diagnosis_hint**: 対応タスクのない修正対象を特定し、計画書にタスクの追加が必要。RCA Report の Fix Strategy と計画書のタスクIDの対応表を作成して漏れを可視化する
 - **depends_on_artifacts**: [docs/debug/*-rca.md, docs/plans/*-fix-plan.md]
 
-### D2-03: タスク粒度が sub-agent で実行可能
+### FPL-03: タスク粒度が sub-agent で実行可能
 - **severity**: quality
 - **verify_type**: inspection
 - **verification**:
@@ -39,7 +38,7 @@ audit: required
 - **fail_diagnosis_hint**: ステップ数超過のタスクを分割候補として特定。変更対象モジュールが多いタスクは、モジュール単位でのタスク分割を検討する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
 
-### D2-04: タスク依存関係が明示かつ整合（循環なし）
+### FPL-04: タスク依存関係が明示かつ整合（循環なし）
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -51,7 +50,7 @@ audit: required
 - **fail_diagnosis_hint**: 循環依存が検出された場合はタスクの分割または依存方向の見直しが必要。不在ID参照はタイポか欠落タスクかを確認。暗黙依存はタスク間の入出力を明示化する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
 
-### D2-05: テストケースが Given/When/Then で具体化
+### FPL-05: テストケースが Given/When/Then で具体化
 - **severity**: blocker
 - **verify_type**: automated + inspection
 - **verification**:
@@ -63,7 +62,7 @@ audit: required
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
 - **forward_check**: Phase 4 でテストコード実装時に、Given/When/Then から直接テストコードに変換可能であること
 
-### D2-06: 修正計画書が git commit 済み
+### FPL-06: 修正計画書が git commit 済み
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:

@@ -1,5 +1,4 @@
 ---
-phase: 5
 name: accept-test
 max_retries: 3
 audit: required
@@ -7,7 +6,7 @@ audit: required
 
 ## Criteria
 
-### D5-01: 全 Acceptance Test ステップが PASS
+### ACT-01: 全 Acceptance Test ステップが PASS
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -16,7 +15,7 @@ audit: required
 - **fail_diagnosis_hint**: FAIL したステップ名とエラーメッセージを確認。プロジェクト種別に応じて: Web → セレクタ不一致/タイムアウト/HTTP エラーを切り分け。Mobile → シミュレータ起動失敗/UI 要素未検出を切り分け。CLI → コマンド exit code/stdout 不一致を確認
 - **depends_on_artifacts**: [artifacts/accept-test/]
 
-### D5-02: flaky test が未検出または報告済み
+### ACT-02: flaky test が未検出または報告済み
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
@@ -25,7 +24,7 @@ audit: required
 - **fail_diagnosis_hint**: flaky ステップを特定し、タイミング依存、外部サービス依存、テストデータ依存のいずれかを調査する
 - **depends_on_artifacts**: [artifacts/accept-test/]
 
-### D5-03: テストシナリオがプロジェクト特性を反映している
+### ACT-03: テストシナリオがプロジェクト特性を反映している
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -41,7 +40,7 @@ audit: required
 - **fail_diagnosis_hint**: 欠落しているカテゴリを特定し、該当カテゴリの Acceptance Test シナリオを追加する
 - **depends_on_artifacts**: [artifacts/accept-test/, docs/plans/*-rca.md]
 
-### D5-04: Acceptance Test 実行証跡が有効である
+### ACT-04: Acceptance Test 実行証跡が有効である
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -57,7 +56,7 @@ audit: required
 - **fail_diagnosis_hint**: レポート未存在 → Acceptance Test が正しく実行されていない。証跡未存在 → テスト実行環境の問題。環境問題であれば PAUSE としてユーザーに報告する
 - **depends_on_artifacts**: [accept-test-report.md]
 
-### D5-05: 同一データのコンシューマ間整合性が検証されている（Cross-View Consistency）
+### ACT-05: 同一データのコンシューマ間整合性が検証されている（Cross-View Consistency）
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
