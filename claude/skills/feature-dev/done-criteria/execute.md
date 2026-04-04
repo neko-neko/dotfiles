@@ -1,5 +1,4 @@
 ---
-phase: 5
 name: execute
 max_retries: 3
 audit: required
@@ -7,7 +6,7 @@ audit: required
 
 ## Criteria
 
-### D5-01: 全タスクに対応するコード変更が存在する
+### EXE-01: 全タスクに対応するコード変更が存在する
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -19,7 +18,7 @@ audit: required
 - **fail_diagnosis_hint**: コード変更のないタスクIDを特定し、計画書の該当タスクを確認。実装漏れか、タスクの内容がドキュメントのみの変更で git diff に現れない形式かを切り分ける
 - **depends_on_artifacts**: [docs/plans/*-plan.md]
 
-### D5-02: ビルド/コンパイルが成功する
+### EXE-02: ビルド/コンパイルが成功する
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -28,7 +27,7 @@ audit: required
 - **fail_diagnosis_hint**: ビルドエラーログの最初のエラーメッセージを確認。型エラー、import 解決失敗、依存パッケージ不在のいずれかを特定し、該当ファイルと行番号を報告する
 - **depends_on_artifacts**: [src/, artifacts/build/]
 
-### D5-03: lint/型チェックにエラーがない
+### EXE-03: lint/型チェックにエラーがない
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -37,7 +36,7 @@ audit: required
 - **fail_diagnosis_hint**: エラー指摘のファイルパスと行番号を確認。型エラーは型定義の不整合、lint エラーはコーディング規約違反を確認。`--fix` オプションで自動修正可能か判定する
 - **depends_on_artifacts**: [src/, artifacts/lint/]
 
-### D5-04: 全テストスイートが通過
+### EXE-04: 全テストスイートが通過
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -46,7 +45,7 @@ audit: required
 - **fail_diagnosis_hint**: 失敗したテスト名とエラーメッセージを確認。既存テストの退行か新規テストの初回失敗かを `git diff -- tests/` で切り分ける。退行の場合は `git stash && テスト実行` でベースラインとの差分を確認する
 - **depends_on_artifacts**: [tests/, artifacts/test-results/]
 
-### D5-05: Unit Test + Integration Test が要件に対応して存在する
+### EXE-05: Unit Test + Integration Test が要件に対応して存在する
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -59,7 +58,7 @@ audit: required
 - **fail_diagnosis_hint**: 対応テストコードのないテストケースを特定。Unit Test のみで Integration Test が欠落しているケースに注意。モック/スタブのみのテストは Unit Test として扱い、Integration Test には実依存を使ったテストが必要
 - **depends_on_artifacts**: [docs/plans/*-plan.md, tests/]
 
-### D5-06: 実装がコンポーネント境界を遵守している
+### EXE-06: 実装がコンポーネント境界を遵守している
 - **severity**: quality
 - **verify_type**: inspection
 - **verification**:
@@ -70,7 +69,7 @@ audit: required
 - **fail_diagnosis_hint**: 境界違反の import/require 文を特定し、設計書のコンポーネント図と照合。インターフェース層を経由すべき依存が直接参照になっているケースを確認する
 - **depends_on_artifacts**: [docs/plans/*-design.md, src/]
 
-### D5-07: 設計書→計画書→実装の一気通貫トレーサビリティ
+### EXE-07: 設計書→計画書→実装の一気通貫トレーサビリティ
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -83,7 +82,7 @@ audit: required
 - **fail_diagnosis_hint**: マッピング欠落の箇所（要件→タスク間か、タスク→実装間か）を特定。余剰実装がある場合は設計書/計画書への追記か、余剰コードの削除かを判断する
 - **depends_on_artifacts**: [docs/plans/*-design.md, docs/plans/*-plan.md, src/]
 
-### D5-08: 新規追加テストがトートロジーでない
+### EXE-08: 新規追加テストがトートロジーでない
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -95,7 +94,7 @@ audit: required
 - **fail_diagnosis_hint**: トートロジーテストのファイルパスと行番号を特定。モックの過剰使用、assertion の欠落、テスト対象関数の未呼び出しのいずれかを確認。実装コードの実際の振る舞いを検証する assertion に書き換える
 - **depends_on_artifacts**: [tests/, src/]
 
-### D5-09: テストケースが要件カバレッジ・影響範囲の網羅性・テスト階層を満たす
+### EXE-09: テストケースが要件カバレッジ・影響範囲の網羅性・テスト階層を満たす
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -109,7 +108,7 @@ audit: required
 - **pass_condition**: 手順3-7の全条件を満たすこと。手順3で全要件に対応テストあり、手順4で全影響範囲に対応テストあり、手順5で既存テストの削除/無効化が0件、手順6で3カテゴリ各1件以上、手順7で破壊的テスト1件以上
 - **fail_diagnosis_hint**: 手順3-5は既存と同様。手順6で欠落カテゴリがある場合、inner-loop-protocol.md の TestEnrich ギャップ分析表を参照し該当カテゴリのテストを追加する。手順7で破壊的テストがない場合、不正入力・境界値に対する異常系テストを追加する
 - **depends_on_artifacts**: [docs/plans/*-design.md, tests/, src/]
-- **forward_check**: Phase 8 (Code Review) で指摘される「テスト不足」を事前に防止する
+- **forward_check**: review フェーズ (Code Review) で指摘される「テスト不足」を事前に防止する
 
 ## Observation Collection
 

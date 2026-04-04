@@ -1,5 +1,4 @@
 ---
-phase: 3
 name: plan
 max_retries: 3
 audit: required
@@ -7,16 +6,16 @@ audit: required
 
 ## Criteria
 
-### D3-01: 計画書ファイルが存在する
+### PLN-01: 計画書ファイルが存在する
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
   `Glob("docs/plans/YYYY-MM-DD-*-plan.md")` で計画書ファイルを検索する。
 - **pass_condition**: Glob 結果が1件以上
-- **fail_diagnosis_hint**: Phase 3 Executor が計画書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-plan.md` パターンに合致しているか確認
+- **fail_diagnosis_hint**: 当フェーズ Executor が計画書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-plan.md` パターンに合致しているか確認
 - **depends_on_artifacts**: [docs/plans/]
 
-### D3-02: 設計要件からタスクへのトレーサビリティ
+### PLN-02: 設計要件からタスクへのトレーサビリティ
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -28,7 +27,7 @@ audit: required
 - **fail_diagnosis_hint**: 対応タスクのない要件を特定し、計画書にタスクの追加が必要。設計書の要件IDと計画書のタスクIDの対応表を作成して漏れを可視化する
 - **depends_on_artifacts**: [docs/plans/*-design.md, docs/plans/*-plan.md]
 
-### D3-03: タスク粒度が sub-agent で実行可能
+### PLN-03: タスク粒度が sub-agent で実行可能
 - **severity**: quality
 - **verify_type**: inspection
 - **verification**:
@@ -39,7 +38,7 @@ audit: required
 - **fail_diagnosis_hint**: ステップ数超過のタスクを分割候補として特定。変更対象モジュールが多いタスクは、モジュール単位でのタスク分割を検討する
 - **depends_on_artifacts**: [docs/plans/*-plan.md]
 
-### D3-04: タスク依存関係が明示かつ整合（循環なし）
+### PLN-04: タスク依存関係が明示かつ整合（循環なし）
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -51,7 +50,7 @@ audit: required
 - **fail_diagnosis_hint**: 循環依存が検出された場合はタスクの分割または依存方向の見直しが必要。不在ID参照はタイポか欠落タスクかを確認。暗黙依存はタスク間の入出力を明示化する
 - **depends_on_artifacts**: [docs/plans/*-plan.md]
 
-### D3-05: テストケースが Given/When/Then で具体化
+### PLN-05: テストケースが Given/When/Then で具体化
 - **severity**: blocker
 - **verify_type**: automated + inspection
 - **verification**:
@@ -61,15 +60,15 @@ audit: required
 - **pass_condition**: 全テストケースが Given/When/Then の3要素を含み（手順2）、Then 句に検証可能な期待値を持つこと（手順3）。3要素欠落のテストケースが0件
 - **fail_diagnosis_hint**: Given/When/Then が欠落しているテストケースを特定し、設計書のテスト観点セクションを参照して具体的な前提条件・操作・期待結果を補完する
 - **depends_on_artifacts**: [docs/plans/*-plan.md]
-- **forward_check**: Phase 5 でテストコード実装時に、Given/When/Then から直接テストコードに変換可能であること
+- **forward_check**: execute フェーズでテストコード実装時に、Given/When/Then から直接テストコードに変換可能であること
 
-### D3-06: 計画書が git commit 済み
+### PLN-06: 計画書が git commit 済み
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
   `git status --porcelain -- docs/plans/*-plan.md` を実行し、計画書ファイルが未コミット変更リストに含まれないことを確認する。
 - **pass_condition**: `git status --porcelain` の出力に計画書パスが含まれないこと（出力行数 0）
-- **fail_diagnosis_hint**: 計画書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。Phase 3 Executor の最終ステップでコミット処理を確認する
+- **fail_diagnosis_hint**: 計画書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。当フェーズ Executor の最終ステップでコミット処理を確認する
 - **depends_on_artifacts**: [docs/plans/*-plan.md]
 
 ## Observation Collection

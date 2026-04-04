@@ -1,5 +1,4 @@
 ---
-phase: 8
 name: review
 max_retries: 3
 audit: required
@@ -7,16 +6,16 @@ audit: required
 
 ## Code Review Criteria
 
-### R8-C01: レビューが全7観点で実行された
+### REV-C01: レビューが全7観点で実行された
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
-  レビュー結果ファイル（`artifacts/reviews/phase-8-code-review.json` またはレビューログ）を読み取り、7観点（simplify, code-quality, code-security, code-performance, code-test, ai-antipattern, code-impact）の実行記録を確認する。
+  レビュー結果ファイル（`artifacts/reviews/code-review.json` またはレビューログ）を読み取り、7観点（simplify, code-quality, code-security, code-performance, code-test, ai-antipattern, code-impact）の実行記録を確認する。
 - **pass_condition**: 7観点全ての実行記録が存在すること。記録された観点数が7
 - **fail_diagnosis_hint**: 欠落している観点を特定し、/code-review の起動オプションを確認。観点の指定漏れか、レビューエージェントの実行途中中断かを切り分ける
 - **depends_on_artifacts**: [artifacts/reviews/]
 
-### R8-C02: ユーザー承認済み findings の修正が全て適用済み
+### REV-C02: ユーザー承認済み findings の修正が全て適用済み
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -28,7 +27,7 @@ audit: required
 - **fail_diagnosis_hint**: 未適用の finding を特定し、対象ファイルの該当行を確認。修正の適用漏れか、修正が別の形で反映されているかを確認。`git log --oneline` で修正コミットが存在するか確認する
 - **depends_on_artifacts**: [artifacts/reviews/, src/]
 
-### R8-C03: 未コミット変更なし + ブランチが最新 main から乖離 50 commit 以内
+### REV-C03: 未コミット変更なし + ブランチが最新 main から乖離 50 commit 以内
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -38,7 +37,7 @@ audit: required
 - **fail_diagnosis_hint**: 未コミット変更がある場合は `git add` + `git commit` の実行漏れを確認。乖離が50超の場合は main ブランチとの rebase を検討。長期ブランチでのコンフリクトリスクが高いため、早期のマージまたはブランチ分割を推奨する
 - **depends_on_artifacts**: []
 
-### R8-C04: impact severity high 以上の findings がユーザー判断を経ている
+### REV-C04: impact severity high 以上の findings がユーザー判断を経ている
 - **severity**: blocker
 - **verify_type**: automated + inspection
 - **verification**:
@@ -55,16 +54,16 @@ audit: required
 
 ## Test Review Criteria
 
-### R8-T01: レビューが全3観点で実行された
+### REV-T01: レビューが全3観点で実行された
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
-  レビュー結果ファイル（`artifacts/reviews/phase-8-test-review.json` またはレビューログ）を読み取り、3観点（coverage, quality, design-alignment）の実行記録を確認する。
+  レビュー結果ファイル（`artifacts/reviews/test-review.json` またはレビューログ）を読み取り、3観点（coverage, quality, design-alignment）の実行記録を確認する。
 - **pass_condition**: 3観点全ての実行記録が存在すること。記録された観点数が3
 - **fail_diagnosis_hint**: 欠落している観点を特定し、/test-review の起動オプションを確認。観点の指定漏れか、レビューエージェントの実行途中中断かを切り分ける
 - **depends_on_artifacts**: [artifacts/reviews/]
 
-### R8-T02: ユーザー承認済み findings の修正が全て適用済み
+### REV-T02: ユーザー承認済み findings の修正が全て適用済み
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -76,7 +75,7 @@ audit: required
 - **fail_diagnosis_hint**: 未適用の finding を特定し、対象ファイルの該当行を確認。修正の適用漏れか、修正が別の形で反映されているかを確認。`git log --oneline` で修正コミットが存在するか確認する
 - **depends_on_artifacts**: [artifacts/reviews/, tests/]
 
-### R8-T03: 設計書の全テスト観点がテストコードでカバーされている
+### REV-T03: 設計書の全テスト観点がテストコードでカバーされている
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:

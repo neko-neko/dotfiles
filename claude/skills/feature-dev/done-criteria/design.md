@@ -1,5 +1,4 @@
 ---
-phase: 1
 name: design
 max_retries: 3
 audit: required
@@ -7,17 +6,17 @@ audit: required
 
 ## Criteria
 
-### D1-01: 設計書ファイルが存在する
+### DSN-01: 設計書ファイルが存在する
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
   `Glob("docs/plans/YYYY-MM-DD-*-design.md")` で設計書ファイルを検索する。
 - **pass_condition**: Glob 結果が1件以上
-- **fail_diagnosis_hint**: Phase 1 Executor が設計書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-design.md` パターンに合致しているか確認
+- **fail_diagnosis_hint**: 当フェーズ Executor が設計書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-design.md` パターンに合致しているか確認
 - **depends_on_artifacts**: [docs/plans/]
-- **forward_check**: Phase 2 (Spec Review) の入力として設計書パスが渡される
+- **forward_check**: spec-review の入力として設計書パスが渡される
 
-### D1-02: 必須セクションが実質的な内容を持つ
+### DSN-02: 必須セクションが実質的な内容を持つ
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -32,7 +31,7 @@ audit: required
 - **fail_diagnosis_hint**: FAIL した項目番号を特定し、設計書の Investigation Record セクションで該当サブセクションの内容を確認。impact-analyzer の出力結果と照合して不足情報を補完する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 
-### D1-03: 影響範囲がコードベースと整合している
+### DSN-03: 影響範囲がコードベースと整合している
 - **severity**: blocker
 - **verify_type**: automated + inspection
 - **verification**:
@@ -43,7 +42,7 @@ audit: required
 - **fail_diagnosis_hint**: 存在しないパスをリストアップし、タイポか新規作成ファイルの記載漏れかを確認。コードベースの最新状態と設計書の記述時点の差異も確認する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 
-### D1-04: テスト観点が4区分x各2件以上
+### DSN-04: テスト観点が4区分x各2件以上
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -52,7 +51,7 @@ audit: required
 - **fail_diagnosis_hint**: 不足している区分を特定し、設計書のテスト観点セクションに追記が必要。正常系/異常系が不足する場合は要件定義を、エッジケースが不足する場合は境界値を、非機能が不足する場合はパフォーマンス/セキュリティを検討する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 
-### D1-05: 代替案が検討されている
+### DSN-05: 代替案が検討されている
 - **severity**: quality
 - **verify_type**: inspection
 - **verification**:
@@ -62,7 +61,7 @@ audit: required
 - **fail_diagnosis_hint**: 設計書に代替案セクションが見つからない場合は追記を検討。理由が付記されていない場合はトレードオフ観点（コスト、複雑度、保守性）で補足する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 
-### D1-06: worktree 作成済み + ベースラインテスト通過
+### DSN-06: worktree 作成済み + ベースラインテスト通過
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -72,13 +71,13 @@ audit: required
 - **fail_diagnosis_hint**: worktree が存在しない場合は `wt switch -c` の実行を確認。テスト失敗の場合はベースブランチ（main/master）に未修正の既存テスト失敗がないか `git stash && テスト実行` で切り分ける
 - **depends_on_artifacts**: []
 
-### D1-07: 設計書が git commit 済み
+### DSN-07: 設計書が git commit 済み
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
   `git status --porcelain -- docs/plans/*-design.md` を実行し、設計書ファイルが未コミット変更リストに含まれないことを確認する。
 - **pass_condition**: `git status --porcelain` の出力に設計書パスが含まれないこと（出力行数 0）
-- **fail_diagnosis_hint**: 設計書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。Phase 1 Executor の最終ステップでコミット処理を確認する
+- **fail_diagnosis_hint**: 設計書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。当フェーズ Executor の最終ステップでコミット処理を確認する
 - **depends_on_artifacts**: [docs/plans/*-design.md]
 
 ## Observation Collection
