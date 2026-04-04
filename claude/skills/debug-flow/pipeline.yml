@@ -32,12 +32,12 @@ phases:
       - code_changes
       - test_results
 
-  - id: smoke-test
-    phase_file: phases/phase-05-smoke-test.md
-    done_criteria: done-criteria/phase-05-smoke-test.md
-    skip_unless: --smoke
+  - id: accept-test
+    phase_file: phases/phase-05-accept-test.md
+    done_criteria: done-criteria/phase-05-accept-test.md
+    skip_unless: --accept
     produces:
-      - smoke_test_results
+      - accept_test_results
 
   - id: doc-audit
     phase_file: phases/phase-06-doc-audit.md
@@ -63,7 +63,7 @@ phases:
       - pr_url
 
 regate:
-  verification_chain: [execute, smoke-test, review]
+  verification_chain: [execute, accept-test, review]
 
   review_findings:
     strategy_file: regate/review-findings.md
