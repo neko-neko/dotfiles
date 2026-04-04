@@ -1,11 +1,29 @@
+# yaml-language-server: $schema=../../workflow-engine/schema/pipeline.v2.schema.json
 pipeline: feature-dev
-version: 1
+version: 2
+
+modules:
+  - audit
+  - autonomy
+  - regate
+  - resume
+  - phase-summary
+  - context-budget
+
+integrations:
+  - skill: linear-sync
+    enabled_by: --linear
+    hooks:
+      on_pipeline_start: [sync_workflow_start]
+      on_phase_complete: [sync_phase_summary, sync_evidence]
+      on_regate: [sync_regate]
+      on_handover: [sync_session]
+      on_pipeline_complete: [sync_complete]
 
 phases:
   - id: design
     phase_file: phases/design.md
     done_criteria: done-criteria/design.md
-    skip: false
     produces:
       - spec_file
       - investigation_record
@@ -13,14 +31,12 @@ phases:
   - id: spec-review
     phase_file: phases/spec-review.md
     done_criteria: done-criteria/spec-review.md
-    skip: false
     produces:
       - review_report
 
   - id: plan
     phase_file: phases/plan.md
     done_criteria: done-criteria/plan.md
-    skip: false
     produces:
       - implementation_plan
       - test_cases
@@ -28,14 +44,13 @@ phases:
   - id: plan-review
     phase_file: phases/plan-review.md
     done_criteria: done-criteria/plan-review.md
-    skip: false
     produces:
       - review_report
 
   - id: execute
     phase_file: phases/execute.md
     done_criteria: done-criteria/execute.md
-    skip: false
+    uses: [inner-loop]
     produces:
       - code_changes
       - test_results
@@ -58,7 +73,6 @@ phases:
   - id: review
     phase_file: phases/review.md
     done_criteria: done-criteria/review.md
-    skip: false
     produces:
       - review_findings
 
@@ -90,7 +104,6 @@ regate:
 settings:
   default_handover: always
   max_phase_retries: 3
-  linear_sync: auto
   context_budget:
     orchestrator: 150
     phase: 100

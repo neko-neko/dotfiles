@@ -1,11 +1,29 @@
+# yaml-language-server: $schema=../../workflow-engine/schema/pipeline.v2.schema.json
 pipeline: debug-flow
-version: 1
+version: 2
+
+modules:
+  - audit
+  - autonomy
+  - regate
+  - resume
+  - phase-summary
+  - context-budget
+
+integrations:
+  - skill: linear-sync
+    enabled_by: --linear
+    hooks:
+      on_pipeline_start: [sync_workflow_start]
+      on_phase_complete: [sync_phase_summary, sync_evidence]
+      on_regate: [sync_regate]
+      on_handover: [sync_session]
+      on_pipeline_complete: [sync_complete]
 
 phases:
   - id: rca
     phase_file: phases/rca.md
     done_criteria: done-criteria/rca.md
-    skip: false
     produces:
       - rca_report
       - reproduction_test
@@ -13,21 +31,19 @@ phases:
   - id: fix-plan
     phase_file: phases/fix-plan.md
     done_criteria: done-criteria/fix-plan.md
-    skip: false
     produces:
       - fix_plan
 
   - id: fix-plan-review
     phase_file: phases/fix-plan-review.md
     done_criteria: done-criteria/fix-plan-review.md
-    skip: false
     produces:
       - review_report
 
   - id: execute
     phase_file: phases/execute.md
     done_criteria: done-criteria/execute.md
-    skip: false
+    uses: [inner-loop]
     produces:
       - code_changes
       - test_results
@@ -49,7 +65,6 @@ phases:
   - id: review
     phase_file: phases/review.md
     done_criteria: done-criteria/review.md
-    skip: false
     produces:
       - review_findings
 
@@ -81,7 +96,6 @@ regate:
 settings:
   default_handover: always
   max_phase_retries: 3
-  linear_sync: auto
   context_budget:
     orchestrator: 150
     phase: 100
