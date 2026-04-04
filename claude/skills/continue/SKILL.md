@@ -14,13 +14,13 @@ user-invocable: true
    - 含まれる場合 → そのパスのディレクトリを使用
 2. チーム所属判定（handover スキルと同じロジック）
 3. **明示パスあり** → 指定されたパス
-4. **チーム所属あり** → `.claude/handover/{team-name}/{agent-name}/`
+4. **チーム所属あり** → `.agents/handover/{team-name}/{agent-name}/`
 
 ### 単体セッション（チーム所属なし）
 
-1. `{cwd}/.claude/handover/` を走査し、利用可能なセッション（status が `READY`）を収集する（グループ: **CWD**）
+1. `{cwd}/.agents/handover/` を走査し、利用可能なセッション（status が `READY`）を収集する（グループ: **CWD**）
 2. `git worktree list` で全 worktree パスを取得する
-3. CWD 以外の各 worktree の `{path}/.claude/handover/` を走査し、READY セッションを収集する（グループ: **worktree**）
+3. CWD 以外の各 worktree の `{path}/.agents/handover/` を走査し、READY セッションを収集する（グループ: **worktree**）
 4. 全セッションの `workspace.root` を検証する。`git worktree list` の結果に存在しないパスを指すセッションは **orphan** とマークする
 5. 候補数に応じた処理:
    - **0件** → 「再開可能なセッションがありません」と報告して終了
@@ -102,7 +102,7 @@ user-invocable: true
 
    - **既存 worktree のセッション**:
      1. `wt switch <branch>` を実行して worktree に切り替える
-     2. 切り替え先の `.claude/handover/` から `project-state.json` を読み込む
+     2. 切り替え先の `.agents/handover/` から `project-state.json` を読み込む
      3. 手順 0（Pipeline Detection）に戻る
 
    - **orphan セッション**（worktree 削除済み）:
@@ -112,7 +112,7 @@ user-invocable: true
      3. ユーザーに確認する: 「worktree が削除されています。`wt switch --create <branch>` で再作成しますか？」
         - **拒否** → セッション選択に戻る
         - **承認** → `wt switch --create <branch>` で worktree を再作成する
-     4. orphan セッションのデータ（`project-state.json`, `handover.md`）を新しい worktree の `.claude/handover/{branch}/{fingerprint}/` にコピーする
+     4. orphan セッションのデータ（`project-state.json`, `handover.md`）を新しい worktree の `.agents/handover/{branch}/{fingerprint}/` にコピーする
      5. 元の orphan セッションディレクトリを削除する
      6. 手順 0（Pipeline Detection）に戻る
 
@@ -182,7 +182,7 @@ user-invocable: true
 
 ## Cleanup
 
-continue 実行時に、CWD および全 worktree の `.claude/handover/` 配下で `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
+continue 実行時に、CWD および全 worktree の `.agents/handover/` 配下で `ALL_COMPLETE` かつ `generated_at` が7日以上前のセッションディレクトリを自動削除する。削除前にログ出力する。
 
 ## 制約
 
