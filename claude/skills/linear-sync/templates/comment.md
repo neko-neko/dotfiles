@@ -54,4 +54,4 @@
 - PASS: そのまま "PASS"
 - FAIL: "FAIL" + 失敗理由があれば付記
 - Done: "Done"（Audit Gate がないフェーズ）
-- Skipped: "Skipped"（--smoke 未指定時の Smoke Test 等）
+- Skipped: "Skipped"（--accept 未指定時の Acceptance Test 等）
