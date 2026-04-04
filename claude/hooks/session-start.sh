@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/../skills/handover/scripts/handover-lib.sh"
 # プロジェクトルートを取得
 PROJECT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 
-HANDOVER_BASE="${PROJECT_DIR}/.claude/handover"
+HANDOVER_BASE="${PROJECT_DIR}/.agents/handover"
 
 # handover ディレクトリがなければ何もしない
 [[ -d "$HANDOVER_BASE" ]] || exit 0

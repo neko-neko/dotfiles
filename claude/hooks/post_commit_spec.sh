@@ -223,7 +223,7 @@ CLAUDEEOF
       GIT_MOCK_MODE="has-repo"
       MOCK_PROJECT_DIR="$(mktemp -d)"
       CLAUDE_PROJECT_DIR="${MOCK_PROJECT_DIR}"
-      # Don't create any .claude/handover/ directory — no session
+      # Don't create any .agents/handover/ directory — no session
     }
     cleanup_no_session() {
       cleanup_mock_bin
@@ -250,7 +250,7 @@ CLAUDEEOF
       CLAUDE_PROJECT_DIR="${MOCK_PROJECT_DIR}"
 
       # Create session directory with valid project-state.json
-      local session_dir="${MOCK_PROJECT_DIR}/.claude/handover/main/test-session"
+      local session_dir="${MOCK_PROJECT_DIR}/.agents/handover/main/test-session"
       mkdir -p "$session_dir"
       cp "$FIXTURES_DIR/valid-v3.json" "${session_dir}/project-state.json"
     }
@@ -269,14 +269,14 @@ CLAUDEEOF
 
     It "adds architecture_changes entry with commit SHA"
       run_post_commit >/dev/null 2>&1
-      local state_file="${MOCK_PROJECT_DIR}/.claude/handover/main/test-session/project-state.json"
+      local state_file="${MOCK_PROJECT_DIR}/.agents/handover/main/test-session/project-state.json"
       When call jq -r '.architecture_changes[-1].commit_sha' "$state_file"
       The output should eq "deadbee"
     End
 
     It "generates handover.md file"
       run_post_commit >/dev/null 2>&1
-      local handover_file="${MOCK_PROJECT_DIR}/.claude/handover/main/test-session/handover.md"
+      local handover_file="${MOCK_PROJECT_DIR}/.agents/handover/main/test-session/handover.md"
       When call cat "$handover_file"
       The output should include "Session Handover"
     End
