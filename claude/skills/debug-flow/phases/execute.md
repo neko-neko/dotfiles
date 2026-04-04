@@ -3,9 +3,7 @@ phase: 4
 phase_name: execute
 requires_artifacts:
   - fix_plan
-phase_references:
-  - references/audit-gate-protocol.md
-  - references/inner-loop-protocol.md
+phase_references: []
 invoke_agents:
   - feature-implementer
 phase_flags:
