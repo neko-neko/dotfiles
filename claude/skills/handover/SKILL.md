@@ -44,7 +44,7 @@ user-invocable: true
 
 ```json
 {
-  "version": 4,
+  "version": 5,
   "generated_at": "ISO8601 現在時刻",
   "session_id": "現在のセッションID（不明なら unknown）",
   "status": "READY | ALL_COMPLETE",
@@ -119,8 +119,19 @@ user-invocable: true
     }
   ],
   "session_hash": "",
-  "linear_ticket_id": "Linear チケットID (例: ABC-123)。linear-sync supplement 使用時のみ設定。null または未設定の場合、sync は無効",
-  "linear_document_id": "Linear Document ID。linear-sync supplement が作成した Workflow Report Document の ID。sync_workflow_start で設定される"
+  "linear": {
+    "issue_id": "Linear チケットID (例: PROJ-123)。linear-sync supplement 使用時のみ設定。null または未設定の場合、sync は無効",
+    "last_synced_phase": 5,
+    "document_id": "Linear Document ID。linear-sync supplement が作成した Workflow Report Document の ID。sync_workflow_start で設定される"
+  },
+  "phase_summaries": {
+    "1": "phase-summaries/phase-01-design.yml",
+    "2": "phase-summaries/phase-02-spec-review.yml"
+  },
+  "session": {
+    "session_id": "<CLAUDE_SESSION_ID>",
+    "resume_hint": "<次フェーズの概要と注意点>"
+  }
 }
 ```
 
@@ -136,18 +147,61 @@ user-invocable: true
    - known_issues: 解決済みなら削除、新規は追加
    - phase_observations: 同一 phase のエントリは上書き、新規 phase は追加。各 phase の observations は最大5件（severity: warning > quality の順で保持）
    - session_notes: 追記（content 先頭50文字一致で重複排除）。セッションあたり最大10件
-   - `linear_ticket_id`: 新しい値で上書き（通常は変わらないが、明示的変更時に対応）
-   - `linear_document_id`: 新しい値で上書き
+   - `linear`: オブジェクト全体を新しい値で上書き（`issue_id`, `last_synced_phase`, `document_id`）
+   - `phase_summaries`: 新しいエントリを追記（既存キーは上書きしない）
+   - `session`: 新しい値で上書き
 
 5. `{保存先}/project-state.json` に書き出す
 
 ### Linear Sync（オプション）
 
-project-state.json 生成後、`linear_ticket_id` フィールドが設定されている場合:
+project-state.json 生成後、`linear.issue_id` フィールドが設定されている場合:
 
 1. `claude/skills/linear-sync/SKILL.md` の `sync_handover` セクションを Read
 2. セクションの手順に従い、project-state.json のアップロードと中断コメントの投稿を実行
 3. API 失敗時はワークフローをブロックせず、warning を出力して続行
+
+## Phase Summary 生成（pipeline ワークフロー時）
+
+`project-state.json` の `pipeline` フィールドが存在する場合（feature-dev / debug-flow）:
+
+1. `.claude/handover/{branch}/{fingerprint}/phase-summaries/` ディレクトリを作成
+2. 完了済みフェーズの Phase Summary を生成（未生成分のみ）
+3. Phase Summary フォーマット:
+
+```yaml
+phase: N
+phase_name: <name>
+status: completed | failed
+timestamp: <ISO8601>
+attempt: N
+audit_verdict: PASS | FAIL
+
+artifacts:
+  <name>:
+    type: file | git_range | inline
+    value: <参照先>
+
+decisions: []
+concerns:
+  - target_phase: <phase_id>
+    content: <内容>
+directives:
+  - target_phase: <phase_id>
+    content: <内容>
+
+evidence:
+  - type: <種別>
+    content: <内容> | local_path: <パス>
+    linear_sync: inline | attached | reference_only
+
+regate_history: []
+```
+
+4. `project-state.json` に `phase_summaries` マッピングを追加
+5. `session` フィールドを生成:
+   - `session_id`: `${CLAUDE_SESSION_ID}`
+   - `resume_hint`: current_phase の概要と前フェーズからの concerns/directives
 
 6. `{保存先}/handover.md` を以下のフォーマットで自動生成する:
 
@@ -183,6 +237,14 @@ project-state.json 生成後、`linear_ticket_id` フィールドが設定され
 
 ## Session Notes
 - [category] content（Phase N）
+
+## Phase Progress（pipeline ワークフロー時のみ）
+- [Phase 1] Design ✅ (spec: <path>)
+- [Phase 2] Spec Review ✅ (findings: 0 blocker)
+- [Phase 3] Plan ✅ (plan: <path>)
+- [Phase 5] Execute ✅
+  - Concerns: <concerns for later phases>
+→ Current Phase: N (<phase_name>)
 
 ## Known Issues
 - [severity] 問題の説明（なければ「なし」）

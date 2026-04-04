@@ -49,15 +49,52 @@ user-invocable: true
 0. **Pipeline Detection**（手順1の前に実行）
 
    project-state.json の `pipeline` フィールドを確認する:
-   - `pipeline` が `"feature-dev"` または `"debug-flow"` の場合:
-     ```
-     Pipeline: {pipeline} のセッションを検出しました。
-     /{pipeline} を Resume Mode で起動します。
-     ```
-     → Skill tool で `/{pipeline}` を invoke する
-     → continue の処理はここで終了（ワークフローに委譲）
-   - `pipeline` が存在しない、または上記以外の値の場合:
+   - `pipeline` が存在しない、または `"feature-dev"` / `"debug-flow"` 以外の値の場合:
      → 手順1以降の従来フローを実行する
+   - `pipeline` が `"feature-dev"` または `"debug-flow"` の場合:
+
+   **Phase Summary の読み込みと表示:**
+
+   1. `version` が 5 であることを確認する（4 の場合はレガシーフローにフォールバック）
+   2. `phase_summaries` マッピングから完了済みフェーズを特定する
+   3. `current_phase` を判定する（`phase_summaries` に存在する最大フェーズ番号 + 1）
+   4. 現在フェーズの Phase Summary が存在する場合は Read する
+   5. Phase Summary 内の `concerns` / `directives` を `target_phase` で現在フェーズにフィルタする
+   6. `session` オブジェクトから `session_id` と `resume_hint` を取得する
+
+   **表示フォーマット:**
+
+   ```
+   前回セッション:
+     Session ID: {session.session_id}
+     Resume hint: {session.resume_hint}
+
+   Phase Progress:
+     Phase 1 (design) ✅
+     Phase 2 (spec-review) ✅
+     Phase 3 (plan) ✅
+     → Current: Phase 4 (plan-review)
+
+   Concerns for current phase:
+     - <concerns with target_phase matching current phase>
+
+   Pipeline: {pipeline} のセッションを検出しました。
+   Phase {N} ({phase_name}) から Resume Mode で起動します。
+   ```
+
+   → Skill tool で `/{pipeline}` を invoke する
+   → continue の処理はここで終了（ワークフローに委譲）
+
+   ### Linear からの Phase Summary 復元（フォールバック）
+
+   ローカルの `phase-summaries/` が不在または不完全で、`linear.issue_id` が設定されている場合:
+
+   1. `/linear-sync` の `read_phase_summary` を invoke
+   2. Linear から Phase Summary を取得
+   3. ローカルの `phase-summaries/` に書き戻し
+   4. 通常の Pipeline Detection に戻る
+
+   Linear API 失敗時はワークフロー続行（ベストエフォート）。
 
 0.5. **Worktree 切り替え**（選択されたセッションが CWD 以外の場合のみ実行）
 
@@ -85,6 +122,7 @@ user-invocable: true
 1. 上記のパス解決で選択されたセッションの `project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
    - JSON として不正な場合 → エラーを報告して終了
+   - `version` が 4 または 5 であることを確認する。それ以外 → 「サポートされていないバージョンです（version: {version}）」と報告して終了
    - 必須フィールド（version, status, active_tasks）が欠けている場合 → エラーを報告して終了
 
 2. `git log --oneline -5` を実行し、直近のコミット履歴を確認する

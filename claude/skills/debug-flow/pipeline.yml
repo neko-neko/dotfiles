@@ -1,0 +1,88 @@
+pipeline: debug-flow
+version: 1
+
+phases:
+  - id: rca
+    phase_file: phases/phase-01-rca.md
+    done_criteria: done-criteria/phase-01-rca.md
+    skip: false
+    produces:
+      - rca_report
+      - reproduction_test
+
+  - id: fix-plan
+    phase_file: phases/phase-02-fix-plan.md
+    done_criteria: done-criteria/phase-02-fix-plan.md
+    skip: false
+    produces:
+      - fix_plan
+
+  - id: fix-plan-review
+    phase_file: phases/phase-03-fix-plan-review.md
+    done_criteria: done-criteria/phase-03-fix-plan-review.md
+    skip: false
+    produces:
+      - review_report
+
+  - id: execute
+    phase_file: phases/phase-04-execute.md
+    done_criteria: done-criteria/phase-04-execute.md
+    skip: false
+    produces:
+      - code_changes
+      - test_results
+
+  - id: smoke-test
+    phase_file: phases/phase-05-smoke-test.md
+    done_criteria: done-criteria/phase-05-smoke-test.md
+    skip_unless: --smoke
+    produces:
+      - smoke_test_results
+
+  - id: doc-audit
+    phase_file: phases/phase-06-doc-audit.md
+    done_criteria: done-criteria/phase-06-doc-audit.md
+    skip_unless: --doc
+    produces:
+      - doc_audit_report
+
+  - id: review
+    phase_file: phases/phase-07-review.md
+    done_criteria: done-criteria/phase-07-review.md
+    skip: false
+    produces:
+      - review_findings
+
+  - id: integrate
+    phase_file: phases/phase-08-integrate.md
+    done_criteria: done-criteria/phase-08-integrate.md
+    skip: false
+    handover: never
+    produces:
+      - merged_branch
+      - pr_url
+
+regate:
+  verification_chain: [execute, smoke-test, review]
+
+  review_findings:
+    strategy_file: regate/review-findings.md
+    rewind_to: execute
+
+  test_failure:
+    strategy_file: regate/test-failure.md
+    rewind_to: execute
+
+  audit_failure:
+    strategy_file: regate/audit-failure.md
+    rewind_to: current
+    max_retries: 3
+
+settings:
+  default_handover: always
+  max_phase_retries: 3
+  linear_sync: auto
+  context_budget:
+    orchestrator: 150
+    phase: 100
+    references: 200

@@ -18,6 +18,14 @@ user-invocable: false
 - **ベストエフォート**: Linear API 失敗はワークフローをブロックしない
 - **冪等性**: 同じフェーズを2回 sync しても安全
 
+## 責務の3層構造
+
+| Layer | 責務 | 状態 |
+|-------|------|------|
+| Layer 1 | 進捗可視化（フェーズ開始/完了のコメント投稿） | 既存 |
+| Layer 2 | コンテキストストア（Phase Summary、エビデンス、regate 履歴の記録） | 新規 |
+| Layer 3 | セッション管理（claude resume 用セッション情報、エラー再現性） | 新規 |
+
 ## Activation
 
 `--linear` フラグで有効化。フラグなしの場合、ワークフローはこのスキルを一切参照しない。
@@ -138,12 +146,25 @@ user-invocable: false
    - 各エビデンスファイルをチケットに添付する
    - **失敗時**: warn ログを出力し、エビデンスリストに「(アップロード失敗。ローカル: {path})」を記載。ワークフローは続行。
 
-2. **フェーズ完了コメントを投稿**:
+2. **Phase Summary の記録（Layer 2）**:
+
+   phase_result に加えて Phase Summary を Linear コメントに含める:
+   - `artifacts`: 成果物の場所（ファイルパス、ブランチ、コミット範囲）
+   - `decisions`: このフェーズで下した設計判断
+   - `concerns`: 懸念事項（target_phase 付き）
+   - `directives`: 次フェーズへの明示的な指示
+
+   evidence フィールドに基づきエビデンス処理:
+   - `linear_sync: inline` → コメント本文に埋め込み
+   - `linear_sync: attached` → ファイルをチケットに添付アップロード
+   - `linear_sync: reference_only` → ローカルパスのみ記載
+
+3. **フェーズ完了コメントを投稿**:
    - `templates/comment.md` を Read し、コメント生成仕様を確認
    - 仕様に従い、phase_result からコメント本文を生成
    - **冪等性チェック**: 直近コメントを取得し、`## Phase {N}:` で始まるコメントが存在すれば更新、なければ新規投稿
 
-3. **Document を更新**:
+4. **Document を更新**:
    - `templates/document.md` を Read し、Document 生成仕様を確認
    - これまでの全フェーズ結果を反映した Document コンテンツを再生成し、上書き更新
 
@@ -161,7 +182,23 @@ user-invocable: false
    - `templates/handover-comment.md` を Read し、コメント生成仕様を確認
    - 仕様に従い、コメント本文を生成して投稿
 
-3. **Document を更新**:
+3. **セッション情報の記録（Layer 3）**:
+
+   handover 時に以下のセッション情報をコメントに含める:
+
+   ```yaml
+   session:
+     session_id: "<CLAUDE_SESSION_ID>"
+     started_at: "<ISO8601>"
+     ended_at: "<ISO8601>"
+     context_usage: "<N%>"
+     handover_reason: "policy:always | context:threshold | user:manual"
+     resume_command: "claude resume <session_id>"
+     phase_at_exit: N
+     pending_action: "<次のアクション>"
+   ```
+
+4. **Document を更新**:
    - 現在の状態（Handover 中）を反映した Document コンテンツを再生成して更新
 
 ## sync_complete
@@ -181,6 +218,85 @@ user-invocable: false
    **Result:** 全 {total_phases} フェーズ完了
    ```
 3. **チケットステータスを Done に更新**
+
+## sync_phase_summary
+
+**目的**: Phase Summary を Linear コメントに書き込む（Layer 2）。
+
+**入力**: Phase Summary YAML（phase-summaries/phase-XX-*.yml の内容）
+
+**手順**:
+1. Phase Summary を構造化コメントとして投稿
+2. `templates/comment.md` のフォーマットに従い、artifacts/decisions/concerns/directives/evidence を含める
+3. 冪等性チェック: 同一フェーズのコメントが既存の場合は更新
+
+**出力**: Linear コメント ID
+
+## sync_session
+
+**目的**: セッション情報を Linear に記録する（Layer 3）。
+
+**入力**:
+```yaml
+session:
+  session_id: "<ID>"
+  started_at: "<ISO8601>"
+  ended_at: "<ISO8601>"
+  context_usage: "<N%>"
+  handover_reason: "policy:always | context:threshold | user:manual"
+  resume_command: "claude resume <session_id>"
+  phase_at_exit: N
+  pending_action: "<次のアクション>"
+```
+
+**手順**:
+1. セッション情報をコメントに含めて投稿
+2. Document にセッション履歴を追記
+
+## sync_regate
+
+**目的**: Regate イベントを Linear に記録する（Layer 2）。
+
+**入力**:
+```yaml
+regate:
+  trigger: review_findings | test_failure | audit_failure
+  source_phase: <phase_name>
+  rewind_to: <phase_name>
+  rerun: [<phase_ids>]
+  attempt: N
+  fix_summary: "<修正内容の要約>"
+```
+
+**手順**:
+1. Regate イベントをコメントとして投稿（ステータス絵文字付き）
+2. Document のフェーズ状態を更新（regate 中表示）
+
+## sync_evidence
+
+**目的**: エビデンスを Linear に記録する（Layer 2）。
+
+**入力**: evidence 配列（Phase Summary の evidence フィールド）
+
+**手順**:
+1. `linear_sync: inline` → コメント本文に含める
+2. `linear_sync: attached` → ファイルをチケットに添付アップロード、`linear_attachment_id` を返却
+3. `linear_sync: reference_only` → ローカルパスのみ記載
+4. アップロード失敗時: warn ログ、ローカルパス記載、続行
+
+## read_phase_summary
+
+**目的**: Linear から Phase Summary を読み出す（Layer 2、復元用）。
+
+**入力**: `linear_ticket_id`, `phase_number`
+
+**手順**:
+1. チケットのコメント履歴を走査
+2. `## Phase {N}:` で始まるコメントを検索
+3. コメント内容から Phase Summary YAML を再構成
+4. 返却
+
+**用途**: ローカルの phase-summaries/ が不在時のフォールバック復元（continue スキルから呼び出し）。
 
 ## Error Handling
 

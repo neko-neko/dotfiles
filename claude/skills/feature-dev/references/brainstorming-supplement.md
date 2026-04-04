@@ -75,7 +75,7 @@ S1・S2 で確認した内容を、設計書に以下のセクションとして
   - **Shared State** — 共有リソース一覧（種別、制約、使われ方）
   - **Implicit Contracts** — 暗黙の制約一覧（ファイル:行番号、依存先、違反時の影響）
   - **Side Effect Risks** — 副作用リスクシナリオ（severity、発生条件、影響範囲）
-- **Must-Verify Checklist** — 実装・テスト時に確認すべき事項のチェックリスト（impact-analyzer の出力から生成）。後続フェーズ（Phase 4 の implementation-review-consistency、Phase 7 の code-review-impact）で参照される
+- **Must-Verify Checklist** — 実装・テスト時に確認すべき事項のチェックリスト（impact-analyzer の出力から生成）。後続フェーズ（Phase 4 の implementation-review-consistency、{review} の code-review-impact）で参照される
 
 ## 追加ステップ（brainstorming の step 4 の設計書に含める）
 

@@ -97,7 +97,7 @@ one-shot 実行時は doc-check 連携は推奨のみ（自動実行しない）
 
 ## feature-dev 統合
 
-`/feature-dev --doc` で Phase 6 として実行される。詳細は feature-dev SKILL.md を参照。
+`/feature-dev --doc` で doc-audit フェーズとして実行される。詳細は feature-dev SKILL.md を参照。
 
 ## 制約
 

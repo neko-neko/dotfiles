@@ -107,7 +107,7 @@ audit: required
 - **pass_condition**: 手順3で全要件に対応テストあり、手順4で再現テストが PASS、手順5で全影響範囲に対応テストあり、手順6で既存テストの削除/無効化が0件
 - **fail_diagnosis_hint**: 手順3で欠落している要件IDを特定し対応テストを追加する。手順4で欠落している影響範囲のファイルを特定し、既存テストの有無と新規テスト追加の必要性を判断する。手順5で検出された削除/無効化の理由を確認し、意図的でない場合は復元する
 - **depends_on_artifacts**: [docs/plans/*-rca.md, tests/, src/]
-- **forward_check**: Phase 6 (Code Review) で指摘される「テスト不足」を事前に防止する
+- **forward_check**: Phase 7 (Code Review) で指摘される「テスト不足」を事前に防止する
 
 ## Observation Collection
 

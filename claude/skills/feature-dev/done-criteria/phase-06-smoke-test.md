@@ -1,5 +1,5 @@
 ---
-phase: 7
+phase: 6
 name: smoke-test
 max_retries: 3
 audit: required
@@ -7,7 +7,7 @@ audit: required
 
 ## Criteria
 
-### D7-01: 全スモークテストステップが PASS
+### D6-01: 全スモークテストステップが PASS
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:
@@ -16,7 +16,7 @@ audit: required
 - **fail_diagnosis_hint**: FAIL したステップ名とエラーメッセージを確認。ブラウザ操作の失敗（セレクタ不一致、タイムアウト）か、アプリケーションエラー（HTTP 5xx、例外）かを切り分ける。`artifacts/smoke-test/screenshots/` のスクリーンショットがあれば画面状態を確認する
 - **depends_on_artifacts**: [artifacts/smoke-test/]
 
-### D7-02: flaky test が未検出または報告済み
+### D6-02: flaky test が未検出または報告済み
 - **severity**: quality
 - **verify_type**: automated
 - **verification**:
@@ -25,7 +25,7 @@ audit: required
 - **fail_diagnosis_hint**: flaky ステップを特定し、タイミング依存（setTimeout, アニメーション待ち）、外部サービス依存（API レスポンス遅延）、テストデータ依存（ランダムデータ）のいずれかを調査する
 - **depends_on_artifacts**: [artifacts/smoke-test/]
 
-### D7-03: テストシナリオがプロジェクト特性を反映している
+### D6-03: テストシナリオがプロジェクト特性を反映している
 - **severity**: blocker
 - **verify_type**: inspection
 - **verification**:
@@ -40,7 +40,7 @@ audit: required
 - **fail_diagnosis_hint**: 欠落しているカテゴリを特定し、該当カテゴリのスモークテストシナリオを追加する。ユーザーフロー未対応の場合は設計書の該当フローを参照してシナリオを作成する。Evidence Plan のプロジェクト特性が実態と異なる場合は Evidence Plan の更新を検討する
 - **depends_on_artifacts**: [artifacts/smoke-test/, docs/plans/*-design.md]
 
-### D7-04: スモークテスト実行証跡が有効である
+### D6-04: スモークテスト実行証跡が有効である
 - **severity**: blocker
 - **verify_type**: automated
 - **verification**:

@@ -10,6 +10,7 @@ user-invocable: true
 # Linear Refresh
 
 linear-cleanup と linear-add を統合実行するワークフロー。外部ソース探索を1回で行い、既存チケットの構造整理と新規チケットの検出・作成を一気通貫で実行する。
+**`linear-cli` と `slackcli` を最初に必ずinvokeすること。**
 
 **開始時アナウンス:** 「Linear Refresh を開始します。Phase 0: Collect」
 
