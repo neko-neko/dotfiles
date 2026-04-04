@@ -53,17 +53,17 @@
 |-----------|--------|-----------|
 | サブエージェントによるタスク実行 | AUTO | 計画書に基づき自動実行 |
 | 個別タスク完了 | AUTO | 次のタスクへ進む |
-| 全タスク完了 | AUTO | {smoke-test}/{doc-audit} へ自動遷移 |
+| 全タスク完了 | AUTO | {accept-test}/{doc-audit} へ自動遷移 |
 | タスク失敗（1-2回目） | AUTO | リトライ |
 | タスク失敗（3回目） | PAUSE | 設計ギャップをエスカレーション |
 
-### {smoke-test}
+### {accept-test}
 
 | Situation | Action | Rationale |
 |-----------|--------|-----------|
-| `--smoke` 未指定かつ UI 関連なし | AUTO | {smoke-test} をスキップして {doc-audit} へ |
+| `--accept` 未指定かつ UI 関連なし | AUTO | {accept-test} をスキップして {doc-audit} へ |
 | UI 関連キーワード検出 | PAUSE | 自動有効化をユーザーに提案 |
-| smoke-test 起動 | AUTO | 4ステップを自動実行 |
+| accept-test 起動 | AUTO | 4ステップを自動実行 |
 | サーバー起動不可 | PAUSE | ユーザーに起動コマンドを確認 |
 | VRT 差分検出 | PAUSE | ベースライン更新をユーザーに確認 |
 | 全ステップ PASS | AUTO | {doc-audit} へ自動遷移 |
@@ -123,7 +123,7 @@
 | Audit Gate: escalation != null | PAUSE | 前フェーズの成果物に根本原因。残 attempt に関わらず即 PAUSE |
 | Audit Gate: fix_status blocked | PAUSE | 修正不能。即 PAUSE |
 | Audit Gate: Agent output invalid (2回目) | PAUSE | Audit Agent の出力が不正。手動確認を依頼 |
-| Re-gate: {execute} PASS + {smoke-test} PASS | AUTO | Re-review を実行 |
+| Re-gate: {execute} PASS + {accept-test} PASS | AUTO | Re-review を実行 |
 | Re-gate: re-review で findings なし | AUTO | {review} Audit Gate へ |
 | Re-gate: re-review が3回連続 findings | PAUSE | 根本的な設計見直しを促す |
 
