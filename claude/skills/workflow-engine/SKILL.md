@@ -29,7 +29,7 @@ user-invocable: false
 ### 1. 初期化
 
 1. Read `$PIPELINE_DIR/pipeline.yml`
-2. `version` フィールドを確認 → 2 以外なら PAUSE してユーザーに通知
+2. `version` フィールドを確認 → 3 以外ならエラー終了
 3. `modules` 宣言を解析 → 使用モジュールを特定
 4. `pipeline` フィールドからパイプライン名を取得
 5. `integrations` を解析 → enabled_by フラグが有効なインテグレーションを特定
@@ -60,7 +60,7 @@ modules に `resume` が含まれる場合:
 #### 4.3 Phase 実行準備
 1. Read `$PIPELINE_DIR/{phase.phase_file}`
 2. `uses` モジュール注入: phase に `uses` 宣言があれば、`${CLAUDE_SKILL_DIR}/modules/{module}.md` を Read し注入
-3. `requires_artifacts` を Phase Summary チェーンから解決:
+3. Artifact 解決: `pipeline.yml` の `artifacts` セクションから、`consumed_by` にこのフェーズ ID を含む artifact を全て特定し、Phase Summary チェーンから値を取得
    - `type: file` → Read
    - `type: git_range` → git diff で参照
    - `type: inline` → そのまま使用
@@ -71,11 +71,17 @@ modules に `resume` が含まれる場合:
 phase.md の指示に従いフェーズを実行する。
 
 #### 4.5 Audit Gate
-modules に `audit` が含まれ、かつ `done_criteria` が定義されている場合:
+modules に `audit` が含まれる場合:
 1. Read `${CLAUDE_SKILL_DIR}/modules/audit.md` → プロトコル実行
-2. Read `$PIPELINE_DIR/{phase.done_criteria}`
-3. `audit: required` → phase-auditor エージェント起動
-4. `audit: lite` → エンジン自身が基準を直接検証
+2. Audit チェックリストの組み立て:
+   a. `pipeline.yml` artifacts から、このフェーズが `produced_by` である artifact を特定
+   b. 各 artifact の `contract.verification` を収集 → verification リスト
+   c. 各 artifact の `contract.validation` を収集 → validation リスト
+   d. `$PIPELINE_DIR/done-criteria/{phase.id}.md` を Read
+   e. `operations` を収集 → operations リスト
+   f. `artifact_validation.{artifact_name}.additional` を validation リストにマージ
+3. `audit: required` → phase-auditor に 3 層（verification / validation / operations）を渡す
+4. `audit: lite` → エンジン自身が verification + operations を直接検証
 5. FAIL → Fix Dispatch → Re-audit（max_retries まで）
 
 #### 4.6 Phase Summary 生成
