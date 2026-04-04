@@ -37,7 +37,7 @@ TeamCreate で "investigation-{bug}" チームを作成:
 
 ### --linear 時
 
-Phase 1 開始前に:
+rca フェーズ開始前に:
 1. `/linear-sync` の `resolve_ticket` セクションを Read し実行
 2. チケット確定後、`sync_workflow_start` を実行
 

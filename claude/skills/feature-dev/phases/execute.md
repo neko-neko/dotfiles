@@ -59,7 +59,7 @@ TeamCreate で "impl-{feature}" チームを作成:
 
 ### Evidence Collection
 
-Phase 1 Audit Gate 完了後に生成された Evidence Plan に基づき:
+design Audit Gate 完了後に生成された Evidence Plan に基づき:
 - テスト coverage
 - スクリーンショット/ビデオ（UI 変更時）
 - パフォーマンスメトリクス
