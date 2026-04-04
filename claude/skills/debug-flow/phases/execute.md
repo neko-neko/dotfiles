@@ -13,7 +13,7 @@ phase_flags:
 
 ## 実行手順
 
-`references/inner-loop-protocol.md` を Read し、以下の3サブステップで実行する。
+inner-loop プロトコルは engine が `uses: [inner-loop]` 経由で注入済み。以下の3サブステップで実行する。
 
 ### Sub-step 1: Impl (TDD)
 

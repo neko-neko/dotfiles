@@ -4,8 +4,7 @@ phase_name: review
 requires_artifacts:
   - code_changes
   - test_results
-phase_references:
-  - references/audit-gate-protocol.md
+phase_references: []
 invoke_agents:
   - code-review-quality
   - code-review-security
