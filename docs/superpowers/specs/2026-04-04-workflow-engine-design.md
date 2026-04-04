@@ -99,7 +99,7 @@ skills/
 name: workflow-engine
 description: >-
   パイプライン型ワークフローの汎用オーケストレーションエンジン。
-  Phase Dispatch, Audit Gate, Regate, Handover, Linear Sync を駆動する。
+  Phase Dispatch, Audit Gate, Regate, Handover, Integration Hooks を駆動する。
   feature-dev, debug-flow 等のパイプラインスキルから呼び出される。
 user-invocable: false
 ---
@@ -281,121 +281,187 @@ workflow-engine/
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "pipeline.v2.schema.json",
   "title": "Workflow Engine Pipeline Definition",
-  "description": "workflow-engine が駆動するパイプラインの定義スキーマ (v2)",
+  "description": "workflow-engine が駆動するパイプラインの定義スキーマ (v2)。このファイルが pipeline.yml 構造の SSOT（Single Source of Truth）である。",
   "type": "object",
   "required": ["pipeline", "version", "modules", "phases", "settings"],
   "additionalProperties": false,
+
   "properties": {
     "pipeline": {
       "type": "string",
-      "description": "パイプライン識別子。project-state.json の pipeline フィールドと一致する",
-      "pattern": "^[a-z][a-z0-9-]*$"
+      "description": "パイプラインの識別子。handover 時に project-state.json の pipeline フィールドと照合される。小文字英数字とハイフンのみ使用可能。",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "examples": ["feature-dev", "debug-flow", "quick-fix"]
     },
+
     "version": {
       "type": "integer",
       "const": 2,
-      "description": "スキーマバージョン"
+      "description": "pipeline.yml のスキーマバージョン。workflow-engine はこの値を読み取り、未知のバージョンの場合は PAUSE してユーザーに通知する。"
     },
+
     "modules": {
       "type": "array",
-      "description": "エンジンレベルモジュールのリスト。workflow-engine/modules/{name}.md に対応",
+      "description": "エンジンレベルモジュールのリスト。ここに記載した名前に対応する workflow-engine/modules/{name}.md がオーケストレーションループの該当ステップで読み込まれる。新規モジュールを追加する場合は modules/ にファイルを配置し、ここに名前を追加するだけでよい。",
       "items": {
         "type": "string",
-        "enum": ["audit", "autonomy", "regate", "resume", "phase-summary", "context-budget"]
+        "pattern": "^[a-z][a-z0-9-]*$",
+        "examples": ["audit", "autonomy", "regate", "resume", "phase-summary", "context-budget"]
       },
       "minItems": 1,
       "uniqueItems": true
     },
+
     "phases": {
       "type": "array",
-      "description": "フェーズ定義の配列（実行順）",
+      "description": "パイプラインのフェーズ定義。配列の順序がそのまま実行順になる。最低1つのフェーズが必要。",
       "items": { "$ref": "#/$defs/Phase" },
       "minItems": 1
     },
+
     "integrations": {
       "type": "array",
-      "description": "ライフサイクルフックで呼び出す外部スキル",
+      "description": "ライフサイクルフックで呼び出す外部スキルの定義。パイプラインの各イベント（フェーズ完了、regate 発生など）で自動的に invoke される。フラグで有効/無効を切り替える。未定義の場合、フックは一切発火しない。",
       "items": { "$ref": "#/$defs/Integration" }
     },
-    "regate": { "$ref": "#/$defs/Regate" },
-    "settings": { "$ref": "#/$defs/Settings" }
-  },
-  "if": {
-    "properties": {
-      "modules": { "contains": { "const": "regate" } }
+
+    "regate": {
+      "$ref": "#/$defs/Regate",
+      "description": "Regate（失敗時の巻き戻し＋再実行）の設定。modules に 'regate' を含む場合は必須。"
+    },
+
+    "settings": {
+      "$ref": "#/$defs/Settings",
+      "description": "パイプライン全体の設定。handover ポリシー、リトライ上限、コンテキスト予算を定義する。"
     }
   },
-  "then": {
-    "required": ["regate"]
-  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "modules": { "contains": { "const": "regate" } }
+        }
+      },
+      "then": {
+        "required": ["regate"],
+        "description": "modules に 'regate' を含む場合、regate セクションの定義が必須。"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "modules": { "contains": { "const": "audit" } }
+        }
+      },
+      "then": {
+        "properties": {
+          "phases": {
+            "items": {
+              "required": ["done_criteria"]
+            }
+          }
+        },
+        "description": "modules に 'audit' を含む場合、全フェーズに done_criteria の定義が必須。"
+      }
+    }
+  ],
+
   "$defs": {
+
     "Phase": {
       "type": "object",
+      "description": "1つのフェーズの定義。フェーズはパイプラインの実行単位で、それぞれが独立した .md ファイルに実行手順を持つ。",
       "required": ["id", "phase_file", "produces"],
       "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
-          "description": "フェーズのセマンティック ID",
-          "pattern": "^[a-z][a-z0-9-]*$"
+          "description": "フェーズのセマンティック ID。パイプライン内で一意でなければならない。regate の rewind_to や verification_chain でこの ID を参照する。",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "examples": ["design", "execute", "review", "rca", "fix-plan"]
         },
+
         "phase_file": {
           "type": "string",
-          "description": "フェーズ実行指示ファイルのパス（$PIPELINE_DIR からの相対パス）"
+          "description": "フェーズの実行手順が書かれた .md ファイルへのパス。パイプラインスキルのディレクトリからの相対パス。",
+          "examples": ["phases/design.md", "phases/execute.md"]
         },
+
         "done_criteria": {
           "type": "string",
-          "description": "監査基準ファイルのパス。modules に audit を含む場合は各フェーズに必須"
+          "description": "このフェーズの監査基準ファイルへのパス。modules に 'audit' を含む場合は全フェーズで必須。ファイル内のフロントマターで audit: required（phase-auditor エージェント起動）または audit: lite（エンジンが直接検証）を指定する。",
+          "examples": ["done-criteria/design.md", "done-criteria/execute.md"]
         },
+
         "skip": {
           "type": "boolean",
           "default": false,
-          "description": "true で常にスキップ"
+          "description": "true にするとこのフェーズは常にスキップされる。skip_unless と同時に指定することはできない（排他）。省略時は false（スキップしない）。"
         },
+
         "skip_unless": {
           "type": "string",
-          "description": "指定フラグが有効でない限りスキップ（例: --accept）。skip と排他",
-          "pattern": "^--[a-z][a-z0-9-]*$"
+          "description": "ここで指定したフラグがユーザーに渡されない限り、このフェーズはスキップされる。例: '--accept' を指定すると、ユーザーが --accept フラグを付けた場合のみ実行。skip と同時に指定することはできない（排他）。",
+          "pattern": "^--[a-z][a-z0-9-]*$",
+          "examples": ["--accept", "--doc"]
         },
+
         "uses": {
           "type": "array",
-          "description": "フェーズレベルモジュールのリスト。workflow-engine/modules/{name}.md に対応",
-          "items": { "type": "string" },
+          "description": "このフェーズの実行前に追加で読み込むモジュール（フェーズレベルモジュール）。workflow-engine/modules/{name}.md が注入される。例えば Execute フェーズに inner-loop を指定すると、TDD サイクルのプロトコルが注入される。",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "examples": ["inner-loop"]
+          },
           "uniqueItems": true
         },
+
         "handover": {
           "type": "string",
           "enum": ["always", "optional", "never"],
-          "description": "フェーズ完了後の handover ポリシー。デフォルト: settings.default_handover"
+          "description": "フェーズ完了後の handover（セッション引き継ぎ）ポリシー。always: 毎回 handover。optional: コンテキスト残量が不足した場合のみ。never: handover しない（ただし critical 閾値を下回った場合は例外）。省略時は settings.default_handover の値が使われる。"
         },
+
         "produces": {
           "type": "array",
-          "description": "フェーズが生成するアーティファクト名のリスト",
-          "items": { "type": "string" },
+          "description": "このフェーズが生成するアーティファクト（成果物）の名前リスト。後続フェーズが requires_artifacts でこの名前を参照し、Phase Summary チェーンから解決する。",
+          "items": {
+            "type": "string",
+            "examples": ["spec_file", "code_changes", "test_results", "review_findings"]
+          },
           "minItems": 1
         }
       },
       "not": {
+        "description": "skip と skip_unless は同時に指定できない。skip: true は「常にスキップ」、skip_unless は「フラグがない場合にスキップ」で意味が矛盾するため。",
         "required": ["skip", "skip_unless"]
       }
     },
+
     "Integration": {
       "type": "object",
+      "description": "外部スキルとのインテグレーション定義。パイプラインのライフサイクルイベントに応じて、指定したスキルを自動的に invoke する。例: Linear チケットへの進捗同期、Slack への通知など。",
       "required": ["skill", "enabled_by", "hooks"],
       "additionalProperties": false,
       "properties": {
         "skill": {
           "type": "string",
-          "description": "invoke するスキル名（例: linear-sync）"
+          "description": "invoke するスキルの名前。Claude Code に登録されたスキル名を指定する。",
+          "examples": ["linear-sync", "slack-notify"]
         },
+
         "enabled_by": {
           "type": "string",
-          "description": "このインテグレーションを有効化するフラグ",
-          "pattern": "^--[a-z][a-z0-9-]*$"
+          "description": "このインテグレーションを有効化するフラグ名。ユーザーがこのフラグを指定した場合のみ hooks が発火する。",
+          "pattern": "^--[a-z][a-z0-9-]*$",
+          "examples": ["--linear", "--slack"]
         },
+
         "hooks": {
           "type": "object",
-          "description": "ライフサイクルイベント → スキルに渡すアクション名のマッピング",
+          "description": "ライフサイクルイベントと、そのイベント発火時に実行するアクションのマッピング。キーはイベント名、値はスキルに渡すアクション名の配列。",
           "propertyNames": {
             "enum": [
               "on_pipeline_start",
@@ -405,87 +471,123 @@ workflow-engine/
               "on_regate",
               "on_handover",
               "on_pipeline_complete"
-            ]
+            ],
+            "description": "使用可能なライフサイクルイベント名"
           },
           "additionalProperties": {
-            "type": "string",
-            "description": "カンマ区切りのアクション名"
+            "type": "array",
+            "description": "イベント発火時に実行するアクション名のリスト。スキルに引数として渡される。",
+            "items": {
+              "type": "string",
+              "examples": ["sync_phase_summary", "sync_evidence", "sync_regate"]
+            },
+            "minItems": 1
           },
-          "minProperties": 1
+          "minProperties": 1,
+          "examples": [
+            {
+              "on_pipeline_start": ["sync_workflow_start"],
+              "on_phase_complete": ["sync_phase_summary", "sync_evidence"],
+              "on_pipeline_complete": ["sync_complete"]
+            }
+          ]
         }
       }
     },
+
     "Regate": {
       "type": "object",
+      "description": "Regate（Re-gate）は、失敗が発生した際にパイプラインを特定のフェーズまで巻き戻して再実行する仕組み。verification_chain で再実行するフェーズ群を定義し、各トリガー（レビュー指摘、テスト失敗、監査失敗など）ごとに戦略ファイルを指定する。トリガー名はパイプライン固有に自由に定義できる。",
       "required": ["verification_chain"],
-      "additionalProperties": false,
       "properties": {
         "verification_chain": {
           "type": "array",
-          "description": "Regate 時に再実行するフェーズ ID のリスト",
-          "items": { "type": "string" },
+          "description": "Regate 発生時に再実行するフェーズ ID のリスト。ここで指定した順序でフェーズが再実行される。例: [execute, accept-test, review] なら、修正後に実装→受入テスト→レビューを再実行する。",
+          "items": {
+            "type": "string",
+            "examples": ["execute", "accept-test", "review"]
+          },
           "minItems": 1
-        },
-        "review_findings": { "$ref": "#/$defs/RegateStrategy" },
-        "test_failure": { "$ref": "#/$defs/RegateStrategy" },
-        "audit_failure": { "$ref": "#/$defs/RegateStrategy" }
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/RegateStrategy",
+        "description": "各トリガーの Regate 戦略。キー名はトリガーの識別子（例: review_findings, test_failure, audit_failure, security_failure など）。パイプライン固有のトリガーを自由に追加できる。"
       }
     },
+
     "RegateStrategy": {
       "type": "object",
+      "description": "1つの Regate トリガーの戦略定義。どのファイルに戦略が書かれているか、どのフェーズまで巻き戻すか、何回までリトライするかを指定する。",
       "required": ["strategy_file", "rewind_to"],
       "additionalProperties": false,
       "properties": {
         "strategy_file": {
           "type": "string",
-          "description": "戦略ファイルのパス（$PIPELINE_DIR からの相対パス）"
+          "description": "Regate 戦略が記述されたファイルのパス。パイプラインスキルのディレクトリからの相対パス。",
+          "examples": ["regate/review-findings.md", "regate/test-failure.md"]
         },
         "rewind_to": {
           "type": "string",
-          "description": "巻き戻し先フェーズ ID。'current' は現フェーズ"
+          "description": "巻き戻し先のフェーズ ID。'current' を指定すると、コード変更なしで現フェーズの Audit Gate のみを再実行する。",
+          "examples": ["execute", "plan", "current"]
         },
         "max_retries": {
           "type": "integer",
           "minimum": 1,
-          "description": "最大リトライ回数。デフォルト: settings.max_phase_retries"
+          "description": "この戦略の最大リトライ回数。超過すると PAUSE してユーザーに判断を委ねる。省略時は settings.max_phase_retries の値が使われる。",
+          "examples": [3]
         }
       }
     },
+
     "Settings": {
       "type": "object",
+      "description": "パイプライン全体に適用される設定。",
       "required": ["default_handover", "max_phase_retries", "context_budget"],
       "additionalProperties": false,
       "properties": {
         "default_handover": {
           "type": "string",
-          "enum": ["always", "optional", "never"]
+          "enum": ["always", "optional", "never"],
+          "description": "フェーズ定義で handover を省略した場合に適用されるデフォルトポリシー。always: 毎フェーズ handover。optional: コンテキスト残量で判定。never: handover しない。",
+          "examples": ["always"]
         },
         "max_phase_retries": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "description": "Audit Gate 失敗時のデフォルト最大リトライ回数。RegateStrategy で個別に上書き可能。",
+          "examples": [3]
         },
-        "context_budget": { "$ref": "#/$defs/ContextBudget" }
+        "context_budget": {
+          "$ref": "#/$defs/ContextBudget"
+        }
       }
     },
+
     "ContextBudget": {
       "type": "object",
+      "description": "コンテキストウィンドウの予算配分。各カテゴリにトークン数を割り当て、handover: optional 時の判定基準に使われる。",
       "required": ["orchestrator", "phase", "references"],
       "additionalProperties": false,
       "properties": {
         "orchestrator": {
           "type": "integer",
           "minimum": 1,
-          "description": "SKILL.md + pipeline.yml 用トークン予算"
+          "description": "SKILL.md + pipeline.yml のロードに使うトークン予算。",
+          "examples": [150]
         },
         "phase": {
           "type": "integer",
           "minimum": 1,
-          "description": "phases/*.md + done-criteria 用トークン予算"
+          "description": "phases/*.md + done-criteria/*.md のロードに使うトークン予算。",
+          "examples": [100]
         },
         "references": {
           "type": "integer",
           "minimum": 1,
-          "description": "references/*.md + modules 用トークン予算"
+          "description": "references/*.md + modules/*.md のロードに使うトークン予算。",
+          "examples": [200]
         }
       }
     }
@@ -516,7 +618,7 @@ integrations の hooks で使用可能なイベント:
 
 workflow-engine は `version` フィールドを読み取り、未知のバージョンの場合は PAUSE してユーザーに通知する。
 
-### 4.3 feature-dev/pipeline.yml（改定後）
+### 4.4 feature-dev/pipeline.yml（改定後）
 
 ```yaml
 pipeline: feature-dev
@@ -534,17 +636,16 @@ integrations:
   - skill: linear-sync
     enabled_by: --linear
     hooks:
-      on_pipeline_start: sync_workflow_start
-      on_phase_complete: sync_phase_summary, sync_evidence
-      on_regate: sync_regate
-      on_handover: sync_session
-      on_pipeline_complete: sync_complete
+      on_pipeline_start: [sync_workflow_start]
+      on_phase_complete: [sync_phase_summary, sync_evidence]
+      on_regate: [sync_regate]
+      on_handover: [sync_session]
+      on_pipeline_complete: [sync_complete]
 
 phases:
   - id: design
     phase_file: phases/design.md
     done_criteria: done-criteria/design.md
-    skip: false
     produces:
       - spec_file
       - investigation_record
@@ -552,14 +653,12 @@ phases:
   - id: spec-review
     phase_file: phases/spec-review.md
     done_criteria: done-criteria/spec-review.md
-    skip: false
     produces:
       - review_report
 
   - id: plan
     phase_file: phases/plan.md
     done_criteria: done-criteria/plan.md
-    skip: false
     produces:
       - implementation_plan
       - test_cases
@@ -567,7 +666,6 @@ phases:
   - id: plan-review
     phase_file: phases/plan-review.md
     done_criteria: done-criteria/plan-review.md
-    skip: false
     produces:
       - review_report
 
@@ -575,7 +673,6 @@ phases:
     phase_file: phases/execute.md
     done_criteria: done-criteria/execute.md
     uses: [inner-loop]
-    skip: false
     produces:
       - code_changes
       - test_results
@@ -598,7 +695,6 @@ phases:
   - id: review
     phase_file: phases/review.md
     done_criteria: done-criteria/review.md
-    skip: false
     produces:
       - review_findings
 
@@ -636,7 +732,7 @@ settings:
     references: 200
 ```
 
-### 4.4 debug-flow/pipeline.yml（改定後）
+### 4.5 debug-flow/pipeline.yml（改定後）
 
 ```yaml
 pipeline: debug-flow
@@ -654,17 +750,16 @@ integrations:
   - skill: linear-sync
     enabled_by: --linear
     hooks:
-      on_pipeline_start: sync_workflow_start
-      on_phase_complete: sync_phase_summary, sync_evidence
-      on_regate: sync_regate
-      on_handover: sync_session
-      on_pipeline_complete: sync_complete
+      on_pipeline_start: [sync_workflow_start]
+      on_phase_complete: [sync_phase_summary, sync_evidence]
+      on_regate: [sync_regate]
+      on_handover: [sync_session]
+      on_pipeline_complete: [sync_complete]
 
 phases:
   - id: rca
     phase_file: phases/rca.md
     done_criteria: done-criteria/rca.md
-    skip: false
     produces:
       - rca_report
       - reproduction_test
@@ -672,14 +767,12 @@ phases:
   - id: fix-plan
     phase_file: phases/fix-plan.md
     done_criteria: done-criteria/fix-plan.md
-    skip: false
     produces:
       - fix_plan
 
   - id: fix-plan-review
     phase_file: phases/fix-plan-review.md
     done_criteria: done-criteria/fix-plan-review.md
-    skip: false
     produces:
       - review_report
 
@@ -687,7 +780,6 @@ phases:
     phase_file: phases/execute.md
     done_criteria: done-criteria/execute.md
     uses: [inner-loop]
-    skip: false
     produces:
       - code_changes
       - test_results
@@ -709,7 +801,6 @@ phases:
   - id: review
     phase_file: phases/review.md
     done_criteria: done-criteria/review.md
-    skip: false
     produces:
       - review_findings
 
@@ -862,34 +953,18 @@ user-invocable: true
 
 ## 8. パイプライン契約（Pipeline Contract）
 
-workflow-engine を利用する新規パイプラインが満たすべき要件。
+workflow-engine を利用する新規パイプラインが満たすべき要件。YAML の構造は `pipeline.v2.schema.json`（SSOT）に準拠すること。
 
-### 必須
+### ファイル構成
 
-| ファイル | 説明 |
-|---------|------|
-| `SKILL.md` | エントリポイント。フラグ定義 + workflow-engine の invoke |
-| `pipeline.yml` | パイプライン定義。`pipeline`, `version`, `modules`, `phases`, `settings` |
-| `phases/*.md` | 各フェーズの実行指示。フロントマターに `requires_artifacts`, `phase_references`, `invoke_agents`, `phase_flags` |
-
-### modules: [audit] を使う場合に追加
-
-| ファイル | 説明 |
-|---------|------|
-| `done-criteria/*.md` | 各フェーズの監査基準。`audit: required \| lite` をフロントマターに宣言 |
-
-### modules: [regate] を使う場合に追加
-
-| ファイル | 説明 |
-|---------|------|
-| `regate/*.md` | Regate 戦略ファイル |
-| pipeline.yml `regate` セクション | `verification_chain`, トリガー定義 |
-
-### 任意
-
-| ファイル | 説明 |
-|---------|------|
-| `references/*.md` | パイプライン固有の参照ドキュメント |
+| ファイル | 必須 | 説明 |
+|---------|------|------|
+| `SKILL.md` | 必須 | エントリポイント。フラグ定義 + workflow-engine の invoke |
+| `pipeline.yml` | 必須 | パイプライン定義。スキーマ: `pipeline.v2.schema.json` |
+| `phases/*.md` | 必須 | 各フェーズの実行指示 |
+| `done-criteria/*.md` | modules に audit を含む場合 | 各フェーズの監査基準 |
+| `regate/*.md` | modules に regate を含む場合 | Regate 戦略ファイル |
+| `references/*.md` | 任意 | パイプライン固有の参照ドキュメント |
 
 ### 最小構成例（仮想パイプライン: quick-fix）
 
