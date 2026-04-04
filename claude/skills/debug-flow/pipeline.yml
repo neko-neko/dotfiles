@@ -3,59 +3,59 @@ version: 1
 
 phases:
   - id: rca
-    phase_file: phases/phase-01-rca.md
-    done_criteria: done-criteria/phase-01-rca.md
+    phase_file: phases/rca.md
+    done_criteria: done-criteria/rca.md
     skip: false
     produces:
       - rca_report
       - reproduction_test
 
   - id: fix-plan
-    phase_file: phases/phase-02-fix-plan.md
-    done_criteria: done-criteria/phase-02-fix-plan.md
+    phase_file: phases/fix-plan.md
+    done_criteria: done-criteria/fix-plan.md
     skip: false
     produces:
       - fix_plan
 
   - id: fix-plan-review
-    phase_file: phases/phase-03-fix-plan-review.md
-    done_criteria: done-criteria/phase-03-fix-plan-review.md
+    phase_file: phases/fix-plan-review.md
+    done_criteria: done-criteria/fix-plan-review.md
     skip: false
     produces:
       - review_report
 
   - id: execute
-    phase_file: phases/phase-04-execute.md
-    done_criteria: done-criteria/phase-04-execute.md
+    phase_file: phases/execute.md
+    done_criteria: done-criteria/execute.md
     skip: false
     produces:
       - code_changes
       - test_results
 
   - id: accept-test
-    phase_file: phases/phase-05-accept-test.md
-    done_criteria: done-criteria/phase-05-accept-test.md
+    phase_file: phases/accept-test.md
+    done_criteria: done-criteria/accept-test.md
     skip_unless: --accept
     produces:
       - accept_test_results
 
   - id: doc-audit
-    phase_file: phases/phase-06-doc-audit.md
-    done_criteria: done-criteria/phase-06-doc-audit.md
+    phase_file: phases/doc-audit.md
+    done_criteria: done-criteria/doc-audit.md
     skip_unless: --doc
     produces:
       - doc_audit_report
 
   - id: review
-    phase_file: phases/phase-07-review.md
-    done_criteria: done-criteria/phase-07-review.md
+    phase_file: phases/review.md
+    done_criteria: done-criteria/review.md
     skip: false
     produces:
       - review_findings
 
   - id: integrate
-    phase_file: phases/phase-08-integrate.md
-    done_criteria: done-criteria/phase-08-integrate.md
+    phase_file: phases/integrate.md
+    done_criteria: done-criteria/integrate.md
     skip: false
     handover: never
     produces:
