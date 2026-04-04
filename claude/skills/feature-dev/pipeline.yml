@@ -3,38 +3,38 @@ version: 1
 
 phases:
   - id: design
-    phase_file: phases/phase-01-design.md
-    done_criteria: done-criteria/phase-01-design.md
+    phase_file: phases/design.md
+    done_criteria: done-criteria/design.md
     skip: false
     produces:
       - spec_file
       - investigation_record
 
   - id: spec-review
-    phase_file: phases/phase-02-spec-review.md
-    done_criteria: done-criteria/phase-02-spec-review.md
+    phase_file: phases/spec-review.md
+    done_criteria: done-criteria/spec-review.md
     skip: false
     produces:
       - review_report
 
   - id: plan
-    phase_file: phases/phase-03-plan.md
-    done_criteria: done-criteria/phase-03-plan.md
+    phase_file: phases/plan.md
+    done_criteria: done-criteria/plan.md
     skip: false
     produces:
       - implementation_plan
       - test_cases
 
   - id: plan-review
-    phase_file: phases/phase-04-plan-review.md
-    done_criteria: done-criteria/phase-04-plan-review.md
+    phase_file: phases/plan-review.md
+    done_criteria: done-criteria/plan-review.md
     skip: false
     produces:
       - review_report
 
   - id: execute
-    phase_file: phases/phase-05-execute.md
-    done_criteria: done-criteria/phase-05-execute.md
+    phase_file: phases/execute.md
+    done_criteria: done-criteria/execute.md
     skip: false
     produces:
       - code_changes
@@ -42,29 +42,29 @@ phases:
       - evidence_collection
 
   - id: accept-test
-    phase_file: phases/phase-06-accept-test.md
-    done_criteria: done-criteria/phase-06-accept-test.md
+    phase_file: phases/accept-test.md
+    done_criteria: done-criteria/accept-test.md
     skip_unless: --accept
     produces:
       - accept_test_results
 
   - id: doc-audit
-    phase_file: phases/phase-07-doc-audit.md
-    done_criteria: done-criteria/phase-07-doc-audit.md
+    phase_file: phases/doc-audit.md
+    done_criteria: done-criteria/doc-audit.md
     skip_unless: --doc
     produces:
       - doc_audit_report
 
   - id: review
-    phase_file: phases/phase-08-review.md
-    done_criteria: done-criteria/phase-08-review.md
+    phase_file: phases/review.md
+    done_criteria: done-criteria/review.md
     skip: false
     produces:
       - review_findings
 
   - id: integrate
-    phase_file: phases/phase-09-integrate.md
-    done_criteria: done-criteria/phase-09-integrate.md
+    phase_file: phases/integrate.md
+    done_criteria: done-criteria/integrate.md
     skip: false
     handover: never
     produces:
