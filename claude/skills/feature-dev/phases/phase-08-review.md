@@ -51,7 +51,7 @@ TeamCreate で "review-{feature}" チームを作成:
 1. `git diff` でコード変更を検知
 2. {execute} Audit Gate を full mode で再実行
 3. `--doc` 有効時: {doc-audit} Re-gate（lightweight）
-4. `--smoke` 有効時: {smoke-test} Audit Gate 再実行予約
+4. `--accept` 有効時: {accept-test} Audit Gate 再実行予約
 5. `/code-review` 再実行
 6. 新たな findings あれば修正 → ループ
 
