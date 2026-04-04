@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pipeline.schema.json",
+  "title": "Workflow Engine Pipeline Definition",
+  "description": "workflow-engine が駆動するパイプラインの定義スキーマ。artifacts セクションで成果物のライフサイクルを一元管理し、contract で Verification/Validation を型レベルで分離する。",
+  "type": "object",
+  "required": ["pipeline", "version", "modules", "artifacts", "phases", "settings"],
+  "additionalProperties": false,
+
+  "properties": {
+    "pipeline": {
+      "type": "string",
+      "description": "パイプラインの識別子。",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+
+    "version": {
+      "type": "integer",
+      "const": 3
+    },
+
+    "modules": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+
+    "artifacts": {
+      "type": "object",
+      "description": "成果物の型定義。各 artifact は produced_by/consumed_by で依存関係を宣言し、contract で検証基準を定義する。",
+      "additionalProperties": { "$ref": "#/$defs/Artifact" },
+      "minProperties": 1
+    },
+
+    "phases": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Phase" },
+      "minItems": 1
+    },
+
+    "integrations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Integration" }
+    },
+
+    "regate": { "$ref": "#/$defs/Regate" },
+
+    "settings": { "$ref": "#/$defs/Settings" }
+  },
+
+  "allOf": [
+    {
+      "if": { "properties": { "modules": { "contains": { "const": "regate" } } } },
+      "then": { "required": ["regate"] }
+    }
+  ],
+
+  "$defs": {
+
+    "Artifact": {
+      "type": "object",
+      "description": "1つの成果物の型定義。",
+      "required": ["type", "produced_by", "consumed_by", "contract"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["file", "git_range", "inline"],
+          "description": "file: ファイルシステム上の成果物。git_range: git コミット範囲。inline: Phase Summary 内の短い値。"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "type: file の場合のファイルパスパターン。{date} はランタイムで YYYY-MM-DD に展開される。"
+        },
+        "produced_by": {
+          "type": "string",
+          "description": "この artifact を生成するフェーズの ID。phases 配列内に存在する必要がある。"
+        },
+        "consumed_by": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "この artifact を消費するフェーズ ID のリスト。engine が Phase Summary チェーンから自動解決する。"
+        },
+        "contract": { "$ref": "#/$defs/Contract" }
+      }
+    },
+
+    "Contract": {
+      "type": "object",
+      "description": "成果物の検証契約。verification は将来 CLI に移行する機械的チェック、validation は LLM が担当する意味的チェック。",
+      "required": ["verification", "validation"],
+      "additionalProperties": false,
+      "properties": {
+        "verification": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VerificationCheck" }
+        },
+        "validation": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ValidationCheck" }
+        }
+      }
+    },
+
+    "VerificationCheck": {
+      "type": "object",
+      "required": ["check"],
+      "additionalProperties": true,
+      "properties": {
+        "check": {
+          "type": "string",
+          "enum": ["file_exists", "git_committed", "sections_present", "build_passes", "tests_pass", "lint_clean", "no_failures", "no_conflicts", "no_uncommitted_changes", "test_fails"],
+          "description": "機械的に実行可能な検証タイプ。"
+        },
+        "target": { "type": "string" },
+        "sections": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "ValidationCheck": {
+      "type": "object",
+      "required": ["question", "against"],
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "LLM が判断する意味的な検証質問。"
+        },
+        "against": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ],
+          "description": "検証対象。artifact 名、user_request、codebase のいずれか。"
+        }
+      }
+    },
+
+    "Phase": {
+      "type": "object",
+      "required": ["id", "phase_file"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "phase_file": { "type": "string" },
+        "skip": { "type": "boolean", "default": false },
+        "skip_unless": { "type": "string", "pattern": "^--[a-z][a-z0-9-]*$" },
+        "uses": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "uniqueItems": true
+        },
+        "handover": { "type": "string", "enum": ["always", "optional", "never"] }
+      },
+      "not": { "required": ["skip", "skip_unless"] }
+    },
+
+    "Integration": {
+      "type": "object",
+      "required": ["skill", "enabled_by", "hooks"],
+      "additionalProperties": false,
+      "properties": {
+        "skill": { "type": "string" },
+        "enabled_by": { "type": "string", "pattern": "^--[a-z][a-z0-9-]*$" },
+        "hooks": {
+          "type": "object",
+          "propertyNames": {
+            "enum": ["on_pipeline_start", "on_phase_start", "on_phase_complete", "on_audit_fail", "on_regate", "on_handover", "on_pipeline_complete"]
+          },
+          "additionalProperties": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "minProperties": 1
+        }
+      }
+    },
+
+    "Regate": {
+      "type": "object",
+      "required": ["verification_chain"],
+      "properties": {
+        "verification_chain": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      },
+      "additionalProperties": { "$ref": "#/$defs/RegateStrategy" }
+    },
+
+    "RegateStrategy": {
+      "type": "object",
+      "required": ["strategy_file", "rewind_to"],
+      "additionalProperties": false,
+      "properties": {
+        "strategy_file": { "type": "string" },
+        "rewind_to": { "type": "string" },
+        "max_retries": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "Settings": {
+      "type": "object",
+      "required": ["default_handover", "max_phase_retries", "context_budget"],
+      "additionalProperties": false,
+      "properties": {
+        "default_handover": { "type": "string", "enum": ["always", "optional", "never"] },
+        "max_phase_retries": { "type": "integer", "minimum": 1 },
+        "context_budget": { "$ref": "#/$defs/ContextBudget" }
+      }
+    },
+
+    "ContextBudget": {
+      "type": "object",
+      "required": ["orchestrator", "phase", "references"],
+      "additionalProperties": false,
+      "properties": {
+        "orchestrator": { "type": "integer", "minimum": 1 },
+        "phase": { "type": "integer", "minimum": 1 },
+        "references": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}
