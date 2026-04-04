@@ -252,7 +252,7 @@ CLAUDEEOF
       # Create session directory with valid project-state.json
       local session_dir="${MOCK_PROJECT_DIR}/.agents/handover/main/test-session"
       mkdir -p "$session_dir"
-      cp "$FIXTURES_DIR/valid-v3.json" "${session_dir}/project-state.json"
+      cp "$FIXTURES_DIR/valid-v4.json" "${session_dir}/project-state.json"
     }
     cleanup_full_flow() {
       cleanup_mock_bin
