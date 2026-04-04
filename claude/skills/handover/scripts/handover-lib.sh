@@ -445,7 +445,7 @@ find_active_session_dir() {
   local branch
   branch="$(get_current_branch "$root")" || return 1
 
-  local branch_dir="${root}/.claude/handover/${branch}"
+  local branch_dir="${root}/.agents/handover/${branch}"
 
   if [[ ! -d "$branch_dir" ]]; then
     return 1
@@ -470,7 +470,7 @@ find_active_session_dir() {
 }
 
 # Resolve the full handover directory path with branch namespace and session fingerprint.
-# - Reuses an existing READY session if found under {root}/.claude/handover/{branch}/
+# - Reuses an existing READY session if found under {root}/.agents/handover/{branch}/
 # - Creates a new fingerprinted directory if no active session exists
 # Usage: resolve_handover_dir
 # Outputs: absolute path to the handover directory
@@ -490,7 +490,7 @@ resolve_handover_dir() {
   branch="$(get_current_branch)" || return 1
   local fingerprint
   fingerprint="$(date +%Y%m%d-%H%M%S)"
-  local new_dir="${root}/.claude/handover/${branch}/${fingerprint}"
+  local new_dir="${root}/.agents/handover/${branch}/${fingerprint}"
   mkdir -p "$new_dir"
   echo "$new_dir"
 }

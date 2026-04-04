@@ -364,10 +364,10 @@ Describe "handover-lib.sh"
   Describe "find_active_session_dir()"
     setup_session_dir() {
       test_root="$(mktemp -d)"
-      mkdir -p "$test_root/.claude/handover/main/session-001"
-      cp "$FIXTURES_DIR/valid-v4.json" "$test_root/.claude/handover/main/session-001/project-state.json"
-      mkdir -p "$test_root/.claude/handover/main/session-002"
-      cp "$FIXTURES_DIR/all-complete.json" "$test_root/.claude/handover/main/session-002/project-state.json"
+      mkdir -p "$test_root/.agents/handover/main/session-001"
+      cp "$FIXTURES_DIR/valid-v4.json" "$test_root/.agents/handover/main/session-001/project-state.json"
+      mkdir -p "$test_root/.agents/handover/main/session-002"
+      cp "$FIXTURES_DIR/all-complete.json" "$test_root/.agents/handover/main/session-002/project-state.json"
     }
     cleanup_session_dir() { rm -rf "$test_root"; }
     BeforeEach 'setup_session_dir'
@@ -406,7 +406,7 @@ Describe "handover-lib.sh"
 
     It "skips ALL_COMPLETE sessions"
       # Remove the READY session, leaving only ALL_COMPLETE
-      rm -rf "$test_root/.claude/handover/main/session-001"
+      rm -rf "$test_root/.agents/handover/main/session-001"
       git() {
         if [ "$1" = "-C" ] && [ "$3" = "rev-parse" ] && [ "$4" = "--abbrev-ref" ]; then
           echo "main"
