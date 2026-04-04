@@ -1,6 +1,6 @@
-# yaml-language-server: $schema=../../workflow-engine/schema/pipeline.v2.schema.json
+# yaml-language-server: $schema=../../workflow-engine/schema/pipeline.schema.json
 pipeline: debug-flow
-version: 2
+version: 3
 
 modules:
   - audit
@@ -9,6 +9,131 @@ modules:
   - resume
   - phase-summary
   - context-budget
+
+artifacts:
+  rca_report:
+    type: file
+    pattern: "docs/debug/{date}-*-rca.md"
+    produced_by: rca
+    consumed_by: [fix-plan, fix-plan-review]
+    contract:
+      verification:
+        - { check: file_exists, target: "{pattern}" }
+        - { check: git_committed, target: "{pattern}" }
+        - { check: sections_present, sections: [symptoms, investigation, root-cause, fix-strategy] }
+      validation:
+        - { question: "根本原因がコードベースの実態と整合しているか", against: codebase }
+        - { question: "Fix Strategy が根本原因を解決するアプローチか", against: codebase }
+
+  reproduction_test:
+    type: file
+    produced_by: rca
+    consumed_by: [execute]
+    contract:
+      verification:
+        - { check: test_fails }
+        - { check: git_committed }
+      validation:
+        - { question: "テストが根本原因のメカニズムを正確に再現しているか", against: rca_report }
+
+  fix_plan:
+    type: file
+    pattern: "docs/plans/{date}-*-fix-plan.md"
+    produced_by: fix-plan
+    consumed_by: [fix-plan-review, execute]
+    contract:
+      verification:
+        - { check: file_exists, target: "{pattern}" }
+        - { check: git_committed, target: "{pattern}" }
+      validation:
+        - { question: "Fix Strategy の全項目がタスクに分解されているか", against: rca_report }
+        - { question: "タスク依存関係が実装順序として妥当か", against: codebase }
+
+  test_cases:
+    type: file
+    produced_by: fix-plan
+    consumed_by: [fix-plan-review, execute]
+    contract:
+      verification:
+        - { check: file_exists }
+      validation:
+        - { question: "テストケースが Given/When/Then で具体化されているか", against: rca_report }
+
+  fix_plan_review_report:
+    type: inline
+    produced_by: fix-plan-review
+    consumed_by: []
+    contract:
+      verification: []
+      validation: []
+
+  code_changes:
+    type: git_range
+    produced_by: execute
+    consumed_by: [accept-test, doc-audit, review, integrate]
+    contract:
+      verification:
+        - { check: build_passes }
+        - { check: tests_pass }
+        - { check: lint_clean }
+      validation:
+        - { question: "修正が根本原因を正しく解決しているか", against: [rca_report, fix_plan] }
+        - { question: "新規テストが根本原因のメカニズムを検証しているか（非トートロジー）", against: rca_report }
+
+  test_results:
+    type: inline
+    produced_by: execute
+    consumed_by: [review]
+    contract:
+      verification:
+        - { check: no_failures }
+      validation: []
+
+  accept_test_results:
+    type: file
+    produced_by: accept-test
+    consumed_by: []
+    contract:
+      verification:
+        - { check: file_exists }
+      validation:
+        - { question: "テストシナリオが修正対象の障害シナリオをカバーしているか", against: rca_report }
+
+  doc_audit_report:
+    type: file
+    produced_by: doc-audit
+    consumed_by: []
+    contract:
+      verification:
+        - { check: file_exists }
+      validation: []
+
+  review_findings:
+    type: inline
+    produced_by: review
+    consumed_by: []
+    contract:
+      verification: []
+      validation:
+        - { question: "ユーザー承認済み findings が全て適用されているか", against: code_changes }
+
+  merged_branch:
+    type: inline
+    produced_by: integrate
+    consumed_by: []
+    contract:
+      verification:
+        - { check: no_conflicts }
+        - { check: no_uncommitted_changes }
+      validation: []
+
+  pr_url:
+    type: inline
+    produced_by: integrate
+    consumed_by: []
+    contract:
+      verification: []
+      validation: []
 
 integrations:
   - skill: linear-sync
@@ -23,59 +148,31 @@ integrations:
 phases:
   - id: rca
     phase_file: phases/rca.md
-    done_criteria: done-criteria/rca.md
-    produces:
-      - rca_report
-      - reproduction_test
 
   - id: fix-plan
     phase_file: phases/fix-plan.md
-    done_criteria: done-criteria/fix-plan.md
-    produces:
-      - fix_plan
 
   - id: fix-plan-review
     phase_file: phases/fix-plan-review.md
-    done_criteria: done-criteria/fix-plan-review.md
-    produces:
-      - review_report
 
   - id: execute
     phase_file: phases/execute.md
-    done_criteria: done-criteria/execute.md
     uses: [inner-loop]
-    produces:
-      - code_changes
-      - test_results
 
   - id: accept-test
     phase_file: phases/accept-test.md
-    done_criteria: done-criteria/accept-test.md
     skip_unless: --accept
-    produces:
-      - accept_test_results
 
   - id: doc-audit
     phase_file: phases/doc-audit.md
-    done_criteria: done-criteria/doc-audit.md
     skip_unless: --doc
-    produces:
-      - doc_audit_report
 
   - id: review
     phase_file: phases/review.md
-    done_criteria: done-criteria/review.md
-    produces:
-      - review_findings
 
   - id: integrate
     phase_file: phases/integrate.md
-    done_criteria: done-criteria/integrate.md
-    skip: false
     handover: never
-    produces:
-      - merged_branch
-      - pr_url
 
 regate:
   verification_chain: [execute, accept-test, review]
