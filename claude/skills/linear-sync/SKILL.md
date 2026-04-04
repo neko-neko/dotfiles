@@ -32,7 +32,7 @@ user-invocable: false
 
 有効化時のフロー:
 1. ワークフロー開始時: このスキルファイルを Read
-2. Phase 1 開始前: `resolve_ticket` セクションに従いチケットを特定
+2. 最初のフェーズ開始前: `resolve_ticket` セクションに従いチケットを特定
 3. チケット特定成功: `sync_workflow_start` を実行
 4. 各フェーズ完了後（Audit Gate の後）: `sync_phase` を実行
 5. Handover 実行時: `sync_handover` を実行
@@ -122,7 +122,7 @@ user-invocable: false
   },
   "audit_observations": [
     {
-      "criteria_id": "D4-03",
+      "criteria_id": "PLR-03",
       "severity": "quality",
       "observation": "共通バリデーション抽出を検討",
       "recommendation": "次スプリントで対応"

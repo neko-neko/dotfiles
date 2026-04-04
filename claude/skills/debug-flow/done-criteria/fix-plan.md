@@ -12,7 +12,7 @@ audit: required
 - **verification**:
   `Glob("docs/plans/YYYY-MM-DD-*-fix-plan.md")` で修正計画書ファイルを検索する。
 - **pass_condition**: Glob 結果が1件以上
-- **fail_diagnosis_hint**: Phase 2 Executor が修正計画書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-fix-plan.md` パターンに合致しているか確認
+- **fail_diagnosis_hint**: 当フェーズ Executor が修正計画書を `docs/plans/` 配下に出力しているか確認。ファイル名が `YYYY-MM-DD-*-fix-plan.md` パターンに合致しているか確認
 - **depends_on_artifacts**: [docs/plans/]
 
 ### FPL-02: RCA Report の Fix Strategy からタスクへのトレーサビリティ
@@ -60,7 +60,7 @@ audit: required
 - **pass_condition**: 全テストケースが Given/When/Then の3要素を含み（手順2）、Then 句に検証可能な期待値を持つこと（手順3）。3要素欠落のテストケースが0件
 - **fail_diagnosis_hint**: Given/When/Then が欠落しているテストケースを特定し、RCA Report のテスト観点を参照して具体的な前提条件・操作・期待結果を補完する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
-- **forward_check**: Phase 4 でテストコード実装時に、Given/When/Then から直接テストコードに変換可能であること
+- **forward_check**: execute フェーズでテストコード実装時に、Given/When/Then から直接テストコードに変換可能であること
 
 ### FPL-06: 修正計画書が git commit 済み
 - **severity**: blocker
@@ -68,7 +68,7 @@ audit: required
 - **verification**:
   `git status --porcelain -- docs/plans/*-fix-plan.md` を実行し、修正計画書ファイルが未コミット変更リストに含まれないことを確認する。
 - **pass_condition**: `git status --porcelain` の出力に修正計画書パスが含まれないこと（出力行数 0）
-- **fail_diagnosis_hint**: 修正計画書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。Phase 2 Executor の最終ステップでコミット処理を確認する
+- **fail_diagnosis_hint**: 修正計画書が未コミットの場合、`git add` + `git commit` が実行されていない可能性がある。当フェーズ Executor の最終ステップでコミット処理を確認する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
 
 ## Observation Collection

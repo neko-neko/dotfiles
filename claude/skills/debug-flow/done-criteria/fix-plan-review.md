@@ -47,7 +47,7 @@ audit: required
 - **pass_condition**: 手順2で主観語を含む完了条件が0件、手順3で検証形式を満たさない完了条件が0件、手順4で完了条件なしのタスクが0件
 - **fail_diagnosis_hint**: 主観語を含む完了条件は数値閾値やパターンマッチに書き換える。完了条件のないタスクは RCA Report の対応要件から導出する。検証不能な条件は「コマンド X の exit code が 0」「ファイル Y に文字列 Z が含まれる」等の形式に変換する
 - **depends_on_artifacts**: [docs/plans/*-fix-plan.md]
-- **forward_check**: Phase 4 Executor がタスク完了を自己判定できる粒度であること
+- **forward_check**: execute Executor がタスク完了を自己判定できる粒度であること
 
 ## Observation Collection
 

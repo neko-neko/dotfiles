@@ -43,15 +43,14 @@
   ],
   "phase_observations": [
     {
-      "phase": 3,
-      "phase_name": "plan",
+      "phase": "plan",
       "recorded_at": "2026-01-15T09:30:00Z",
       "observations": [
         {
-          "criteria_id": "D3-02",
+          "criteria_id": "PLN-02",
           "severity": "quality",
           "observation": "テストケースの粒度が粗い。正常系のみ",
-          "recommendation": "Phase 5 execute 時に境界値テストを補完"
+          "recommendation": "execute 時に境界値テストを補完"
         }
       ]
     }
@@ -60,8 +59,8 @@
     {
       "recorded_at": "2026-01-15T10:00:00Z",
       "category": "directive",
-      "content": "Phase 5 で security 観点を重点的に確認",
-      "relates_to_phase": 5
+      "content": "execute フェーズで security 観点を重点的に確認",
+      "relates_to_phase": "execute"
     }
   ],
   "session_hash": ""
