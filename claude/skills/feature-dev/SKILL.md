@@ -44,7 +44,7 @@ $ARGUMENTS からフラグを抽出:
 ### New Mode
 
 1. `pipeline.yml` を Read（常時ロード）
-2. Phase 1 (design) から開始
+2. 最初のフェーズ (design) から開始
 
 ## フェーズディスパッチ
 
@@ -52,7 +52,7 @@ $ARGUMENTS からフラグを抽出:
 
 1. `pipeline.yml` からカレントフェーズの定義を取得
 2. `skip` / `skip_unless` を評価 → スキップ時は次フェーズへ
-3. `phases/phase-XX-*.md` を Read（遅延ロード）
+3. `phase_file` で指定されたファイルを Read（遅延ロード）
 4. フロントマターの `requires_artifacts` を Phase Summary チェーンから解決:
    - `type: file` → Read
    - `type: git_range` → git diff で参照
