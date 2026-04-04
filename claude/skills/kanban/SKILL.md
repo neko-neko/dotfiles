@@ -32,7 +32,7 @@ user-invocable: true
 3. 更新後のタスク情報を表示する
 
 ### `/kanban sync`
-1. 現在の `pwd` から `.claude/handover/` 配下の最新 `project-state.json` を探す
+1. 現在の `pwd` から `.agents/handover/` 配下の最新 `project-state.json` を探す
    - ブランチ名でディレクトリを特定
    - 最新の fingerprint ディレクトリを選択
 2. project-state.json の `active_tasks` を読み込む

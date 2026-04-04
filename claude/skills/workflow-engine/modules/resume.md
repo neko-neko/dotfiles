@@ -13,7 +13,7 @@ description: >-
 
 ### Step 1: project-state.json の検索
 
-1. `.claude/handover/{branch}/` を走査し、`project-state.json` を検索
+1. `.agents/handover/{branch}/` を走査し、`project-state.json` を検索
 2. `pipeline` フィールドが現パイプライン名と一致するか確認
 3. 一致 → **Resume Mode**（Phase 2 へ進む）
 4. 不一致 or 不在 → **New Mode**（pipeline.yml の最初のフェーズから開始）

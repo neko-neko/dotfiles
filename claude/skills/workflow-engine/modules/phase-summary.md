@@ -11,7 +11,7 @@ description: >-
 
 ## 保存先
 
-`.claude/handover/{branch}/{fingerprint}/phase-summaries/{phase_id}.yml`
+`.agents/handover/{branch}/{fingerprint}/phase-summaries/{phase_id}.yml`
 
 ## フォーマット
 
