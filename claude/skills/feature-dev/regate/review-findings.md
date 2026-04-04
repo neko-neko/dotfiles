@@ -20,13 +20,13 @@ trigger: review_findings
 ### rewind_to: execute の場合
 
 1. findings を fix_instruction として execute フェーズに注入
-2. verification_chain をフル実行: execute → review → smoke-test（--smoke 時）
+2. verification_chain をフル実行: execute → review → accept-test（--accept 時）
 3. 各フェーズは通常の Audit Gate を通過する
 
 ### rewind_to: plan の場合
 
 1. 設計起因の blocker findings を plan フェーズに注入
-2. plan → plan-review → verification_chain (execute → review → smoke-test)
+2. plan → plan-review → verification_chain (execute → review → accept-test)
 
 ## コンテキスト注入
 

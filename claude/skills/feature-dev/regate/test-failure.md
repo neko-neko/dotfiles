@@ -18,7 +18,7 @@ trigger: test_failure
 ## Rerun チェーン
 
 1. テスト失敗ログを fix_instruction として execute フェーズに注入
-2. verification_chain をフル実行: execute → review → smoke-test（--smoke 時）
+2. verification_chain をフル実行: execute → review → accept-test（--accept 時）
 3. 各フェーズは通常の Audit Gate を通過する
 
 ## Flaky 検出時
@@ -39,7 +39,7 @@ concerns:
 ```yaml
 regate_context:
   trigger: test_failure
-  source_phase: execute | smoke-test
+  source_phase: execute | accept-test
   failures:
     - test_name: <テスト名>
       error: <エラーメッセージ>

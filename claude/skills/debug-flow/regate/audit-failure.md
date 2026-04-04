@@ -16,7 +16,7 @@ trigger: audit_failure
 ### コード変更を伴う場合
 
 1. fix_instruction を execute フェーズに注入
-2. verification_chain をフル実行: execute → review → smoke-test（--smoke 時）
+2. verification_chain をフル実行: execute → review → accept-test（--accept 時）
 
 ### コード変更を伴わない場合
 
