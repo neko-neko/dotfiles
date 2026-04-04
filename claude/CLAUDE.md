@@ -13,14 +13,6 @@
  - コミット前に linter・型チェッカー・フォーマッター・テストを実行すること
  - LSP が利用可能な場合、シンボル調査・定義元・参照箇所の特定に Grep/Glob より優先して使うこと
 
-## Audit Gate（憲法）
-
-- /feature-dev, /debug-flow のフェーズ遷移時、done-criteria に定義された監査ゲートは例外なく実行すること
-- audit: required → phase-auditor エージェントを起動。省略・スキップ禁止
-- audit: lite → オーケストレーターが基準を直接検証。省略・スキップ禁止
-- 監査未実行のフェーズ遷移は無効とみなす
-- コンテキスト逼迫・時間的制約を理由にした監査スキップは認めない。逼迫時は handover を実行せよ
-
 ## Knowledge Capture
 
 - /feature-dev, /debug-flow, /handover の完了時、ワークフロー中に得たプロジェクト固有の知見を auto memory に記録すること
