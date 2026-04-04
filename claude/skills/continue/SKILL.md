@@ -28,7 +28,7 @@ user-invocable: true
 
      ```
      📂 現在のディレクトリ (CWD)
-       [1] master/20260330-120000 — 残2件 / 完3件 — 次: Phase 5 実装
+       [1] master/20260330-120000 — 残2件 / 完3件 — 次: execute 実装
 
      📂 worktree: feature/auth-refactor (.worktrees/auth-refactor)
        [2] feature/auth-refactor/20260329-140000 — 残3件 / 完1件 — 次: DB マイグレーション
@@ -57,7 +57,7 @@ user-invocable: true
 
    1. `version` が 5 であることを確認する（4 の場合はレガシーフローにフォールバック）
    2. `phase_summaries` マッピングから完了済みフェーズを特定する
-   3. `current_phase` を判定する（`phase_summaries` に存在する最大フェーズ番号 + 1）
+   3. `current_phase` を判定する（`pipeline.yml` のフェーズ配列順で、`phase_summaries` に存在しない最初のフェーズ）
    4. 現在フェーズの Phase Summary が存在する場合は Read する
    5. Phase Summary 内の `concerns` / `directives` を `target_phase` で現在フェーズにフィルタする
    6. `session` オブジェクトから `session_id` と `resume_hint` を取得する
@@ -70,16 +70,16 @@ user-invocable: true
      Resume hint: {session.resume_hint}
 
    Phase Progress:
-     Phase 1 (design) ✅
-     Phase 2 (spec-review) ✅
-     Phase 3 (plan) ✅
-     → Current: Phase 4 (plan-review)
+     design ✅
+     spec-review ✅
+     plan ✅
+     → Current: plan-review
 
    Concerns for current phase:
      - <concerns with target_phase matching current phase>
 
    Pipeline: {pipeline} のセッションを検出しました。
-   Phase {N} ({phase_name}) から Resume Mode で起動します。
+   {phase_id} から Resume Mode で起動します。
    ```
 
    → Skill tool で `/{pipeline}` を invoke する
