@@ -97,12 +97,11 @@ user-invocable: true
   ],
   "phase_observations": [
     {
-      "phase": 5,
-      "phase_name": "execute",
+      "phase": "execute",
       "recorded_at": "ISO8601",
       "observations": [
         {
-          "criteria_id": "D5-08",
+          "criteria_id": "EXE-08",
           "severity": "quality | warning",
           "observation": "所見の内容",
           "recommendation": "推奨アクション"
@@ -115,18 +114,18 @@ user-invocable: true
       "recorded_at": "ISO8601",
       "category": "insight | directive | concern",
       "content": "メモの内容",
-      "relates_to_phase": 5
+      "relates_to_phase": "execute"
     }
   ],
   "session_hash": "",
   "linear": {
     "issue_id": "Linear チケットID (例: PROJ-123)。linear-sync supplement 使用時のみ設定。null または未設定の場合、sync は無効",
-    "last_synced_phase": 5,
+    "last_synced_phase": "execute",
     "document_id": "Linear Document ID。linear-sync supplement が作成した Workflow Report Document の ID。sync_workflow_start で設定される"
   },
   "phase_summaries": {
-    "1": "phase-summaries/phase-01-design.yml",
-    "2": "phase-summaries/phase-02-spec-review.yml"
+    "design": "phase-summaries/design.yml",
+    "spec-review": "phase-summaries/spec-review.yml"
   },
   "session": {
     "session_id": "<CLAUDE_SESSION_ID>",
@@ -233,18 +232,18 @@ regate_history: []
 - commit_sha: 要約
 
 ## Observations (from Audit)
-- [Phase N] criteria_id: observation（recommendation）
+- [<phase_id>] criteria_id: observation（recommendation）
 
 ## Session Notes
-- [category] content（Phase N）
+- [category] content（<phase_id>）
 
 ## Phase Progress（pipeline ワークフロー時のみ）
-- [Phase 1] Design ✅ (spec: <path>)
-- [Phase 2] Spec Review ✅ (findings: 0 blocker)
-- [Phase 3] Plan ✅ (plan: <path>)
-- [Phase 5] Execute ✅
+- [design] ✅ (spec: <path>)
+- [spec-review] ✅ (findings: 0 blocker)
+- [plan] ✅ (plan: <path>)
+- [execute] ✅
   - Concerns: <concerns for later phases>
-→ Current Phase: N (<phase_name>)
+→ Current Phase: <phase_id>
 
 ## Known Issues
 - [severity] 問題の説明（なければ「なし」）
