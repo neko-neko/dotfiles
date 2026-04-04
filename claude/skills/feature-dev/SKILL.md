@@ -2,10 +2,10 @@
 name: feature-dev
 description: >-
   品質ゲート付き開発オーケストレーター。9フェーズで設計→レビュー→計画→レビュー→
-  実装→スモークテスト→ドキュメント監査→レビュー→統合を一気通貫で実行する。
+  実装→Acceptanceテスト→ドキュメント監査→レビュー→統合を一気通貫で実行する。
   --codex 指定時は全レビューフェーズで Codex を有効化。
   --e2e 指定時は Review フェーズで test-review 観点を有効化。
-  --smoke 指定時は smoke-test フェーズを有効化。
+  --accept 指定時は accept-test フェーズを有効化。
   --doc 指定時は doc-audit フェーズを有効化。
 disable-model-invocation: true
 user-invocable: true
@@ -22,7 +22,7 @@ user-invocable: true
 $ARGUMENTS からフラグを抽出:
 - `--codex`: 全レビューフェーズで Codex 並列レビュー有効化
 - `--e2e`: Review フェーズで test-review 観点を有効化
-- `--smoke`: smoke-test フェーズを有効化
+- `--accept`: accept-test フェーズを有効化
 - `--doc`: doc-audit フェーズを有効化
 - `--ui`: Review フェーズに UI レビューエージェントを追加
 - `--iterations N`: レビューフェーズの N-way 投票回数（デフォルト: 3）
