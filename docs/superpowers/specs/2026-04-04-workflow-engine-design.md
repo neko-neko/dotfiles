@@ -158,16 +158,20 @@ user-invocable: false
    ├── Handover 判定
    │   └── Read ${CLAUDE_SKILL_DIR}/modules/context-budget.md → 残コンテキスト評価
    │
-   ├── Linear Sync（フラグ有効時）
-   │   └── Skill("linear-sync") を invoke
+   ├── Integration Hooks: on_phase_complete イベント発火
+   │   └── pipeline.yml の integrations を走査
+   │   └── enabled_by フラグが有効な integration の hooks を実行
+   │   └── 各 hook: 対応スキルを Skill tool で invoke
    │
    └── Regate チェック（modules に regate が含まれ、トリガー検出時）
-       └── Read ${CLAUDE_SKILL_DIR}/modules/regate.md → プロトコル実行
-       └── Read $PIPELINE_DIR/regate/{strategy}.md → 戦略適用
+       ├── Integration Hooks: on_regate イベント発火
+       ├── Read ${CLAUDE_SKILL_DIR}/modules/regate.md → プロトコル実行
+       ├── Read $PIPELINE_DIR/regate/{strategy}.md → 戦略適用
        └── rewind_to フェーズから再実行
 
 4. 完了処理
-   └── Handover 生成 / Linear Sync 完了 / Knowledge Capture
+   ├── Integration Hooks: on_pipeline_complete イベント発火
+   └── Handover 生成 / Knowledge Capture
 ```
 
 ### パス解決ルール
@@ -242,16 +246,100 @@ CLAUDE.md から移動する「Audit Gate（憲法）」セクションは、aud
 
 ---
 
-## 4. pipeline.yml の拡張
+## 4. pipeline.yml スキーマ定義
 
-### 追加フィールド
+pipeline.yml は実行コードではなく、workflow-engine が読み取って解釈するテキストである。本セクションでスキーマを正式に定義する。
 
-| フィールド | レベル | 説明 |
-|-----------|-------|------|
-| `modules` | トップレベル | エンジンレベルモジュールのリスト |
-| `uses` | フェーズ定義内 | フェーズレベルモジュールのリスト |
+### 4.1 フィールド定義
 
-### feature-dev/pipeline.yml（改定後）
+#### トップレベル
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `pipeline` | string | 必須 | パイプライン識別子。project-state.json の `pipeline` フィールドと一致する |
+| `version` | integer | 必須 | スキーマバージョン。本設計では `2` |
+| `modules` | string[] | 必須 | エンジンレベルモジュールのリスト。`workflow-engine/modules/{name}.md` に対応 |
+| `phases` | Phase[] | 必須 | フェーズ定義の配列（実行順） |
+| `integrations` | Integration[] | 任意 | ライフサイクルフックで呼び出す外部スキル |
+| `regate` | Regate | 任意（modules に regate を含む場合は必須） | Regate 設定 |
+| `settings` | Settings | 必須 | パイプライン設定 |
+
+#### Phase
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `id` | string | 必須 | フェーズのセマンティック ID（例: `design`, `execute`） |
+| `phase_file` | string | 必須 | フェーズ実行指示ファイルのパス（$PIPELINE_DIR からの相対パス） |
+| `done_criteria` | string | 任意 | 監査基準ファイルのパス。modules に audit を含む場合は必須 |
+| `skip` | boolean | 任意 | `true` で常にスキップ。デフォルト: `false` |
+| `skip_unless` | string | 任意 | 指定フラグが有効でない限りスキップ（例: `--accept`）。`skip` と排他 |
+| `uses` | string[] | 任意 | フェーズレベルモジュールのリスト。`workflow-engine/modules/{name}.md` に対応 |
+| `handover` | string | 任意 | `always` \| `optional` \| `never`。デフォルト: settings.default_handover |
+| `produces` | string[] | 必須 | フェーズが生成するアーティファクト名のリスト |
+
+#### Integration
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `skill` | string | 必須 | invoke するスキル名（例: `linear-sync`） |
+| `enabled_by` | string | 必須 | このインテグレーションを有効化するフラグ（例: `--linear`） |
+| `hooks` | map[string, string] | 必須 | ライフサイクルイベント → スキルに渡すアクション名のマッピング |
+
+**hooks に使用可能なイベント:**
+
+| イベント | 発火タイミング | 引数 |
+|---------|-------------|------|
+| `on_pipeline_start` | パイプライン開始時 | pipeline 名, フラグ, タスク記述 |
+| `on_phase_start` | フェーズ実行前 | phase_id |
+| `on_phase_complete` | フェーズ完了 + Audit Gate PASS 後 | phase_id, Phase Summary |
+| `on_audit_fail` | Audit Gate FAIL 時 | phase_id, failed_criteria, attempt |
+| `on_regate` | Regate 発生時 | trigger, rewind_to, fix_summary |
+| `on_handover` | Handover 実行時 | phase_id, session 情報 |
+| `on_pipeline_complete` | パイプライン全体完了時 | pipeline 名, 最終ステータス |
+
+#### Regate
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `verification_chain` | string[] | 必須 | Regate 時に再実行するフェーズ ID のリスト |
+| `review_findings` | RegateStrategy | 任意 | レビュー findings トリガーの戦略 |
+| `test_failure` | RegateStrategy | 任意 | テスト失敗トリガーの戦略 |
+| `audit_failure` | RegateStrategy | 任意 | Audit Gate 失敗トリガーの戦略 |
+
+#### RegateStrategy
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `strategy_file` | string | 必須 | 戦略ファイルのパス（$PIPELINE_DIR からの相対パス） |
+| `rewind_to` | string | 必須 | 巻き戻し先フェーズ ID。`current` は現フェーズ |
+| `max_retries` | integer | 任意 | 最大リトライ回数。デフォルト: settings.max_phase_retries |
+
+#### Settings
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `default_handover` | string | 必須 | `always` \| `optional` \| `never` |
+| `max_phase_retries` | integer | 必須 | Audit Gate 失敗時のデフォルト最大リトライ回数 |
+| `context_budget` | ContextBudget | 必須 | コンテキスト予算配分 |
+
+#### ContextBudget
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|---|-----|------|
+| `orchestrator` | integer | 必須 | SKILL.md + pipeline.yml 用トークン予算 |
+| `phase` | integer | 必須 | phases/*.md + done-criteria 用トークン予算 |
+| `references` | integer | 必須 | references/*.md + modules 用トークン予算 |
+
+### 4.2 バージョニング
+
+| version | 対応設計書 | 変更点 |
+|---------|-----------|-------|
+| 1 | phase-module-architecture-design | 初版。phases, regate, settings |
+| 2 | **本設計（workflow-engine）** | modules, uses, integrations 追加。settings.linear_sync 削除（integrations に移行） |
+
+workflow-engine は `version` フィールドを読み取り、未知のバージョンの場合は PAUSE してユーザーに通知する。
+
+### 4.3 feature-dev/pipeline.yml（改定後）
 
 ```yaml
 pipeline: feature-dev
@@ -264,6 +352,16 @@ modules:
   - resume
   - phase-summary
   - context-budget
+
+integrations:
+  - skill: linear-sync
+    enabled_by: --linear
+    hooks:
+      on_pipeline_start: sync_workflow_start
+      on_phase_complete: sync_phase_summary, sync_evidence
+      on_regate: sync_regate
+      on_handover: sync_session
+      on_pipeline_complete: sync_complete
 
 phases:
   - id: design
@@ -355,14 +453,13 @@ regate:
 settings:
   default_handover: always
   max_phase_retries: 3
-  linear_sync: auto
   context_budget:
     orchestrator: 150
     phase: 100
     references: 200
 ```
 
-### debug-flow/pipeline.yml（改定後）
+### 4.4 debug-flow/pipeline.yml（改定後）
 
 ```yaml
 pipeline: debug-flow
@@ -375,6 +472,16 @@ modules:
   - resume
   - phase-summary
   - context-budget
+
+integrations:
+  - skill: linear-sync
+    enabled_by: --linear
+    hooks:
+      on_pipeline_start: sync_workflow_start
+      on_phase_complete: sync_phase_summary, sync_evidence
+      on_regate: sync_regate
+      on_handover: sync_session
+      on_pipeline_complete: sync_complete
 
 phases:
   - id: rca
@@ -457,7 +564,6 @@ regate:
 settings:
   default_handover: always
   max_phase_retries: 3
-  linear_sync: auto
   context_budget:
     orchestrator: 150
     phase: 100
@@ -502,7 +608,7 @@ user-invocable: true
 - `--ui`: Review フェーズに UI レビューエージェントを追加
 - `--iterations N`: レビューフェーズの N-way 投票回数（デフォルト: 3）
 - `--swarm`: 対応フェーズでエージェントチーム化
-- `--linear`: Linear チケットへの進捗同期を有効化
+- `--linear`: Linear インテグレーションを有効化（pipeline.yml の integrations で定義）
 - 残りのテキスト: タスク説明
 
 ### debug-flow/SKILL.md（改定後）
