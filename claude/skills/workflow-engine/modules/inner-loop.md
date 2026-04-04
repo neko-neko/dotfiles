@@ -99,6 +99,7 @@ test_enrich_context:
   existing_tests:
     - git diff で追加/変更されたテストファイル
     - 関連する既存テストファイル（impact 範囲）
+    - reproduction_test（debug-flow の場合、pipeline.yml artifacts から解決）
   implementation:
     - git diff の code_changes 範囲
   required_levels:
@@ -186,3 +187,33 @@ Verify FAIL
 
 - lint/fmt 自動修正: オーケストレーターが直接実行（変更ファイルのみ対象）
 - 実装修正/テスト修正: feature-implementer を継続（修正対象と失敗コンテキストを注入）
+
+## 5. Resume からの再開
+
+handover 後に resume.md が `inner_loop_state` を検出した場合、以下のフローで再開する。
+
+### Impl から再開
+
+`current_substep: Impl` の場合:
+
+1. `impl_progress.remaining_tasks` を implementation_plan/fix_plan と照合
+2. `completed_tasks` に該当するタスクをスキップ
+3. `remaining_tasks` のみで `subagent-driven-development` を起動
+4. `last_commit` から git diff で完了済み実装を確認（存在検証）
+5. 全 remaining_tasks 完了後、通常フローで TestEnrich に進む
+
+### TestEnrich から再開
+
+`current_substep: TestEnrich` の場合:
+
+1. `impl_progress` の全タスクが実装済みであることを git diff で確認
+2. TestEnrich の入力コンテキストを構築（セクション3の手順に従う）
+3. TestEnrich を先頭から実行（トレーサビリティマップ作成から）
+
+### Verify から再開
+
+`current_substep: Verify` の場合:
+
+1. `failure_history` を Failure Router に注入
+2. `loop_iteration` を復元
+3. Verify を先頭から実行（全テストスイート実行から）
