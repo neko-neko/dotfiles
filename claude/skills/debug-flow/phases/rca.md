@@ -1,7 +1,6 @@
 ---
 phase: 1
 phase_name: rca
-requires_artifacts: []
 phase_references: []
 invoke_agents:
   - code-explorer

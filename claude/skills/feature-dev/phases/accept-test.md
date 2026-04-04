@@ -1,8 +1,6 @@
 ---
 phase: 6
 phase_name: accept-test
-requires_artifacts:
-  - code_changes
 phase_references: []
 invoke_agents: []
 phase_flags: {}

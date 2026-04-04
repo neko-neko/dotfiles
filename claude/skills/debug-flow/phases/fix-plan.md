@@ -1,8 +1,6 @@
 ---
 phase: 2
 phase_name: fix-plan
-requires_artifacts:
-  - rca_report
 phase_references: []
 invoke_agents: []
 phase_flags: {}
@@ -10,7 +8,7 @@ phase_flags: {}
 
 ## 実行手順
 
-1. `requires_artifacts` の `rca_report` を Read
+1. `rca_report` を Read（engine が artifacts から解決）
 2. Skill invoke: `superpowers:writing-plans`
    - RCA Report の Fix Strategy セクションを `docs/plans/*-fix-plan.md` に展開
    - テストケースも `docs/plans/*-test-cases.md` に詳細化

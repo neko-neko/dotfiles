@@ -1,9 +1,6 @@
 ---
 phase: 3
 phase_name: fix-plan-review
-requires_artifacts:
-  - fix_plan
-  - rca_report
 phase_references: []
 invoke_agents:
   - implementation-review-clarity
@@ -18,7 +15,7 @@ phase_flags:
 
 ## 実行手順
 
-1. `requires_artifacts` の `fix_plan` と `rca_report` を Read
+1. `fix_plan` と `rca_report` を Read（engine が artifacts から解決）
 2. Skill invoke: `/implementation-review`
    - 引数: 計画書ファイルパス
    - `--codex` 時: Codex adversarial-review 追加

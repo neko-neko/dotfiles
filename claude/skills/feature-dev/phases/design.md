@@ -1,7 +1,6 @@
 ---
 phase: 1
 phase_name: design
-requires_artifacts: []
 phase_references:
   - references/brainstorming-supplement.md
 invoke_agents: []

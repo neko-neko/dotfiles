@@ -1,8 +1,6 @@
 ---
 phase: 3
 phase_name: plan
-requires_artifacts:
-  - spec_file
 phase_references: []
 invoke_agents: []
 phase_flags: {}
@@ -10,7 +8,7 @@ phase_flags: {}
 
 ## 実行手順
 
-1. `requires_artifacts` の `spec_file` を Read
+1. `spec_file` を Read（engine が artifacts から解決）
 2. Skill invoke: `superpowers:writing-plans`
    - 設計書に基づいて実装計画書を生成
    - 計画書は `docs/superpowers/plans/` に保存される

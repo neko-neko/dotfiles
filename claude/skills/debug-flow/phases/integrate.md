@@ -1,8 +1,6 @@
 ---
 phase: 8
 phase_name: integrate
-requires_artifacts:
-  - code_changes
 phase_references: []
 invoke_agents: []
 phase_flags:

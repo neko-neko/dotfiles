@@ -1,8 +1,6 @@
 ---
 phase: 2
 phase_name: spec-review
-requires_artifacts:
-  - spec_file
 phase_references: []
 invoke_agents:
   - spec-review-requirements
@@ -18,7 +16,7 @@ phase_flags:
 
 ## 実行手順
 
-1. `requires_artifacts` の `spec_file` を Read
+1. `spec_file` を Read（engine が artifacts から解決）
 2. Skill invoke: `/spec-review`
    - 引数: spec ファイルパス
    - `--codex` 時: Codex 並列レビュー追加

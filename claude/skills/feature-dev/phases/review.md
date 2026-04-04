@@ -1,9 +1,6 @@
 ---
 phase: 8
 phase_name: review
-requires_artifacts:
-  - code_changes
-  - test_results
 phase_references: []
 invoke_agents:
   - code-review-quality
@@ -24,7 +21,7 @@ phase_flags:
 
 ## 実行手順
 
-1. `requires_artifacts` の `code_changes` から git diff 範囲を特定
+1. `code_changes` から git diff 範囲を特定
 2. Skill invoke: `/simplify`（1回）
 3. Skill invoke: `/code-review`
    - 6観点を並列起動: quality, security, performance, test, ai-antipattern, impact
