@@ -79,7 +79,12 @@ modules に `audit` が含まれる場合:
    c. 各 artifact の `contract.validation` を収集 → validation リスト
    d. `$PIPELINE_DIR/done-criteria/{phase.id}.md` を Read
    e. `operations` を収集 → operations リスト
-   f. `artifact_validation.{artifact_name}.additional` を validation リストにマージ
+   f. done-criteria の `artifact_validation` セクションを処理:
+      - (f1) `### <name>` サブセクションで `<name>` がこのフェーズの produced artifact に含まれる場合: `additional` を `<name>.contract.validation` にマージ
+      - (f2) `### <name>` サブセクションで `audit_target: <upstream_name>` が宣言されている場合: `additional` を `<upstream_name>.contract.validation` にこのフェーズの validation として合流する（評価タイミングの詳細は `modules/audit.md` §2.1 参照）
+      - (f3) (f1) にも (f2) にも該当しないサブセクションは warning を発しスキップ（silent ignore を禁止）
+      - (f4) `audit_target` が Phase N の produced artifact を指す場合はエラー（audit_target は非-produced 上流 artifact 専用）
+      - (f5) `audit_target` が pipeline.yml の artifacts に存在しない artifact を指す場合はエラー
 3. `audit: required` → phase-auditor に 3 層（verification / validation / operations）を渡す
 4. `audit: lite` → エンジン自身が verification + operations を直接検証
 5. FAIL → Fix Dispatch → Re-audit（max_retries まで）

@@ -20,7 +20,7 @@ artifacts:
       verification:
         - { check: file_exists, target: "{pattern}" }
         - { check: git_committed, target: "{pattern}" }
-        - { check: sections_present, sections: [symptoms, investigation, root-cause, fix-strategy] }
+        - { check: sections_present, sections: [symptoms, investigation, root-cause, fix-strategy, evidence-plan] }
       validation:
         - { question: "根本原因がコードベースの実態と整合しているか", against: codebase }
         - { question: "Fix Strategy が根本原因を解決するアプローチか", against: codebase }
@@ -59,14 +59,6 @@ artifacts:
       validation:
         - { question: "テストケースが Given/When/Then で具体化されているか", against: rca_report }
 
-  fix_plan_review_report:
-    type: inline
-    produced_by: fix-plan-review
-    consumed_by: []
-    contract:
-      verification: []
-      validation: []
-
   code_changes:
     type: git_range
     produced_by: execute
@@ -87,6 +79,15 @@ artifacts:
     contract:
       verification:
         - { check: no_failures }
+      validation: []
+
+  evidence_collection:
+    type: file
+    produced_by: execute
+    consumed_by: [review]
+    contract:
+      verification:
+        - { check: file_exists }
       validation: []
 
   accept_test_results:

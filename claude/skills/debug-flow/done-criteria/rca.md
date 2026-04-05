@@ -31,6 +31,8 @@ additional:
     severity: blocker
   - question: "Symmetry Check で非対称性リスクがある場合、対パスの修正必要性が記載されているか"
     severity: blocker
+  - question: "Evidence Plan セクションに、type と location を伴う具体的な evidence エントリが最低 1 項目記述されているか"
+    severity: blocker
 
 ### reproduction_test
 

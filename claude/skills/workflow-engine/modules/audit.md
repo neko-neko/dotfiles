@@ -93,6 +93,54 @@ next_phase: {N+1 or skip先}
 {前回までの診断履歴 JSON}
 ```
 
+## 2.1 Audit-Only Phase と audit_target Projection
+
+`plan-review` / `fix-plan-review` のような審査専用フェーズは pipeline.yml の
+artifacts に対応する定義を持たない（空の report artifact を生成しない）。
+これらのフェーズは done-criteria の `audit_target:` メタデータを通じて、
+上流 artifact に対する追加 validation を宣言する。
+
+### audit-only phase の定義
+
+**audit-only phase** とは、`pipeline.yml` の `artifacts` セクション中に `produced_by` がそのフェーズ ID と一致する artifact を一つも持たないフェーズを指す。この定義は機械的に検証可能で、`jig lint` 等の静的検査が LR-C2 （本文書で言及する将来の lint rule）で利用する想定である。
+
+現時点で Cluster 1 以降の dotfiles パイプラインに存在する audit-only phase は `plan-review` と `fix-plan-review` の 2 件。将来 audit-only phase を追加する際は、本セクションの規定（done-criteria で `audit_target:` を宣言すること、空 report artifact を `pipeline.yml` に置かないこと）に従うこと。
+
+### 判定と合流ロジック
+
+Phase N の done-criteria に以下の記述があるとき:
+
+```
+### <artifact_name>
+
+audit_target: <upstream_artifact>
+additional:
+  - question: "..."
+    severity: blocker
+```
+
+- `<artifact_name>` は section 識別子として保持（人間可読用）
+- `<upstream_artifact>` が Phase N の produced artifact に含まれる場合 → エラー
+  （audit_target は非-produced 上流 artifact にのみ適用される）
+- `<upstream_artifact>` が pipeline.yml の artifacts に存在しない場合 → エラー
+- 上記条件を満たす場合、`additional` の各 validation 項目は
+  `<upstream_artifact>.contract.validation` に Phase N のコンテキストで合流する
+
+**サブセクション名 = `audit_target` 値の場合**: `<artifact_name>`（サブセクション識別子）と `<upstream_artifact>`（`audit_target` 値）が同一文字列でも構わない。たとえば `plan-review` の done-criteria で `### implementation_plan` + `audit_target: implementation_plan` と書いても (f2) 経路で正しく処理される。これは Phase N が `implementation_plan` を produce していない（audit-only phase のため）ので (f1) が vacuously false となり (f2) が発火するためである。
+
+### 合流した validation の評価タイミング
+
+合流した validation 項目は Phase N の Audit Gate で評価される（上流 artifact を
+produce した元フェーズの Audit Gate では評価されない）。これにより
+「レビューフェーズは上流 artifact の contract を強化する」という意味論が保たれる。
+
+### silent ignore の禁止
+
+done-criteria の `artifact_validation` サブセクションが (f1)（self produce マッチ）
+にも (f2)（audit_target マッチ）にも該当しない場合、engine は warning を発して
+スキップする。将来 `jig lint` が同パターンを静的検出する予定（jig Phase 1 の
+lint rule LR-C2 参照）。
+
 ## 3. Fix Dispatch 戦略
 
 修正はオーケストレーターが **そのフェーズで使った既存のサブエージェント/スキル** に再委任する。

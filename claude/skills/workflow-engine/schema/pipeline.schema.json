@@ -28,7 +28,7 @@
 
     "artifacts": {
       "type": "object",
-      "description": "成果物の型定義。各 artifact は produced_by/consumed_by で依存関係を宣言し、contract で検証基準を定義する。",
+      "description": "成果物の型定義。各 artifact は produced_by/consumed_by で依存関係を宣言し、contract で検証基準を定義する。NOTE: audit-only phase (plan-review, fix-plan-review 等) は artifacts に対応する定義を持たず、done-criteria で audit_target を宣言することで上流 artifact の contract を強化する。詳細は modules/audit.md セクション 2.1 を参照。",
       "additionalProperties": { "$ref": "#/$defs/Artifact" },
       "minProperties": 1
     },

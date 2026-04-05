@@ -22,6 +22,7 @@ audit: required
 
 ### implementation_plan
 
+audit_target: implementation_plan
 additional:
   - question: "計画書と設計書の整合性が保たれているか（コンポーネント名、ファイルパス、データ型、インターフェースの一致）"
     severity: blocker

@@ -229,7 +229,8 @@
     "worktrunk@worktrunk": true,
     "pm-execution@pm-skills": true,
     "codex@openai-codex": true,
-    "linear-cli@linear-cli": true
+    "linear-cli@linear-cli": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {

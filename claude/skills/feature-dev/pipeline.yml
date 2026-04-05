@@ -15,7 +15,7 @@ artifacts:
     type: file
     pattern: "docs/superpowers/specs/{date}-*-design.md"
     produced_by: design
-    consumed_by: [spec-review, plan, plan-review]
+    consumed_by: [spec-review, plan, plan-review, execute, accept-test, review]
     contract:
       verification:
         - { check: file_exists, target: "{pattern}" }
@@ -65,14 +65,6 @@ artifacts:
         - { check: file_exists }
       validation:
         - { question: "テストケースが Given/When/Then で具体化されているか", against: spec_file }
-
-  plan_review_report:
-    type: inline
-    produced_by: plan-review
-    consumed_by: []
-    contract:
-      verification: []
-      validation: []
 
   code_changes:
     type: git_range

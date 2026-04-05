@@ -7,7 +7,6 @@ description: >-
   --e2e 指定時は Review フェーズで test-review 観点を有効化。
   --accept 指定時は accept-test フェーズを有効化。
   --doc 指定時は doc-audit フェーズを有効化。
-disable-model-invocation: true
 user-invocable: true
 ---
 

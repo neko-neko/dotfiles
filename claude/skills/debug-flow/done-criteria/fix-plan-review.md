@@ -22,6 +22,7 @@ audit: required
 
 ### fix_plan
 
+audit_target: fix_plan
 additional:
   - question: "計画書と RCA Report の整合性が保たれているか（根本原因、影響範囲、修正方針の一致）"
     severity: blocker
