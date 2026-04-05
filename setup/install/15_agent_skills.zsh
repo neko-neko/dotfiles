@@ -1,7 +1,7 @@
 #!/bin/zsh
 source ${HOME}/.dotfiles/setup/util.zsh
 
-util::info 'configure Claude Code skills...'
+util::info 'configure Agent skills...'
 
 for skill in ${HOME}/.dotfiles/claude/skills/*/SKILL.md; do
   local name=$(basename $(dirname "${skill}"))
@@ -17,6 +17,7 @@ external_skills=(
   https://github.com/googleworkspace/cli/tree/main/skills/gws-drive
   https://github.com/googleworkspace/cli/tree/main/skills/gws-gmail
   https://github.com/googleworkspace/cli/tree/main/skills/gws-sheets
+  vercel-labs/agent-browser --skill agent-browser
 )
 
 npx skills update || util::warning 'skills update failed'
