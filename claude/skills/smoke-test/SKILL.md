@@ -4,13 +4,13 @@ description: >-
   ローカルスモークテスト。dev サーバー起動 → アドホックテスト生成・実行 →
   VRT 差分チェック → E2E 実行 + フレーキー検出の4ステップを実行する。
   単体でも他のワークフローからの invoke でも利用可能。
-skills: [browser-use]
+skills: [agent-browser]
 user-invocable: true
 ---
 
 # Smoke Test
 
-ローカル環境で Browser Use CLI を使い、実装した機能の動作確認・VRT 差分チェック・E2E フレーキー検出を自律的に実行する。
+起動時に `/agent-browser` をinvokeする。実装した機能の動作確認・VRT 差分チェック・E2E フレーキー検出を自律的に実行する。
 
 **開始時アナウンス:** 「Smoke Test を開始します。Step 1: Environment Setup」
 
