@@ -1,7 +1,7 @@
 ---
 name: brainstorming-supplement
 description: >-
-  feature-dev design フェーズ専用。superpowers:brainstorming の **前に** invoke し、
+  feature-dev Phase 1 専用。superpowers:brainstorming の **前に** invoke し、
   brainstorming プロセスにインタラクティブ制約・コードベース調査・テスト観点ステップを注入する。
 ---
 
@@ -75,7 +75,7 @@ S1・S2 で確認した内容を、設計書に以下のセクションとして
   - **Shared State** — 共有リソース一覧（種別、制約、使われ方）
   - **Implicit Contracts** — 暗黙の制約一覧（ファイル:行番号、依存先、違反時の影響）
   - **Side Effect Risks** — 副作用リスクシナリオ（severity、発生条件、影響範囲）
-- **Must-Verify Checklist** — 実装・テスト時に確認すべき事項のチェックリスト（impact-analyzer の出力から生成）。後続フェーズ（plan-review の implementation-review-consistency、{review} の code-review-impact）で参照される
+- **Must-Verify Checklist** — 実装・テスト時に確認すべき事項のチェックリスト（impact-analyzer の出力から生成）。後続フェーズ（Phase 4 の implementation-review-consistency、Phase 7 の code-review-impact）で参照される
 
 ## 追加ステップ（brainstorming の step 4 の設計書に含める）
 
@@ -87,16 +87,16 @@ S1・S2 で確認した内容を、設計書に以下のセクションとして
 - 異常系・境界値テストケース名の列挙
 - 非機能要件（パフォーマンス、セキュリティ）の観点があれば列挙
 
-**品質基準（plan の Given/When/Then 展開時に適用）:**
+**品質基準（Phase 3 の Given/When/Then 展開時に適用）:**
 各機能の入力パラメータについて、以下のカテゴリを最低1つずつカバーすること:
 - 正常値（代表値）
 - 境界値（最小値、最大値、ちょうど境界）
 - 異常値（型違い、null/undefined、範囲外）
 - 状態遷移（前提条件が異なるケース）
 
-この基準を満たさないテストケースは plan-review の implementation-review-feasibility で REJECT される。
+この基準を満たさないテストケースは Phase 4 の implementation-review-feasibility で REJECT される。
 
-※ Given/When/Then レベルの詳細化は plan フェーズで行う。設計書内のテスト観点は plan フェーズで `docs/plans/*-test-cases.md` に展開される。
+※ Given/When/Then レベルの詳細化は Phase 3（Plan）で行う。設計書内のテスト観点は Phase 3 で `docs/plans/*-test-cases.md` に展開される。
 
 ## Workspace 作成（設計書コミット直前）
 
