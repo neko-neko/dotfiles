@@ -1,3 +1,0 @@
-cask "tailscale"
-brew "syncthing"
-brew "jq"
