@@ -46,7 +46,30 @@ user-invocable: true
 
 ## 手順
 
-0. **Pipeline Detection**（手順1の前に実行）
+0. **Worktree 切り替え**（選択されたセッションが CWD 以外の場合のみ実行）
+
+   選択されたセッションの所属に応じて分岐する:
+
+   - **既存 worktree のセッション**:
+     1. `wt switch <branch>` を実行して worktree に切り替える
+     2. 切り替え先の `.agents/handover/` から `project-state.json` を読み込む
+     3. 手順 0.5（Pipeline Detection）へ進む
+
+   - **orphan セッション**（worktree 削除済み）:
+     1. `project-state.json` の `workspace.branch` からブランチ名を取得する
+     2. ブランチが git に存在するか確認する（`git branch --list <branch>`）
+        - **存在しない場合** → 「ブランチも削除されています。セッションを再開できません。」と報告して終了
+     3. ユーザーに確認する: 「worktree が削除されています。`wt switch --create <branch>` で再作成しますか？」
+        - **拒否** → セッション選択に戻る
+        - **承認** → `wt switch --create <branch>` で worktree を再作成する
+     4. orphan セッションのデータ（`project-state.json`, `handover.md`）を新しい worktree の `.agents/handover/{branch}/{fingerprint}/` にコピーする
+     5. 元の orphan セッションディレクトリを削除する
+     6. 手順 0.5（Pipeline Detection）へ進む
+
+   - **`wt` 未インストールの場合**:
+     `wt` コマンドが利用できない場合は「`wt` が見つかりません。手動で `cd <worktree-path>` してから `/continue` を再実行してください」と報告して終了する
+
+0.5. **Pipeline Detection**（手順1の前に実行）
 
    project-state.json の `pipeline` フィールドを確認する:
    - `pipeline` が存在しない、または `"feature-dev"` / `"debug-flow"` 以外の値の場合:
@@ -95,29 +118,6 @@ user-invocable: true
    4. 通常の Pipeline Detection に戻る
 
    Linear API 失敗時はワークフロー続行（ベストエフォート）。
-
-0.5. **Worktree 切り替え**（選択されたセッションが CWD 以外の場合のみ実行）
-
-   選択されたセッションの所属に応じて分岐する:
-
-   - **既存 worktree のセッション**:
-     1. `wt switch <branch>` を実行して worktree に切り替える
-     2. 切り替え先の `.agents/handover/` から `project-state.json` を読み込む
-     3. 手順 0（Pipeline Detection）に戻る
-
-   - **orphan セッション**（worktree 削除済み）:
-     1. `project-state.json` の `workspace.branch` からブランチ名を取得する
-     2. ブランチが git に存在するか確認する（`git branch --list <branch>`）
-        - **存在しない場合** → 「ブランチも削除されています。セッションを再開できません。」と報告して終了
-     3. ユーザーに確認する: 「worktree が削除されています。`wt switch --create <branch>` で再作成しますか？」
-        - **拒否** → セッション選択に戻る
-        - **承認** → `wt switch --create <branch>` で worktree を再作成する
-     4. orphan セッションのデータ（`project-state.json`, `handover.md`）を新しい worktree の `.agents/handover/{branch}/{fingerprint}/` にコピーする
-     5. 元の orphan セッションディレクトリを削除する
-     6. 手順 0（Pipeline Detection）に戻る
-
-   - **`wt` 未インストールの場合**:
-     `wt` コマンドが利用できない場合は「`wt` が見つかりません。手動で `cd <worktree-path>` してから `/continue` を再実行してください」と報告して終了する
 
 1. 上記のパス解決で選択されたセッションの `project-state.json` を読み込む
    - 存在しない場合 → 「プロジェクト状態ファイルがありません。/handover で作成してください」と報告して終了
