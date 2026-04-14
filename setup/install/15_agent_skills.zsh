@@ -21,6 +21,7 @@ external_skills=(
   "vercel-labs/agent-browser --skill agent-browser --skill dogfood"
   "vercel-labs/agent-skills--skill react-best-practices --skill composition-patterns --skill web-design-guidelines"
   "https://github.com/github/awesome-copilot --skill breakdown-test"
+  "mattpocock/skills/grill-me"
   "pzep1/xcode-build-skill"
 )
 
