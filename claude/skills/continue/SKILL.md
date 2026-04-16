@@ -1,6 +1,10 @@
 ---
 name: continue
-description: handover.md から未完了タスクを確認し、承認後に作業を再開する
+description: >-
+  前セッションの project-state.json から未完了タスク（in_progress/blocked）を特定し、
+  ユーザー承認後に作業を再開する。/continue の明示呼び出し、"continue from handover"
+  のような継続指示、handover.md への言及を検出した時に使用する。worktree 切り替えと
+  Pipeline Detection も含む。
 user-invocable: true
 ---
 
