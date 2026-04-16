@@ -1,9 +1,11 @@
 ---
 name: linear-refresh
 description: >-
-  Linearチームのチケット棚卸し・構造整理・新規検出を一気通貫で実行するスキル。
-  チケットに紐付いた外部リンクの探索に加え、キーワード検索とチケット逆引きで
-  未紐付きの外部ソースも発見する。
+  Linear チケットの棚卸し・構造整理・未登録ソース発見を
+  Collect/Discover/Analyze/Approve/Execute の 5 ステップで一気通貫実行する。
+  既存の外部リンク探索に加え、Slack/GitHub のキーワード検索と逆引きで未紐付きの
+  外部ソースも発見する。定期的な Linear メンテナンス、または「棚卸し」「リフレッシュ」
+  「整理」の依頼時に使用する。
 argument-hint: "[--force] [--skip-discovery] [--cleanup-only] [--add-only]"
 ---
 
