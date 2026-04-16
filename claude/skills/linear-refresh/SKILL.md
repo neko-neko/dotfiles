@@ -11,7 +11,7 @@ argument-hint: "[--force] [--skip-discovery] [--cleanup-only] [--add-only]"
 
 # Linear Refresh
 
-Linearチームのチケット棚卸し・構造整理・新規検出を一気通貫で実行する。
+Linear チケットの棚卸し・構造整理・未登録ソース発見を一気通貫で実行する。
 
 ## Options
 

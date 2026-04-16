@@ -4,10 +4,10 @@
 
 ## Contents
 
-- project-state.json JSON スキーマ
-- マージルール（既存 project-state.json との統合）
-- Phase Summary YAML フォーマット（pipeline ワークフロー時）
-- handover.md 出力フォーマット
+- [project-state.json JSON スキーマ](#project-statejson-json-スキーマ)
+- [マージルール（既存 project-state.json との統合）](#マージルール既存-project-statejson-との統合)
+- [Phase Summary YAML フォーマット（pipeline ワークフロー時）](#phase-summary-yaml-フォーマットpipeline-ワークフロー時)
+- [handover.md 出力フォーマット](#handovermd-出力フォーマット)
 
 ## project-state.json JSON スキーマ
 
