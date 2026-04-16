@@ -230,7 +230,16 @@
     "pm-execution@pm-skills": true,
     "codex@openai-codex": true,
     "linear-cli@linear-cli": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "belt-agents@belt": true,
+    "feature-dev@claude-plugins-official": true,
+    "bug-fix@belt": true,
+    "code-review@claude-plugins-official": true,
+    "spec-review@belt": true,
+    "monkey-test@belt": true,
+    "test-scenarios@belt": true,
+    "feature-dev@belt": true,
+    "code-review@belt": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
@@ -255,6 +264,12 @@
       "source": {
         "source": "github",
         "repo": "schpet/linear-cli"
+      }
+    },
+    "belt": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/nishikataseiichi/go/src/github.com/neko-neko/belt"
       }
     }
   },
