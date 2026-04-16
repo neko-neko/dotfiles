@@ -1,3 +1,12 @@
+---
+name: doc-audit
+description: >-
+  md ドキュメントの陳腐化・欠落・矛盾を 4 Layer 構造で検出し、ユーザー承認後に修正する。
+  depends-on 検証、coverage チェック、business-rule/architecture の未文書化知識検出、
+  readme/CLAUDE.md のメタ整合検査を行う。/doc-audit で起動、または大規模なコード変更後に
+  ドキュメント整合性を確認したい時に使用する。
+---
+
 ドキュメント監査スキル。4 Layer 構造でドキュメントの陳腐化・欠落・矛盾を検出し、ユーザー承認後に修正する。
 
 ## インターフェース
