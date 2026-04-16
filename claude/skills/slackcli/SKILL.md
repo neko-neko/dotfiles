@@ -1,14 +1,6 @@
 ---
 name: slackcli
 description: "Slack CLI: Send messages, read conversations, search, and manage Slack workspaces from the terminal. Use when the user asks anything related to Slack — sending messages, checking unreads, searching conversations, or managing workspaces. Also trigger when a Slack URL is provided (e.g., https://*.slack.com/archives/*, app.slack.com/*) or when the conversation context mentions Slack threads, channels, or messages."
-metadata:
-  version: 0.3.1
-  openclaw:
-    category: "productivity"
-    requires:
-      bins:
-        - slackcli
-    cliHelp: "slackcli --help"
 ---
 
 # slackcli
