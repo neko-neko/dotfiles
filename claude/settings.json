@@ -170,7 +170,7 @@
       "Bash(ssh:*)",
       "Bash(scp:*)"
     ],
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
   "hooks": {
     "PreToolUse": [
@@ -231,15 +231,9 @@
     "codex@openai-codex": true,
     "linear-cli@linear-cli": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "belt-agents@belt": true,
     "feature-dev@claude-plugins-official": true,
-    "bug-fix@belt": true,
-    "code-review@claude-plugins-official": true,
-    "spec-review@belt": true,
-    "monkey-test@belt": true,
-    "test-scenarios@belt": true,
-    "feature-dev@belt": true,
-    "code-review@belt": true
+    "belt-agent@belt": true,
+    "belt@belt": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
@@ -274,5 +268,6 @@
     }
   },
   "language": "japanese",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
 }
