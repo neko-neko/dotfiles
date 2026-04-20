@@ -4,11 +4,31 @@ source ${HOME}/.dotfiles/setup/layers/home-network/lib/op.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/lib/service.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/config.zsh
 
+# REST API の準備完了を待つ。最大 30 秒で timeout。
+# 使い方: syncthing::wait_rest_ready "$api_base" "$apikey"
+syncthing::wait_rest_ready() {
+  local base="$1"
+  local key="$2"
+  local waited=0
+  while (( waited < 30 )); do
+    if curl -sS -o /dev/null -H "X-API-Key: $key" "${base}/rest/system/ping" &>/dev/null; then
+      util::info "syncthing REST API ready after ${waited}s"
+      return 0
+    fi
+    sleep 1
+    ((waited++))
+  done
+  util::error "syncthing REST API did not respond within 30s"
+  return 1
+}
+
 util::info 'install syncthing...'
 brew install syncthing
 
 # 初回起動: config.xml が無ければ syncthing を start して自動生成させる
 local config_xml="${SYNCTHING_CONFIG_DIR}/config.xml"
+local api_base="http://${SYNCTHING_GUI_ADDRESS}"
+
 if [[ ! -f "$config_xml" ]]; then
   util::info 'first run: starting syncthing to generate config.xml'
   service::ensure_started syncthing false
@@ -26,17 +46,18 @@ if [[ ! -f "$config_xml" ]]; then
   util::info "config.xml created after ${waited}s"
 else
   service::ensure_started syncthing false
-  # API が応答するまで少し待つ
-  sleep 2
 fi
 
-# config.xml から API key を抽出
+# config.xml から API key を抽出 (REST 準備ポーリングに使う)
 local apikey
 apikey=$(grep -oE '<apikey>[^<]+</apikey>' "$config_xml" | sed -E 's|<apikey>(.*)</apikey>|\1|')
 if [[ -z "$apikey" ]]; then
   util::error "failed to extract apikey from $config_xml"
   exit 1
 fi
+
+# REST API が応答するまで待機 (後続の PUT 呼び出しが 503 で失敗するのを防ぐ)
+syncthing::wait_rest_ready "$api_base" "$apikey" || exit 1
 
 # API key を 1Password に書き戻し（冪等、既存と同値なら skip）
 if ! op::item_exists "$OP_ITEM_SYNCTHING_APIKEY" "$OP_VAULT"; then
@@ -74,8 +95,7 @@ if [[ -z "$peer_id" ]]; then
   exit 1
 fi
 
-# REST API で設定を更新
-local api_base="http://${SYNCTHING_GUI_ADDRESS}"
+# REST API で設定を更新 (api_base は上で定義済み)
 local curl_opts=(-sS -H "X-API-Key: $apikey" -H "Content-Type: application/json")
 
 util::info "registering peer device $peer_id via REST API"
