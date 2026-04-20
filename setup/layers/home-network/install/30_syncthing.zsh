@@ -39,7 +39,7 @@ if [[ -z "$apikey" ]]; then
 fi
 
 # API key を 1Password に書き戻し（冪等、既存と同値なら skip）
-if ! op::require_item "$OP_ITEM_SYNCTHING_APIKEY" "$OP_VAULT" 2>/dev/null; then
+if ! op::item_exists "$OP_ITEM_SYNCTHING_APIKEY" "$OP_VAULT"; then
   util::info "creating op item '$OP_ITEM_SYNCTHING_APIKEY'"
   op item create \
     --category Password \

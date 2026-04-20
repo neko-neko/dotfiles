@@ -38,6 +38,15 @@ op::ensure_login_item() {
     >/dev/null
 }
 
+# 副作用なしで item の存在だけを確認する。
+# Returns 0 if the item exists, 1 otherwise. No output, no util::error.
+# 冪等な自動生成フロー (expected-absent が正常パス) での判定用。
+op::item_exists() {
+  local title="$1"
+  local vault="$2"
+  op item get "$title" --vault "$vault" &>/dev/null
+}
+
 # 既存 item の存在確認だけを行う。未存在ならエラー付きで 1 を返す。
 # 手動登録が前提の item (tailscale-authkey, syncthing-peer-macbook) 用。
 op::require_item() {
