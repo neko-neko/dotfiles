@@ -5,13 +5,14 @@ source ${HOME}/.dotfiles/setup/layers/home-network/lib/service.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/config.zsh
 
 # REST API の準備完了を待つ。最大 30 秒で timeout。
-# 使い方: syncthing::wait_rest_ready "$api_base" "$apikey"
+# API key は引数ではなくヘッダファイル経由で curl に渡す (ps から見えないように)。
+# 使い方: syncthing::wait_rest_ready "$api_base" "$hdr_file"
 syncthing::wait_rest_ready() {
   local base="$1"
-  local key="$2"
+  local hdr="$2"
   local waited=0
   while (( waited < 30 )); do
-    if curl -sS -o /dev/null -H "X-API-Key: $key" "${base}/rest/system/ping" &>/dev/null; then
+    if curl -sS -o /dev/null -H "@${hdr}" "${base}/rest/system/ping" &>/dev/null; then
       util::info "syncthing REST API ready after ${waited}s"
       return 0
     fi
@@ -56,8 +57,20 @@ if [[ -z "$apikey" ]]; then
   exit 1
 fi
 
+# ヘッダを一時ファイルに書き (mode 600) curl に -H @file で渡す。
+# 目的: apikey を -H "X-API-Key: ..." のような CLI 引数経由で ps から見えるのを避ける。
+# hdr_ping: /rest/system/ping 用 (X-API-Key のみ)
+# hdr_put : PUT 用 (X-API-Key + Content-Type)
+local hdr_ping hdr_put
+hdr_ping=$(mktemp -t syncthing-hdr-ping.XXXXXX)
+hdr_put=$(mktemp -t syncthing-hdr-put.XXXXXX)
+chmod 600 "$hdr_ping" "$hdr_put"
+trap 'rm -f "$hdr_ping" "$hdr_put"' EXIT
+printf 'X-API-Key: %s\n' "$apikey" > "$hdr_ping"
+printf 'X-API-Key: %s\nContent-Type: application/json\n' "$apikey" > "$hdr_put"
+
 # REST API が応答するまで待機 (後続の PUT 呼び出しが 503 で失敗するのを防ぐ)
-syncthing::wait_rest_ready "$api_base" "$apikey" || exit 1
+syncthing::wait_rest_ready "$api_base" "$hdr_ping" || exit 1
 
 # API key を 1Password に書き戻し（冪等、既存と同値なら skip）
 if ! op::item_exists "$OP_ITEM_SYNCTHING_APIKEY" "$OP_VAULT"; then
@@ -97,7 +110,8 @@ fi
 
 # REST API で設定を更新 (api_base は上で定義済み)
 # -f: fail on HTTP 4xx/5xx so we can abort instead of proceeding with bad state
-local curl_opts=(-sSf -H "X-API-Key: $apikey" -H "Content-Type: application/json")
+# -H @file: header を一時ファイルから読む (ps から apikey が見えないように)
+local curl_opts=(-sSf -H "@${hdr_put}")
 
 util::info "registering peer device $peer_id via REST API"
 curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/devices/${peer_id}" -d @- <<EOF || { util::error "failed to register peer device via REST"; exit 1; }
