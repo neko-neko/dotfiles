@@ -1,0 +1,14 @@
+# home-network layer: Mac mini 専用パッケージ
+# 共通 Brewfile とは別に管理する。
+
+# Tailscale subnet router (ヘッドレス用、cask ではなく formula)
+brew 'tailscale'
+
+# AdGuard Home (tailnet 向け DNS + 広告ブロック)
+brew 'adguardhome'
+
+# Syncthing (~/.claude 同期)
+brew 'syncthing'
+
+# Splashtop Streamer (iPad からの遠隔操作の受信側)
+cask 'splashtop-streamer'
