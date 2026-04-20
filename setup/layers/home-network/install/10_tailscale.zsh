@@ -3,7 +3,18 @@ source ${HOME}/.dotfiles/setup/util.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/lib/op.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/lib/service.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/config.zsh
-source ${HOME}/.dotfiles/setup/layers/home-network/config.local.zsh
+
+local local_config="${HOME}/.dotfiles/setup/layers/home-network/config.local.zsh"
+if [[ ! -f "$local_config" ]]; then
+  util::error "config.local.zsh not found. Run 00_preflight.zsh first."
+  exit 1
+fi
+source "$local_config"
+
+if [[ -z "$HOME_LAN_CIDR" ]]; then
+  util::error "HOME_LAN_CIDR not set in config.local.zsh"
+  exit 1
+fi
 
 util::info 'install tailscale (formula)...'
 brew install --formula tailscale
