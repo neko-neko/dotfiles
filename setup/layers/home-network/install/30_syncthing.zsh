@@ -142,6 +142,8 @@ curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/folders/${SYNCTHING_CLAUD
 EOF
 
 # .stignore を生成
+# (まだ ~/.claude ディレクトリが存在しない端末でも動くよう mkdir -p しておく)
+mkdir -p "$SYNCTHING_CLAUDE_FOLDER_PATH"
 util::info "writing $SYNCTHING_CLAUDE_FOLDER_PATH/.stignore"
 cat > "${SYNCTHING_CLAUDE_FOLDER_PATH}/.stignore" <<'EOF'
 // home-network layer Claude home sync excludes
