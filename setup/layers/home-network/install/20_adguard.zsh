@@ -63,8 +63,10 @@ for dns in "${ADGUARD_UPSTREAM_DNS[@]}"; do
 "
 done
 
-util::info "writing $conf_file"
-sudo tee "$conf_file" >/dev/null <<EOF
+util::info "writing $conf_file (atomic via temp + mv)"
+local tmp_file
+tmp_file=$(sudo mktemp "${conf_dir}/AdGuardHome.yaml.XXXXXX")
+sudo tee "$tmp_file" >/dev/null <<EOF
 http:
   address: ${ADGUARD_WEB_ADDRESS}
 users:
@@ -86,8 +88,9 @@ ${filters_yaml}
 schema_version: 20
 EOF
 
-sudo chown root:wheel "$conf_file"
-sudo chmod 0644 "$conf_file"
+sudo chown root:wheel "$tmp_file"
+sudo chmod 0644 "$tmp_file"
+sudo mv "$tmp_file" "$conf_file"
 
 service::ensure_started adguardhome true
 
