@@ -96,10 +96,11 @@ if [[ -z "$peer_id" ]]; then
 fi
 
 # REST API で設定を更新 (api_base は上で定義済み)
-local curl_opts=(-sS -H "X-API-Key: $apikey" -H "Content-Type: application/json")
+# -f: fail on HTTP 4xx/5xx so we can abort instead of proceeding with bad state
+local curl_opts=(-sSf -H "X-API-Key: $apikey" -H "Content-Type: application/json")
 
 util::info "registering peer device $peer_id via REST API"
-curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/devices/${peer_id}" -d @- <<EOF
+curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/devices/${peer_id}" -d @- <<EOF || { util::error "failed to register peer device via REST"; exit 1; }
 {
   "deviceID": "${peer_id}",
   "name": "MacBook",
@@ -111,7 +112,7 @@ curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/devices/${peer_id}" -d @-
 EOF
 
 util::info "registering folder ${SYNCTHING_CLAUDE_FOLDER_ID} via REST API"
-curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/folders/${SYNCTHING_CLAUDE_FOLDER_ID}" -d @- <<EOF
+curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/folders/${SYNCTHING_CLAUDE_FOLDER_ID}" -d @- <<EOF || { util::error "failed to register folder via REST"; exit 1; }
 {
   "id": "${SYNCTHING_CLAUDE_FOLDER_ID}",
   "label": "${SYNCTHING_CLAUDE_FOLDER_LABEL}",
@@ -150,7 +151,7 @@ EOF
 
 # GUI パスワードを設定（REST API）
 util::info "setting syncthing GUI credentials"
-curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/gui" -d @- <<EOF
+curl "${curl_opts[@]}" -X PUT "${api_base}/rest/config/gui" -d @- <<EOF || { util::error "failed to set GUI credentials via REST"; exit 1; }
 {
   "enabled": true,
   "address": "${SYNCTHING_GUI_ADDRESS}",
