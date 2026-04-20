@@ -142,6 +142,7 @@ brew 'nmap'
 
 # Casks
 cask '1password-cli'
+cask '1password'
 cask 'android-studio'
 cask 'claude'
 cask 'claude-code'
