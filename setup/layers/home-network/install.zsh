@@ -2,8 +2,6 @@
 # home-network layer entrypoint
 # prerequisite: 共通 Brewfile / setup/install.zsh が完了している Mac mini 上で実行
 
-set -e
-
 local layer_dir="${HOME}/.dotfiles/setup/layers/home-network"
 source ${HOME}/.dotfiles/setup/util.zsh
 
