@@ -170,7 +170,7 @@
       "Bash(ssh:*)",
       "Bash(scp:*)"
     ],
-    "defaultMode": "auto"
+    "defaultMode": "default"
   },
   "hooks": {
     "PreToolUse": [
