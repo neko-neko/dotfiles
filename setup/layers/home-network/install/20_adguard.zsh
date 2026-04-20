@@ -5,9 +5,10 @@ source ${HOME}/.dotfiles/setup/layers/home-network/lib/service.zsh
 source ${HOME}/.dotfiles/setup/layers/home-network/config.zsh
 
 # bcrypt ハッシュ生成 (macOS 同梱の /usr/sbin/htpasswd)
+# -i: パスワードを stdin から読む (ps から見える -b "$plain" を避けるため)
 gen_bcrypt() {
   local plain="$1"
-  /usr/sbin/htpasswd -B -C 10 -n -b "$ADGUARD_ADMIN_USER" "$plain" | cut -d: -f2
+  /usr/sbin/htpasswd -B -C 10 -n -i "$ADGUARD_ADMIN_USER" <<< "$plain" | cut -d: -f2
 }
 
 util::info 'install adguardhome...'
