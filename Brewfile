@@ -71,7 +71,8 @@ brew 'direnv'
 brew 'fzf'
 brew 'sheldon'
 brew 'starship'
-brew 'zellij'
+brew 'tmux'
+brew 'tpm'
 
 # Editors
 brew 'helix'
@@ -101,7 +102,6 @@ brew 'krew'
 brew 'kubernetes-cli'
 brew 'kubectx'
 brew 'kubeseal'
-brew 'minio-mc'
 brew 'sops'
 brew 'tflint'
 
@@ -145,7 +145,6 @@ cask '1password-cli'
 cask '1password'
 cask 'android-studio'
 cask 'claude'
-cask 'claude-code'
 cask 'codex'
 cask 'cursor'
 cask 'cyberduck'
@@ -179,7 +178,6 @@ cask 'font-monaspace'
 if ENV['CI'] != 'true'
   mas 'Keynote', id: 409183694
   mas 'Kindle', id: 302584613
-  mas 'LINE', id: 539883307
 end
 
 # Cursor Extensions
