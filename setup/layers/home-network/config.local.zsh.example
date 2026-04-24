@@ -1,8 +1,0 @@
-#!/bin/zsh
-# home-network layer 端末固有値の雛形。
-# このファイルを config.local.zsh にコピーして編集すること。
-#   cp config.local.zsh.example config.local.zsh
-
-# Tailscale Subnet Router が advertise する LAN CIDR
-# 自宅 LAN のサブネットを指定する（ルーター DHCP の範囲と一致させる）
-HOME_LAN_CIDR="192.168.10.0/24"
