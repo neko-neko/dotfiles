@@ -1,0 +1,14 @@
+# sesh — smart tmux session manager
+# Docs: https://github.com/joshmedeski/sesh
+
+[default_session]
+startup_command = ""
+
+# ─── Fixed sessions ──────────────────────────────────────────────────────────
+# zoxide directories and live tmux sessions are auto-merged into `sesh list`.
+# Add more entries here as needed.
+
+[[session]]
+name = "dotfiles"
+path = "~/.dotfiles"
+startup_command = "hx ."
