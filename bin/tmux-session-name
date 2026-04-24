@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# tmux-session-name — derive a tmux session name from cwd/git state.
+# Usage: tmux-session-name [suffix]
+set -euo pipefail
+
+common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+repo_root="$(dirname "$common_dir")"
+repo="$(basename "$repo_root")"
+branch="$(git rev-parse --abbrev-ref HEAD)"
+printf '%s\n' "${repo}-${branch}"
