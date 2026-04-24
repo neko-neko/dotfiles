@@ -100,6 +100,13 @@ autoload fzf-history
 zle -N fzf-history
 
 # ------------------------------
+# zoxide Settings
+# ------------------------------
+if type zoxide > /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
+# ------------------------------
 # Key bindings
 # ------------------------------
 bindkey '^r' fzf-history
