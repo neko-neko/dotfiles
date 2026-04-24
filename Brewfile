@@ -69,9 +69,11 @@ brew 'wget'
 brew 'ast-grep'
 brew 'direnv'
 brew 'fzf'
+brew 'sesh'
 brew 'sheldon'
 brew 'starship'
 brew 'tmux'
+brew 'zoxide'
 brew 'tpm'
 
 # Editors
