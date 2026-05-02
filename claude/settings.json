@@ -160,6 +160,9 @@
       "Bash(ghq:*)",
       "Bash(delta:*)",
       "Bash(gibo:*)",
+      "Bash(linear *)",
+      "Bash(belt *)",
+      "Bash(belt-agent *)",
       "WebFetch(domain:*)",
       "Edit",
       "Write"
