@@ -94,7 +94,7 @@ alias signin='eval $(op signin)'
 # ------------------------------
 # claude code
 # ------------------------------
-alias claude='claude --effort max --enable-auto-mode'
+alias claude='claude --effort xhigh --dangerously-skip-permissions'
 
 # ------------------------------
 # Override
