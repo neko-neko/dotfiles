@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sesh --version)",
+      "Bash(tmux -V)",
+      "Bash(zoxide --version)"
+    ]
+  }
+}
