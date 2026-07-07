@@ -76,6 +76,15 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH="${HOME}/.local/bin:$PATH"
 
 # ------------------------------
+# pnpm
+# ------------------------------
+export PNPM_HOME="/Users/nishikataseiichi/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# ------------------------------
 # Browser-Use
 # ------------------------------
 export PATH="${HOME}/.browser-use-env/bin:$PATH"

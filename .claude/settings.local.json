@@ -3,7 +3,8 @@
     "allow": [
       "Bash(sesh --version)",
       "Bash(tmux -V)",
-      "Bash(zoxide --version)"
+      "Bash(zoxide --version)",
+      "mcp__plugin_context7_context7__resolve-library-id"
     ]
   }
 }
