@@ -27,6 +27,13 @@ if [[ ! -d ${HOME}/.config ]]; then
 fi
 cd config
 for name in *; do
+  # herdr keeps runtime files (sockets, logs, session.json) in ~/.config/herdr,
+  # so link only config.toml instead of replacing the whole directory
+  if [[ ${name} == 'herdr' ]]; then
+    mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/herdr
+    ln -sfv ${PWD}/herdr/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/herdr/config.toml
+    continue
+  fi
   if [[ -L ${XDG_CONFIG_HOME:-$HOME/.config}/$name ]]; then
     unlink ${XDG_CONFIG_HOME:-$HOME/.config}/$name
   fi

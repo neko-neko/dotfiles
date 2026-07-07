@@ -1,0 +1,40 @@
+# =============================================================================
+# herdr configuration
+# Managed under ~/.dotfiles/config/herdr/config.toml
+# Symlinked by setup/setup.zsh to $XDG_CONFIG_HOME/herdr/config.toml
+# (file-level symlink: ~/.config/herdr also holds herdr runtime files —
+#  sockets, logs, session.json — so the directory itself must stay real)
+# Keybindings aligned with ~/.dotfiles/config/tmux/tmux.conf (herdr 0.7.1)
+# =============================================================================
+
+[keys]
+# tmux: prefix C-b → C-Space
+prefix = "ctrl+space"
+
+# tmux: prefix+| で左右分割 / prefix+- で上下分割
+split_vertical = "prefix+|"
+split_horizontal = "prefix+minus"
+
+# tmux: prefix+c で新規ウィンドウ（herdr では tab が相当。既定値と同じだが明示）
+new_tab = "prefix+c"
+
+# tmux: prefix+, で rename-window
+rename_tab = "prefix+comma"
+
+# tmux: prefix+r で設定リロード（herdr 既定の resize_mode = prefix+r と入れ替え）
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+# tmux: prefix+d でデタッチ（herdr 既定は prefix+q）
+detach = "prefix+d"
+
+# vim-tmux-navigator: ctrl+h/j/k/l で直接ペイン移動（prefix 経由も併存）
+focus_pane_left = ["prefix+h", "ctrl+h"]
+focus_pane_down = ["prefix+j", "ctrl+j"]
+focus_pane_up = ["prefix+k", "ctrl+k"]
+focus_pane_right = ["prefix+l", "ctrl+l"]
+
+# tmux-sessionx: prefix+o でセッションピッカー（herdr では workspace picker）
+# 既定で prefix+o を使う open_notification_target は prefix+shift+o へ退避
+workspace_picker = "prefix+o"
+open_notification_target = "prefix+shift+o"
