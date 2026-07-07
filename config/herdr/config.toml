@@ -38,3 +38,13 @@ focus_pane_right = ["prefix+l", "ctrl+l"]
 # 既定で prefix+o を使う open_notification_target は prefix+shift+o へ退避
 workspace_picker = "prefix+o"
 open_notification_target = "prefix+shift+o"
+
+[experimental]
+switch_ascii_input_source_in_prefix = true
+
+[ui.toast]
+delivery = "terminal"
+
+[theme]
+name = "catppuccin"
+auto_switch = false
