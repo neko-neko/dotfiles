@@ -75,6 +75,7 @@ brew 'starship'
 brew 'tmux'
 brew 'zoxide'
 brew 'tpm'
+brew 'herdr'
 
 # Editors
 brew 'helix'
