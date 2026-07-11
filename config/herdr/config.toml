@@ -8,8 +8,7 @@
 # =============================================================================
 
 [keys]
-# tmux: prefix C-b → C-Space
-prefix = "ctrl+space"
+prefix = "ctrl+b"
 
 # tmux: prefix+| で左右分割 / prefix+- で上下分割
 split_vertical = "prefix+|"
