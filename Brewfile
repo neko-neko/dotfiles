@@ -75,7 +75,7 @@ brew 'zoxide'
 brew 'herdr'
 
 # Editors
-brew 'helix'
+brew 'neovim'
 
 # Git & Version Control
 brew 'diff-so-fancy'
