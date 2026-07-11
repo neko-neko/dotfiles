@@ -48,3 +48,14 @@ delivery = "terminal"
 [theme]
 name = "catppuccin"
 auto_switch = false
+
+# =============================================================================
+# Plugins
+# =============================================================================
+# drop-upload: prefix+u で overlay を開き、Finder からの D&D で
+# フォーカス中の SSH ペインへ scp アップロードする（config/herdr/plugins/drop-upload/）
+[[keys.command]]
+key = "prefix+u"
+type = "plugin_action"
+command = "drop-upload.start"
+description = "Upload files to focused SSH pane (drag & drop)"

@@ -1,0 +1,18 @@
+id = "drop-upload"
+name = "Drop Upload"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "Drag & drop files from Finder to scp them to the SSH session in the focused pane"
+platforms = ["macos"]
+
+[[actions]]
+id = "start"
+title = "Upload files to focused SSH pane"
+contexts = ["workspace"]
+command = ["bash", "scripts/action-start.sh"]
+
+[[panes]]
+id = "dropzone"
+title = "Drop files here"
+placement = "overlay"
+command = ["bash", "scripts/overlay.sh"]

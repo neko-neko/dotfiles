@@ -26,4 +26,5 @@ if [[ $confirmation = "y" || $confirmation = "Y" ]]; then
   for target in ${UNINSTALL_TARGETS[@]}; do
     unlink ${HOME}/.${target}
   done
+  command -v herdr >/dev/null 2>&1 && herdr plugin unlink drop-upload 2>/dev/null
 fi

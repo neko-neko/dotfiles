@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+#
+# ts-serve — ローカル開発サーバーを tailnet に HTTPS で公開する tailscale serve ラッパー
+#
+# Usage: ts-serve [PORT | --off | --status | -h]
+#   ts-serve 3000     localhost:3000 を https://<self>.ts.net/ で公開（--bg なので永続）
+#   ts-serve          現在の serve 状態を表示
+#   ts-serve --off    すべての serve 設定を解除
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: ts-serve [PORT | --off | --status | -h]
+
+  PORT      localhost:PORT を tailnet へ HTTPS で公開する (tailscale serve --bg)
+            --bg のため設定は解除するまで永続する
+  --status  現在の serve 状態を表示する（引数なしと同じ）
+  --off     すべての serve 設定を解除する (tailscale serve reset)
+  -h        このヘルプを表示する
+EOF
+}
+
+err() {
+  echo "ts-serve: $*" >&2
+}
+
+require_tailscale() {
+  if ! command -v tailscale >/dev/null 2>&1; then
+    err "tailscale command not found. Install with: brew install tailscale"
+    exit 1
+  fi
+}
+
+validate_port() {
+  local port=$1
+  # 先頭ゼロは拒否する（bash 算術の8進数解釈による検証バイパスを防ぐ）
+  if [[ ! "$port" =~ ^[1-9][0-9]{0,4}$ ]] || (( port > 65535 )); then
+    err "invalid port '$port' — port must be 1-65535"
+    exit 1
+  fi
+}
+
+self_dns_name() {
+  local name
+  command -v jq >/dev/null 2>&1 || return 0
+  name=$(tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty') || return 0
+  printf '%s' "${name%.}"
+}
+
+cmd_status() {
+  tailscale serve status
+}
+
+cmd_off() {
+  tailscale serve reset
+  tailscale serve status
+}
+
+cmd_serve() {
+  local port=$1 out dns_name
+  if ! out=$(tailscale serve --bg "$port" 2>&1); then
+    if grep -qiE 'https|cert' <<<"$out"; then
+      err "HTTPS certificates are not enabled on this tailnet."
+      err "Enable them at https://login.tailscale.com/admin/dns (HTTPS Certificates) and retry."
+    else
+      err "tailscale serve failed:"
+      printf '%s\n' "$out" >&2
+    fi
+    exit 1
+  fi
+  printf '%s\n' "$out"
+  dns_name=$(self_dns_name)
+  if [[ -n "$dns_name" ]]; then
+    echo "Serving: https://${dns_name}/"
+  fi
+}
+
+main() {
+  case "${1:-}" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+  esac
+
+  require_tailscale
+
+  if (( $# > 1 )); then
+    usage >&2
+    exit 1
+  fi
+
+  case "${1:-}" in
+    ''|--status)
+      cmd_status
+      ;;
+    --off)
+      cmd_off
+      ;;
+    -*)
+      usage >&2
+      exit 1
+      ;;
+    *)
+      validate_port "$1"
+      cmd_serve "$1"
+      ;;
+  esac
+}
+
+main "$@"
