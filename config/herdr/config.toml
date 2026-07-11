@@ -40,6 +40,10 @@ open_notification_target = "prefix+shift+o"
 
 [experimental]
 switch_ascii_input_source_in_prefix = true
+kitty_graphics = true
+
+[ui]
+prompt_new_tab_name = false
 
 [ui.toast]
 delivery = "terminal"
