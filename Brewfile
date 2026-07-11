@@ -73,6 +73,7 @@ brew 'sheldon'
 brew 'starship'
 brew 'zoxide'
 brew 'herdr'
+brew 'hunk'
 
 # Editors
 brew 'neovim'
