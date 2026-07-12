@@ -27,8 +27,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Helix editor
-config/helix/runtime
+# herdr
+config/herdr/*
+!config/herdr/config.toml
+!config/herdr/plugins.json
+!config/herdr/plugins
 
-# Claude
-.worktrees
