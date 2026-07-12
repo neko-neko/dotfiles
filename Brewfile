@@ -11,6 +11,7 @@ tap 'ktr0731/evans'
 tap 'leoafarias/fvm'
 tap 'oven-sh/bun'
 tap 'schpet/tap'
+tap 'rjyo/moshi'
 
 # Taps for tools
 brew 'boz/repo/kail'
@@ -74,6 +75,8 @@ brew 'starship'
 brew 'zoxide'
 brew 'herdr'
 brew 'hunk'
+brew 'moshi-hook'
+brew 'mosh'
 
 # Editors
 brew 'neovim'
