@@ -1,3 +1,4 @@
+onboarding = false
 # =============================================================================
 # herdr configuration
 # Managed under ~/.dotfiles/config/herdr/config.toml
@@ -6,6 +7,10 @@
 #  sockets, logs, session.json — so the directory itself must stay real)
 # Keybindings aligned with ~/.dotfiles/config/tmux/tmux.conf (herdr 0.7.1)
 # =============================================================================
+reveal_hidden_cursor_for_cjk_ime = true
+cjk_ime_agents = ["claude", "codex"]
+cjk_ime_cursor_shape = "steady_block"
+switch_ascii_input_source_in_prefix = true
 
 [keys]
 prefix = "ctrl+b"
@@ -44,6 +49,7 @@ kitty_graphics = true
 
 [ui]
 prompt_new_tab_name = false
+agent_panel_sort = "spaces"
 
 [ui.toast]
 delivery = "terminal"
@@ -62,3 +68,30 @@ key = "prefix+u"
 type = "plugin_action"
 command = "drop-upload.start"
 description = "Upload files to focused SSH pane (drag & drop)"
+
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+description = "File Viewer"
+width = "90%"
+height = "90%"
+command = '''PLUGIN_DIR="$(herdr plugin list --json | jq -r '.result.plugins[] | select(.plugin_id=="herdr-file-viewer") | .plugin_root')" && CONFIG_DIR="$(herdr plugin config-dir herdr-file-viewer)" && HERDR_PLUGIN_CONFIG_DIR="$CONFIG_DIR" exec "$PLUGIN_DIR/target/release/herdr-file-viewer"'''
+
+[[keys.command]]
+key = "prefix+]"
+type = "plugin_action"
+command = "hunk.diff.worktree-split"
+description = "open worktree Hunk diff in a split"
+
+[[keys.command]]
+key = "prefix+}"
+type = "plugin_action"
+command = "hunk.diff.staged-split"
+description = "open staged Hunk diff in a split"
+
+[[keys.command]]
+key = "prefix+{"
+type = "plugin_action"
+command = "hunk.diff.branch-split"
+description = "open branch Hunk diff in a split"
+
