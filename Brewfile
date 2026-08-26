@@ -1,5 +1,14 @@
+# ------------------------------
+# Common Brewfile
+# ------------------------------
+# Packages suitable for BOTH the Hermes Tailscale server (headless
+# dev/server box) and a Mac client machine. GUI/mobile/desktop-only
+# packages live in setup/layers/mac-client/Brewfile, server-only packages
+# in setup/layers/hermes-server/Brewfile, and home-network/media packages
+# in setup/layers/home-network/Brewfile. See README.md "Installation" for
+# how to install common + a target layer.
+
 tap 'boz/repo'
-tap 'dart-lang/dart'
 tap 'derailed/k9s'
 tap 'getsentry/tools'
 tap 'golangci/tap'
@@ -8,7 +17,6 @@ tap 'jesseduffield/lazydocker'
 tap 'jesseduffield/lazygit'
 tap 'johanhaleby/kubetail'
 tap 'ktr0731/evans'
-tap 'leoafarias/fvm'
 tap 'oven-sh/bun'
 tap 'schpet/tap'
 tap 'rjyo/moshi'
@@ -22,7 +30,6 @@ brew 'hashicorp/tap/terraform-ls'
 brew 'jesseduffield/lazydocker/lazydocker'
 brew 'johanhaleby/kubetail/kubetail'
 brew 'ktr0731/evans/evans'
-brew 'leoafarias/fvm/fvm'
 brew 'oven-sh/bun/bun'
 brew 'schpet/tap/linear'
 brew 'gum'
@@ -108,21 +115,18 @@ brew 'kubectx'
 brew 'kubeseal'
 brew 'sops'
 brew 'tflint'
+cask 'gcloud-cli'
 
 # Languages & Runtimes
-brew 'cocoapods'
 brew 'lua'
 brew 'mise'
 brew 'mysql-client'
 brew 'protobuf'
 brew 'uv'
 
-# Mobile Development
-brew 'fastlane'
-brew 'firebase-cli'
-
 # AI Tools
 brew 'gemini-cli'
+cask 'codex' # OpenAI Codex CLI agent (terminal tool, not a GUI app)
 
 # LSPs
 brew 'bash-language-server'
@@ -138,112 +142,9 @@ brew 'q' # dig
 brew 'ripgrep' # grep
 brew 'tldr' # man
 
-# Other
-brew 'ghidra', link: false
-brew 'grip'
-brew 'mas'
-brew 'nmap'
-
-# Casks
+# 1Password
 cask '1password-cli'
-cask '1password'
-cask 'android-studio'
-cask 'claude'
-cask 'codex'
-cask 'cursor'
-cask 'cyberduck'
-cask 'dbeaver-community'
-cask 'discord'
-cask 'docker-desktop'
-cask 'firefox'
-cask 'flutter'
-cask 'gcloud-cli'
-cask 'ghidra'
-cask 'google-chrome'
-cask 'jordanbaird-ice'
-cask 'karabiner-elements'
-cask 'keepingyouawake'
-cask 'licecap'
-cask 'netron'
-cask 'ngrok'
-cask 'notion'
-cask 'notion-calendar'
-cask 'notion-mail'
-cask 'orbstack'
-cask 'raycast'
-cask 'slack'
-cask 'ghostty'
 
-# Fonts
-cask 'font-hack-nerd-font'
-cask 'font-monaspace'
-
-# Mas
-if ENV['CI'] != 'true'
-  mas 'Keynote', id: 409183694
-  mas 'Kindle', id: 302584613
-end
-
-# Cursor Extensions
-vscode 'anysphere.cursorpyright'
-vscode 'anysphere.remote-containers'
-vscode 'astro-build.astro-vscode'
-vscode 'bierner.markdown-preview-github-styles'
-vscode 'bradlc.vscode-tailwindcss'
-vscode 'bung87.vscode-gemfile'
-vscode 'charliermarsh.ruff'
-vscode 'coderabbit.coderabbit-vscode'
-vscode 'dart-code.dart-code'
-vscode 'dart-code.flutter'
-vscode 'dbaeumer.vscode-eslint'
-vscode 'eamodio.gitlens'
-vscode 'editorconfig.editorconfig'
-vscode 'esbenp.prettier-vscode'
-vscode 'foxundermoon.shell-format'
-vscode 'github.vscode-github-actions'
-vscode 'github.vscode-pull-request-github'
-vscode 'golang.go'
-vscode 'graphql.vscode-graphql-syntax'
-vscode 'hashicorp.terraform'
-vscode 'hverlin.mise-vscode'
-vscode 'idleberg.nsis'
-vscode 'imgildev.vscode-drizzle-snippets'
-vscode 'jeroen-meijer.pubspec-assist'
-vscode 'karunamurti.haml'
-vscode 'llvm-vs-code-extensions.lldb-dap'
-vscode 'matangover.mypy'
-vscode 'mechatroner.rainbow-csv'
-vscode 'ms-azuretools.vscode-docker'
-vscode 'ms-ceintl.vscode-language-pack-ja'
-vscode 'ms-kubernetes-tools.vscode-kubernetes-tools'
-vscode 'ms-python.debugpy'
-vscode 'ms-python.mypy-type-checker'
-vscode 'ms-python.python'
-vscode 'ms-python.vscode-pylance'
-vscode 'ms-toolsai.jupyter'
-vscode 'ms-toolsai.jupyter-keymap'
-vscode 'ms-toolsai.jupyter-renderers'
-vscode 'ms-toolsai.vscode-jupyter-cell-tags'
-vscode 'ms-toolsai.vscode-jupyter-slideshow'
-vscode 'ms-vscode.makefile-tools'
-vscode 'njpwerner.autodocstring'
-vscode 'octref.vetur'
-vscode 'prisma.prisma'
-vscode 'rebornix.ruby'
-vscode 'redhat.java'
-vscode 'redhat.vscode-yaml'
-vscode 'remcohaszing.schemastore'
-vscode 'rphlmr.vscode-drizzle-orm'
-vscode 'rubocop.vscode-rubocop'
-vscode 'shopify.ruby-lsp'
-vscode 'sorbet.sorbet-vscode-extension'
-vscode 'tamasfe.even-better-toml'
-vscode 'timonwong.shellcheck'
-vscode 'vadimcn.vscode-lldb'
-vscode 'vscjava.vscode-gradle'
-vscode 'vscjava.vscode-java-debug'
-vscode 'vscjava.vscode-java-dependency'
-vscode 'vscjava.vscode-java-pack'
-vscode 'vscjava.vscode-java-test'
-vscode 'vscjava.vscode-maven'
-vscode 'wingrunr21.vscode-ruby'
+# Other
+brew 'grip'
+brew 'nmap'
