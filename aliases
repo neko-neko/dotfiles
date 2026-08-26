@@ -2,7 +2,10 @@
 # General
 # ------------------------------
 alias vim='nvim'
-alias grep='grep --color=auto'
+# Client-only: colorized grep is disabled by default so Hermes-server output
+# stays plain for piping/agent consumption. Re-enable on a Mac client via
+# ~/.aliases.local (see .aliases.local.example at the repo root).
+#alias grep='grep --color=auto'
 alias history='history 1'
 alias reload='rm -f ~/.zcompdump(N) ~/.zcompdump.zwc(N) && source ~/.zshenv && source ~/.zshrc'
 
@@ -23,17 +26,20 @@ alias decode='function __decode(){ echo -n "$1" | base64 -d }; __decode'
 # ------------------------------
 # List
 # ------------------------------
-alias l='ls -1A --color'
-alias la='ll -A --color'
-alias lc='lt -c --color'
-alias lk='ll -Sr --color'
-alias ll='ls -lh --color'
-alias lr='ll -R --color'
-alias ls='ls --color'
-alias sl='ls --color'
-alias lt='ll -tr --color'
-alias lu='lt -u --color'
-alias lx='ll -XB --color'
+# Hermes-server-safe defaults: keep ls output plain for AI-agent/pipe
+# consumption. Mac client color aliases can be re-enabled via
+# ~/.aliases.local (see .aliases.local.example at the repo root).
+alias l='ls -1A'
+alias la='ll -A'
+alias lc='lt -c'
+alias lk='ll -Sr'
+alias ll='ls -lh'
+alias lr='ll -R'
+#alias ls='ls --color'
+alias sl='ls'
+alias lt='ll -tr'
+alias lu='lt -u'
+alias lx='ll -XB'
 
 # ------------------------------
 # fzf
@@ -83,8 +89,12 @@ alias kubectlo='kubectl get KA -o yaml'
 # ------------------------------
 # Alternatives to classic CLI
 # ------------------------------
-alias top='btm'
-alias cat='bat'
+# Client-only: replaces classic top/cat with btm/bat. Disabled by default so
+# Hermes-server sessions (and AI agents reading command output) get plain,
+# predictable classic-CLI behavior. Re-enable on a Mac client via
+# ~/.aliases.local (see .aliases.local.example at the repo root).
+# alias top='btm'
+# alias cat='bat'
 
 # ------------------------------
 # 1Password

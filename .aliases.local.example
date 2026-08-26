@@ -1,0 +1,30 @@
+# ------------------------------
+# Mac client local alias overrides (example)
+# ------------------------------
+# The tracked `aliases` file ships Hermes-server-safe defaults: classic
+# grep/ls/cat/top behavior, since colorized/replaced output is noisy for
+# piped command output and for AI coding agents reading terminal output on
+# the server.
+#
+# On a Mac client machine, copy this file to re-enable the client-friendly
+# versions:
+#   cp .aliases.local.example ~/.aliases.local
+#
+# ~/.aliases.local is sourced automatically at the end of the tracked
+# `aliases` file and is NOT tracked by git (machine-specific, lives outside
+# this repo in $HOME).
+
+alias grep='grep --color=auto'
+alias ls='ls --color'
+alias l='ls -1A --color'
+alias la='ll -A --color'
+alias lc='lt -c --color'
+alias lk='ll -Sr --color'
+alias ll='ls -lh --color'
+alias lr='ll -R --color'
+alias sl='ls --color'
+alias lt='ll -tr --color'
+alias lu='lt -u --color'
+alias lx='ll -XB --color'
+alias top='btm'
+alias cat='bat'
