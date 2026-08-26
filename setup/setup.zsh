@@ -13,7 +13,7 @@ cd ${HOME}/.dotfiles
 
 # deploy dotfiles
 for name in *; do
-  if [[ ${name} != 'setup' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'claude' ]] && [[ ${name} != 'vscode' ]] && [[ ${name} != 'README.md' ]]; then
+  if [[ ${name} != 'setup' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'claude' ]] && [[ ${name} != 'README.md' ]] && [[ ${name} != 'nix' ]] && [[ ${name} != 'flake.nix' ]] && [[ ${name} != 'flake.lock' ]]; then
     if [[ -L ${HOME}/.${name} ]]; then
       unlink ${HOME}/.${name}
     fi
@@ -33,12 +33,6 @@ for name in *; do
   ln -sfv ${PWD}/${name} ${XDG_CONFIG_HOME:-$HOME/.config}/${name}
 done
 cd ..
-
-# deploy vscode
-if [[ ! -d ${HOME}/Library/Application\ Support/Code/User ]]; then
-  mkdir -p ${HOME}/Library/Application\ Support/Code/User
-fi
-ln -sfv ${PWD}/vscode/settings.json ${HOME}/Library/Application\ Support/Code/User/settings.json
 
 # install...
 cd ${HOME}/.dotfiles

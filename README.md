@@ -30,3 +30,17 @@ my dotfiles
     ```terminal
     cd ~/.dotfiles && ./setup/uninstall.zsh
     ```
+
+# VSCode / Cursor
+VSCode and Cursor installation and extension management are **no longer
+handled by this repo** (the `cursor` cask, the Cursor extension list, and
+`vscode/settings.json` deployment have all been removed). Manage your
+editor and its extensions outside of dotfiles.
+
+# Nix (experimental, not yet applied)
+A flake-based, per-host nix-darwin configuration exists under `flake.nix`
+and `nix/` for `mac-client`, `hermes-server`, and `home-network`. It is
+additive scaffolding only — nothing in it has been built or activated on
+a real machine yet, and it does not change the installation steps above.
+See `docs/nix-migration.md` for what's implemented, how to build/check
+each host, and the approval-gated apply/rollback flow.

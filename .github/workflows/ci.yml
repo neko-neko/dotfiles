@@ -25,3 +25,20 @@ jobs:
         run: brew install shellspec
       - name: Run tests
         run: shellspec --shell bash
+
+  nix-flake-check:
+    name: Nix flake check
+    # Syntax/evaluation check only — does not run `darwin-rebuild switch`
+    # or otherwise mutate anything outside this runner. See
+    # docs/nix-migration.md "CI".
+    timeout-minutes: 20
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: experimental-features = nix-command flakes
+      - name: nix flake check
+        run: nix flake check
