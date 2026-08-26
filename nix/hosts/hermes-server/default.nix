@@ -1,6 +1,7 @@
-# hermes-server: headless Tailscale dev/server box. Mirrors
-# setup/layers/hermes-server/Brewfile. No GUI casks, no macOS defaults
-# module (headless — see nix/modules/macos-defaults.nix header).
+# hermes-server: headless Tailscale dev/server box. Package list is what
+# used to be setup/layers/hermes-server/Brewfile (removed — Nix is now the
+# install path). No GUI casks, no macOS defaults module (headless — see
+# nix/modules/macos-defaults.nix header).
 { ... }:
 {
   # REQUIRED: replace with this machine's actual macOS short username

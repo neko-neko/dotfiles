@@ -1,14 +1,15 @@
-# nix-darwin translation of setup/install/29_macos.zsh (`defaults write`
-# commands). Imported by mac-client only, for now — see
+# nix-darwin translation of the former setup/install/29_macos.zsh
+# (`defaults write` commands; the script is removed — this module is now
+# the only source of these settings). Imported by mac-client only — see
 # docs/nix-migration.md "macOS defaults" for why hermes-server (headless)
 # and home-network (shared media box, different Dock/Finder expectations)
 # don't get this module.
 #
-# Until this has been proven safe on a real machine (first `darwin-rebuild
-# switch` on mac-client, per the runbook), 29_macos.zsh keeps running as
-# part of the existing setup/install.zsh flow — the two are NOT wired
-# together and can diverge. If you change one, update the other, or retire
-# 29_macos.zsh once this module is confirmed equivalent.
+# Not yet exercised by a real `darwin-rebuild switch` (no local Nix
+# install available when this was written/migrated — see
+# docs/nix-migration.md "Known risks"). Verify against the original
+# `defaults write` commands (git history) if these values are ever in
+# doubt.
 { ... }:
 {
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 10;

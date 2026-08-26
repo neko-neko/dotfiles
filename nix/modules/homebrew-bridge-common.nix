@@ -1,10 +1,11 @@
-# nix-darwin Homebrew bridge for what the root Brewfile still needs
-# Homebrew to install: third-party taps, packages without a confidently
-# correct nixpkgs attribute name, and CLI-only casks (gcloud, codex,
-# 1Password CLI). Installation still happens through `brew bundle` — see
-# Context7 findings in /tmp/dotfiles-nix-architect-report.md §6 — this
-# module only makes the declaration live in Nix instead of Brewfile so the
-# root Brewfile and this list don't drift silently once a host is on Nix.
+# nix-darwin Homebrew bridge for what the former root Brewfile (removed —
+# Nix is now the install path) needed Homebrew to install: third-party
+# taps, packages without a confidently correct nixpkgs attribute name, and
+# CLI-only casks (gcloud, codex, 1Password CLI). nix-darwin's `homebrew.*`
+# module generates a Brewfile and runs `brew bundle` on activation — see
+# Context7 findings in /tmp/dotfiles-nix-architect-report.md §6 — so
+# installation still happens through Homebrew for these, but the
+# declaration now lives only here, not in a hand-maintained Brewfile.
 #
 # This is the mirror image of nix/modules/packages-common.nix: every
 # package below was deliberately NOT moved there (uncertain nixpkgs name,

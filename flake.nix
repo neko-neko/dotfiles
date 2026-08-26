@@ -1,11 +1,12 @@
 {
   description = "neko-neko/dotfiles — nix-darwin multi-host config (mac-client, hermes-server, home-network)";
 
-  # NOTE: this flake is additive, opt-in scaffolding. It does not run as
-  # part of setup/setup.zsh, and nothing here installs or activates
-  # anything by itself — see docs/nix-migration.md for the manual,
-  # approval-gated apply flow. The existing Brewfile/setup.zsh flow
-  # remains the default and is unaffected.
+  # NOTE: this flake is the dotfiles install/management path. There is no
+  # Brewfile or setup.zsh flow anymore — package installation, macOS
+  # defaults, and dotfile deployment are all declared here and under
+  # nix/. Evaluating/building this flake does not install or activate
+  # anything by itself; see docs/nix-migration.md for the manual,
+  # approval-gated apply flow (`darwin-rebuild switch`).
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -46,6 +47,7 @@
             ./nix/modules/common.nix
             ./nix/modules/packages-common.nix
             ./nix/modules/homebrew-bridge-common.nix
+            ./nix/modules/dotfiles-common.nix
             nix-homebrew.darwinModules.nix-homebrew
             home-manager.darwinModules.home-manager
             (./nix/hosts + "/${hostname}")

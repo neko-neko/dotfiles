@@ -1,5 +1,6 @@
 # home-network: Mac mini running shared/family media + network services.
-# Mirrors setup/layers/home-network/Brewfile. This is Phase 5 — the
+# Package list is what used to be setup/layers/home-network/Brewfile
+# (removed — Nix is now the install path). This is Phase 5 — the
 # highest-risk host (family-used production services) — so everything
 # here stays on the Homebrew bridge rather than an unproven Nix-native
 # launchd rewrite. See docs/nix-migration.md "Phase 5: home-network" for

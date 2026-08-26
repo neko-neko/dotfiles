@@ -4,43 +4,55 @@
 my dotfiles
 
 # Installation
-1. Install XCode CLI tools, run this.
+This repo is a flake-based, per-host [nix-darwin](https://github.com/nix-darwin/nix-darwin)
+configuration (`flake.nix` / `nix/`). Nix is the install/management path
+for packages, macOS defaults, and dotfile deployment — there is no
+Brewfile or setup script to run instead.
+
+1. Install XCode CLI tools:
     ```terminal
     sudo xcode-select --switch /Library/Developer/CommandLineTools
     xcode-select --install
     ```
 
-2. Install my dot files:  
+2. Install Nix ([Determinate Nix installer](https://determinate.systems/)):
     ```terminal
-    zsh -c "$(curl -s https://raw.githubusercontent.com/neko-neko/dotfiles/master/setup/setup.zsh)"
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install macos
     ```
-    This installs the common `Brewfile` (packages suitable for both the
-    Hermes server and a Mac client) plus the scripts under `setup/install/`.
 
-3. Install the layer matching this machine's role. Layers are opt-in so a
-    server doesn't get GUI/mobile/media packages it doesn't need:
+3. Clone this repo and replace the placeholder username in
+   `nix/hosts/<hostname>/default.nix` with the real macOS short username
+   (`whoami`) on the target machine — see `docs/nix-migration.md` before
+   you build/switch for the first time.
+
+4. Build and switch the host matching this machine's role:
     ```terminal
-    ./setup/layers/hermes-server/install.zsh  # Tailscale Hermes server / dev server
-    ./setup/layers/mac-client/install.zsh     # personal Mac client (GUI, mobile dev, desktop apps)
-    ./setup/layers/home-network/install.zsh   # Jellyfin/media/home-network box
+    sudo darwin-rebuild switch --flake .#mac-client      # personal Mac client
+    sudo darwin-rebuild switch --flake .#hermes-server   # Tailscale Hermes server
+    sudo darwin-rebuild switch --flake .#home-network    # Jellyfin/media/home-network box
     ```
+
+See `docs/nix-migration.md` for the full runbook — build/check without
+applying, order of operations across hosts, and rollback.
 
 # Uninstallation
-1. run this:  
-    ```terminal
-    cd ~/.dotfiles && ./setup/uninstall.zsh
-    ```
+```terminal
+sudo darwin-rebuild rollback
+```
+This reverts the Nix-managed system generation (packages, macOS defaults,
+dotfiles, the nix-homebrew wiring). It does not touch Homebrew package
+state — see `docs/nix-migration.md` "Rollback" for what that does and
+doesn't undo.
 
 # VSCode / Cursor
 VSCode and Cursor installation and extension management are **no longer
-handled by this repo** (the `cursor` cask, the Cursor extension list, and
-`vscode/settings.json` deployment have all been removed). Manage your
-editor and its extensions outside of dotfiles.
+handled by this repo** (the `cursor` cask and the Cursor extension list
+have been removed, and nothing under `nix/` declares `homebrew.vscode` or
+a `cursor` cask). Manage your editor and its extensions outside of
+dotfiles.
 
-# Nix (experimental, not yet applied)
-A flake-based, per-host nix-darwin configuration exists under `flake.nix`
-and `nix/` for `mac-client`, `hermes-server`, and `home-network`. It is
-additive scaffolding only — nothing in it has been built or activated on
-a real machine yet, and it does not change the installation steps above.
-See `docs/nix-migration.md` for what's implemented, how to build/check
-each host, and the approval-gated apply/rollback flow.
+# Nix migration status
+See `docs/nix-migration.md` for what's implemented per host, the
+build/check/apply/rollback commands, and known risks (most hosts have not
+had a real `darwin-rebuild switch` run against them yet — see that doc's
+"Known risks" before touching `hermes-server` or `home-network`).

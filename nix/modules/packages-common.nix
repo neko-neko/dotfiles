@@ -2,9 +2,10 @@
 #
 # This is a deliberately CONSERVATIVE starter set: only tools whose nixpkgs
 # attribute name is well-known and unambiguous were moved here from the
-# root Brewfile. Everything else stays declared in
-# nix/modules/homebrew-bridge-common.nix (still Homebrew-installed, still
-# under nix-darwin's declarative management) rather than guessed at.
+# former root Brewfile (removed — Nix is now the install path). Everything
+# else stays declared in nix/modules/homebrew-bridge-common.nix (still
+# Homebrew-installed, still under nix-darwin's declarative management)
+# rather than guessed at.
 #
 # Do NOT add a package here without first confirming its exact nixpkgs
 # attribute name on a machine with Nix installed (`nix search nixpkgs

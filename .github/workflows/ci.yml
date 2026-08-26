@@ -4,15 +4,55 @@ on:
   push:
 
 jobs:
-  test:
-    name: Install test
-    timeout-minutes: 60
+  legacy-artifacts-check:
+    name: No legacy Brewfile/setup artifacts
+    timeout-minutes: 5
     runs-on: macOS-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install dotfiles
-        run: CI=true ./setup/setup.zsh
+      - name: Fail if legacy install artifacts remain
+        run: |
+          set -euo pipefail
+          fail=0
+
+          if find . -name Brewfile -not -path './.git/*' | grep -q .; then
+            echo "::error::a Brewfile is still present — Nix is the install path now"
+            find . -name Brewfile -not -path './.git/*'
+            fail=1
+          fi
+
+          if [ -e setup/setup.zsh ] || [ -e setup/install.zsh ]; then
+            echo "::error::a legacy setup entrypoint (setup/setup.zsh or setup/install.zsh) is still present"
+            fail=1
+          fi
+
+          if grep -RIl "brew bundle" --include=*.zsh --include=*.sh . 2>/dev/null | grep -v '^\./\.git/'; then
+            echo "::error::'brew bundle' invocation found outside the Nix homebrew bridge"
+            fail=1
+          fi
+
+          if grep -RIn "vscode '" --include=Brewfile* . 2>/dev/null; then
+            echo "::error::a vscode extension entry was found"
+            fail=1
+          fi
+
+          if grep -RIn "cask 'cursor'" --include=Brewfile* . 2>/dev/null; then
+            echo "::error::a cursor cask entry was found"
+            fail=1
+          fi
+
+          if grep -RIn "homebrew.vscode" --include=*.nix nix flake.nix 2>/dev/null; then
+            echo "::error::homebrew.vscode is declared in Nix config"
+            fail=1
+          fi
+
+          if grep -RIn '"cursor"' --include=*.nix nix flake.nix 2>/dev/null; then
+            echo "::error::a cursor cask is declared in Nix config"
+            fail=1
+          fi
+
+          exit "$fail"
 
   shellspec:
     name: ShellSpec tests

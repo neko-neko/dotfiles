@@ -1,7 +1,8 @@
 # mac-client: personal Mac client (GUI + mobile dev + desktop apps).
-# Mirrors setup/layers/mac-client/Brewfile, MINUS the Cursor cask and the
-# 60+ `vscode` extension entries — VSCode/Cursor installation and
-# extension management are discontinued in this repo (see README.md and
+# Package list is what used to be setup/layers/mac-client/Brewfile (removed
+# — Nix is now the install path), MINUS the Cursor cask and the 60+
+# `vscode` extension entries — VSCode/Cursor installation and extension
+# management are discontinued in this repo (see README.md and
 # docs/nix-migration.md "VSCode/Cursor removal").
 { config, lib, ... }:
 {
@@ -68,6 +69,9 @@
     # Fonts
     "font-hack-nerd-font"
     "font-monaspace"
+
+    # Misc (formerly setup/install/99_toy.zsh)
+    "wireshark"
   ];
 
   # Requires being signed into the Mac App Store on this machine for `mas`
