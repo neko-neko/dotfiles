@@ -26,6 +26,7 @@ nix/modules/dotfiles-common.nix    root dotfiles + config/* deployed via home.fi
 nix/hosts/mac-client/default.nix   Phase 1–3 target: GUI/mobile-dev Mac, no VSCode/Cursor
 nix/hosts/hermes-server/default.nix     Phase 4 target: headless Tailscale box
 nix/hosts/home-network/default.nix      Phase 5 target: Jellyfin/AdGuard/Syncthing Mac mini
+nix/modules/setup-tasks-common.nix      former setup/install/{12_krew,13_helix,14_slackcli,15_agent_skills}.zsh, as home.activation hooks + home.file (all 3 hosts)
 ```
 
 Phase numbering follows the architect report §4:
@@ -169,6 +170,16 @@ independent of `darwin-rebuild rollback`.
   (confirmed absent via Context7, unlike NixOS's `services.syncthing`).
   Hand-rolling `launchd.daemons` units for a family-used production media
   box without a rehearsal environment is out of scope for this PR.
+- **`setup-tasks-common.nix`'s `home.activation` hooks run network calls
+  (GitHub API, `npx` registry, `kubectl krew`) on every
+  `darwin-rebuild switch`/`home-manager switch`, not just the first one.**
+  They're best-effort and guarded (see "Former setup script coverage"
+  above), so a flaky network only delays activation slightly and logs a
+  warning — it does not fail the switch or leave the system in a partial
+  state. Still, this is new behavior versus the pre-migration scripts
+  (which only ran once, on demand, when a human invoked `setup/install.zsh`
+  interactively) — activation is no longer purely local/offline on hosts
+  where these hooks apply.
 - **`nix flake check` has not actually been run locally.** No `nix` binary
   was available in the environment this repo was migrated in. Every option
   name used here was cross-checked against
@@ -179,6 +190,42 @@ independent of `darwin-rebuild rollback`.
   first real evaluation and is required/blocking — treat its result as
   authoritative over the local heuristic checks, not the other way
   around.
+
+## Former setup script coverage
+
+Every script under the old `setup/` tree is gone (deleted across `8d31051`
+and `ddfebf0`). This table maps each one's responsibility to where it now
+lives, so nothing that script did is silently unaccounted for:
+
+| Former script | Responsibility | Now covered by |
+|---|---|---|
+| `setup/setup.zsh` | clone/pull `~/.dotfiles` | **Not migrated, by design.** Manual `git clone`/`git pull` per the README "Installation" steps — a one-time bootstrap action, not an ongoing declarative concern. |
+| `setup/setup.zsh` | symlink root dotfiles + `config/*` into `$HOME`/`$XDG_CONFIG_HOME` | `nix/modules/dotfiles-common.nix` (`home.file`/`xdg.configFile`) |
+| `setup/install.zsh` | `brew bundle --file Brewfile` | `nix/modules/packages-common.nix` (Nix-native) + `nix/modules/homebrew-bridge-common.nix` + each host's `homebrew.brews`/`homebrew.casks` (Homebrew bridge) |
+| `setup/install.zsh` | run every `setup/install/*.zsh` in turn | Replaced 1:1 below — no generic "run every script in a directory" step exists in Nix; each former script maps to a specific module/host entry instead. |
+| `setup/install.zsh` | `brew cleanup` | **Not migrated, by design.** `nix/modules/homebrew-bridge-common.nix` keeps `homebrew.onActivation.cleanup = "none"` — see that file's header and "Rollback" above for why (a rollback can't undo what cleanup removes on the way in). Do not reintroduce imperative `brew cleanup` without revisiting that decision first. |
+| `setup/install/12_krew.zsh` | `kubectl krew update`/`upgrade` + install `exec-as`, `exec-cronjob`, `node-shell`, `score`, `stern`, `open-svc` | `nix/modules/setup-tasks-common.nix`: `home.activation.krewPlugins` (best-effort, no-ops without `kubectl`) |
+| `setup/install/13_helix.zsh` | `hx --grammar fetch` / `hx --grammar build` | `nix/modules/setup-tasks-common.nix`: `home.activation.helixGrammar` (best-effort, no-ops without `hx`) |
+| `setup/install/14_slackcli.zsh` | download `slackcli` GitHub release into `~/.local/bin` by arch | `nix/modules/setup-tasks-common.nix`: `home.activation.slackcli` (best-effort, no-ops without `curl`) |
+| `setup/install/15_agent_skills.zsh` | symlink `claude/skills/*` into `~/.claude/skills/<name>` | `nix/modules/setup-tasks-common.nix`: `home.file` (`claudeSkillFiles`) — fully declarative, not an activation hook |
+| `setup/install/15_agent_skills.zsh` | `npx skills update` + `npx skills add <url> -g -y` for the external skills list | `nix/modules/setup-tasks-common.nix`: `home.activation.agentSkillsExternal` (best-effort, no-ops without `npx`) |
+| `setup/install/29_macos.zsh` | `defaults write` macOS settings | `nix/modules/macos-defaults.nix` (mac-client only — unchanged by this pass, verified still complete against the original commands) |
+| `setup/install/99_toy.zsh` | `brew install --cask wireshark` | `nix/hosts/mac-client/default.nix` `homebrew.casks` (unchanged by this pass, verified present) |
+
+Note on `13_helix.zsh`: the `hx` binary itself is not declared anywhere in
+this tree (it wasn't in the root Brewfile at the point of the Nix
+migration either — this predates `setup-tasks-common.nix` and is out of
+this table's scope). The grammar-fetch/build hook is guarded by
+`command -v hx` so it's a safe no-op until/unless `hx` is installed on a
+given host by some other means.
+
+All four `home.activation` hooks in `setup-tasks-common.nix` are
+intentionally imperative (Nix has no declarative primitive for "run a
+network command after activation") but follow the same safety rules:
+guarded by `command -v`, best-effort (a failure logs to stderr and moves
+on, it does not fail the activation), and prefixed `$DRY_RUN_CMD` so
+`--dry-run` doesn't execute them. See that file's header comment for the
+full rationale.
 
 ## mise vs Nix
 

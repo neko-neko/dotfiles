@@ -13,8 +13,11 @@
 # these config/<name> dirs, add the matching line below — it will not
 # appear under $HOME automatically just by existing in the repo.
 #
-# claude/ is intentionally NOT mapped here — it stays repo-local source
-# only, per the migration scope (see docs/nix-migration.md).
+# claude/ is intentionally NOT mapped here as a whole — CLAUDE.md and most
+# of claude/ stay repo-local source only. The one exception is
+# claude/skills/*, which IS deployed (as ~/.claude/skills/<name>
+# symlinks) — see nix/modules/setup-tasks-common.nix, which covers the
+# former setup/install/15_agent_skills.zsh responsibility.
 { config, ... }:
 let
   repoRoot = ../..;

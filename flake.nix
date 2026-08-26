@@ -48,6 +48,7 @@
             ./nix/modules/packages-common.nix
             ./nix/modules/homebrew-bridge-common.nix
             ./nix/modules/dotfiles-common.nix
+            ./nix/modules/setup-tasks-common.nix
             nix-homebrew.darwinModules.nix-homebrew
             home-manager.darwinModules.home-manager
             (./nix/hosts + "/${hostname}")

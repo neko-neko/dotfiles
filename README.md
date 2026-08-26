@@ -56,3 +56,9 @@ See `docs/nix-migration.md` for what's implemented per host, the
 build/check/apply/rollback commands, and known risks (most hosts have not
 had a real `darwin-rebuild switch` run against them yet — see that doc's
 "Known risks" before touching `hermes-server` or `home-network`).
+
+Every responsibility the old `setup/` scripts had — package install,
+dotfile deployment, macOS defaults, kubectl-krew plugins, Helix grammars,
+`slackcli`, and Claude agent skills sync — is covered by this flake; see
+`docs/nix-migration.md` "Former setup script coverage" for the full
+script-by-script mapping.
