@@ -1,7 +1,6 @@
 [tools]
 java = "17"
 node = "24"
-terraform = "1.14"
 python = "3.13"
 rust = "latest"
 ruby = "3.3.10"

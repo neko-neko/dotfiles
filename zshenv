@@ -115,6 +115,11 @@ export FZF_DEFAULT_OPTS='
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules}/*"'
 
 # ------------------------------
+# Obsidian
+# ------------------------------
+export OBSIDIAN_VAULT_PATH='~/Library/Mobile Documents/com~apple~CloudDocs/Obsidian/Hermes'
+
+# ------------------------------
 # scripts
 # ------------------------------
 export PATH=${HOME}/.bin:${PATH}
