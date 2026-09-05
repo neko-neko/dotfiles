@@ -5,7 +5,7 @@ alias vim='nvim'
 # Client-only: colorized grep is disabled by default so Hermes-server output
 # stays plain for piping/agent consumption. Re-enable on a Mac client via
 # ~/.aliases.local (see .aliases.local.example at the repo root).
-#alias grep='grep --color=auto'
+alias grep='grep --color=auto'
 alias history='history 1'
 alias reload='rm -f ~/.zcompdump(N) ~/.zcompdump.zwc(N) && source ~/.zshenv && source ~/.zshrc'
 
@@ -35,7 +35,7 @@ alias lc='lt -c'
 alias lk='ll -Sr'
 alias ll='ls -lh'
 alias lr='ll -R'
-#alias ls='ls --color'
+alias ls='ls --color'
 alias sl='ls'
 alias lt='ll -tr'
 alias lu='lt -u'
@@ -93,8 +93,8 @@ alias kubectlo='kubectl get KA -o yaml'
 # Hermes-server sessions (and AI agents reading command output) get plain,
 # predictable classic-CLI behavior. Re-enable on a Mac client via
 # ~/.aliases.local (see .aliases.local.example at the repo root).
-# alias top='btm'
-# alias cat='bat'
+alias top='btm'
+alias cat='bat'
 
 # ------------------------------
 # 1Password
