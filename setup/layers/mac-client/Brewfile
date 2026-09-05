@@ -1,11 +1,11 @@
 # ------------------------------
-# mac-client layer Brewfile
+# mac-client layer (machine role)
 # ------------------------------
-# GUI/client/mobile/desktop-only packages for a personal Mac client
-# machine. Requires the common Brewfile (repo root) to be installed first
-# — see setup/install.zsh and README.md "Installation".
+# The personal Mac workstation: GUI apps, fonts, App Store apps and mobile
+# SDKs. Machine-role layer: pick this or hermes-server for a given box.
+#
+# Install with: ./setup/layer.zsh mac-client   (after setup/install.zsh)
 
-tap 'dart-lang/dart'
 tap 'leoafarias/fvm'
 
 # Mobile Development

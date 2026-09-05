@@ -1,20 +1,23 @@
 # ------------------------------
-# Common Brewfile
+# Baseline Brewfile
 # ------------------------------
-# Packages suitable for BOTH the Hermes Tailscale server (headless
-# dev/server box) and a Mac client machine. GUI/mobile/desktop-only
-# packages live in setup/layers/mac-client/Brewfile, server-only packages
-# in setup/layers/hermes-server/Brewfile, and home-network/media packages
-# in setup/layers/home-network/Brewfile. See README.md "Installation" for
-# how to install common + a target layer.
+# The shared development baseline, installed by bootstrap (setup/setup.zsh ->
+# setup/install.zsh) on every box this repo sets up.
+#
+# Scope rule: a package belongs here when it is part of that development
+# baseline, and in a layer under setup/layers/<name>/ when it is specific to one
+# machine role or service overlay. Formula vs cask is a packaging detail, not a
+# scope signal: `codex`, `gcloud-cli` and `1password-cli` ship as casks but are
+# baseline CLIs, so they live here.
+#
+# Layers are installed afterwards with `./setup/layer.zsh <layer>...`; see
+# README.md "Layer composition" for the supported compositions.
 
 tap 'boz/repo'
 tap 'derailed/k9s'
 tap 'getsentry/tools'
-tap 'golangci/tap'
 tap 'hashicorp/tap'
 tap 'jesseduffield/lazydocker'
-tap 'jesseduffield/lazygit'
 tap 'johanhaleby/kubetail'
 tap 'ktr0731/evans'
 tap 'oven-sh/bun'
@@ -25,7 +28,6 @@ tap 'rjyo/moshi'
 brew 'boz/repo/kail'
 brew 'derailed/k9s/k9s'
 brew 'getsentry/tools/sentry-wizard'
-brew 'golangci/tap/golangci-lint'
 brew 'hashicorp/tap/terraform-ls'
 brew 'jesseduffield/lazydocker/lazydocker'
 brew 'johanhaleby/kubetail/kubetail'
@@ -82,7 +84,7 @@ brew 'starship'
 brew 'zoxide'
 brew 'herdr'
 brew 'hunk'
-brew 'moshi-hook'
+brew 'rjyo/moshi/moshi-hook'
 brew 'mosh'
 
 # Editors

@@ -1,3 +1,12 @@
+# ------------------------------
+# home-network layer (service overlay)
+# ------------------------------
+# Home LAN services. Not a machine role: it is layered on top of a machine-role
+# layer, normally hermes-server, which is where `tailscale` is declared.
+# Installing it without a machine-role layer is untested.
+#
+# Install with: ./setup/layer.zsh hermes-server home-network
+
 brew 'adguardhome'
 brew 'syncthing'
 cask 'jellyfin'

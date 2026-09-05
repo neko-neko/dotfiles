@@ -1,11 +1,14 @@
 # ------------------------------
-# hermes-server layer Brewfile
+# hermes-server layer (machine role)
 # ------------------------------
-# Server/development-server-only packages for the Tailscale Hermes box.
-# Requires the common Brewfile (repo root) to be installed first — see
-# setup/install.zsh and README.md "Installation".
+# The always-on headless Tailscale dev/build server. Machine-role layer: pick
+# this or mac-client for a given box.
+#
+# Also the machine role the home-network overlay is normally composed with.
+#
+# Install with: ./setup/layer.zsh hermes-server   (after setup/install.zsh)
 
-# Tailscale connectivity for the Hermes server itself.
+# Joins the tailnet this box serves from.
 brew 'tailscale'
 
 # Reverse engineering — headless/batch analysis (analyzeHeadless). Pairs

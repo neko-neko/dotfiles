@@ -1,13 +1,10 @@
 #!/bin/zsh
 source ${HOME}/.dotfiles/setup/util.zsh
 
-# This installs the COMMON Brewfile only (packages suitable for both the
-# Hermes server and a Mac client). For machine-specific packages, also run
-# the relevant layer's install.zsh after this completes:
-#   setup/layers/hermes-server/install.zsh  (Tailscale Hermes server)
-#   setup/layers/mac-client/install.zsh     (personal Mac client)
-#   setup/layers/home-network/install.zsh   (Jellyfin/media/home-network box)
-# See README.md "Installation" for details.
+# This installs the shared development baseline Brewfile only. Machine-role and
+# service-overlay packages live in layers; install them afterwards with:
+#   ./setup/layer.zsh <layer>...     (run with no arguments to list them)
+# See README.md "Layer composition" for the supported compositions.
 util::confirm "install packages from Brewfile?"
 if [[ $? = 0 ]]; then
   brew bundle --file ${HOME}/.dotfiles/Brewfile

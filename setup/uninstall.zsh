@@ -16,7 +16,6 @@ readonly UNINSTALL_TARGETS=(
   zshrc
   Library/Preferences/com.googlecode.iterm2.plist
   config/karabiner
-  config/nvim
   'functions'
 )
 
