@@ -18,7 +18,7 @@
 ```
 
 - Tailscale の macOS 変種に注意: **SSH サーバー・Funnel 等は brew (open source tailscaled) 変種のみ対応**。App Store / Standalone GUI 版はクライアント機能のみ
-- mac-mini のセットアップは `setup/layers/home-network/` を参照
+- mac-mini のセットアップは `./setup/layer.zsh hermes-server home-network`（README「Layer composition」参照）
 
 ## 初回整備
 

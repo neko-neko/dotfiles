@@ -25,8 +25,6 @@ my dotfiles
     ./setup/layer.zsh hermes-server                # headless dev/build server
     ./setup/layer.zsh hermes-server home-network   # dev/build server also serving the home LAN
     ```
-    `./setup/layers/<layer>/install.zsh` still works and does the same thing;
-    it delegates to `setup/layer.zsh`.
 
 # Layer composition
 Three scopes, installed in this order:
@@ -65,8 +63,8 @@ Rules:
 - The same tool may appear in two layers when each role needs a different build
   of it (`ghidra` is a headless formula in `hermes-server` and a GUI cask in
   `mac-client`). A package must never appear in both the baseline `Brewfile` and
-  a layer. `spec/brewfile_spec.sh` enforces this, along with tap declarations,
-  the layer registry, and the per-layer entrypoint wrappers.
+  a layer. `spec/brewfile_spec.sh` enforces this, along with tap declarations
+  and the layer registry.
 
 # Neovim / LazyVim
 `setup/install/16_lazyvim.zsh` sets up `$XDG_CONFIG_HOME/nvim` (`~/.config/nvim`

@@ -7,6 +7,8 @@
 #
 # Install with: ./setup/layer.zsh hermes-server home-network
 
-brew 'adguardhome'
+tap 'adguardteam/tap'
+
+brew 'adguardteam/tap/adguardhome'
 brew 'syncthing'
 cask 'jellyfin'
