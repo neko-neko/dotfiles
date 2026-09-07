@@ -1,16 +1,55 @@
 # ------------------------------
 # hermes-server layer (machine role)
 # ------------------------------
-# The always-on headless Tailscale dev/build server. Machine-role layer: pick
-# this or mac-client for a given box.
+# The always-on headless box that runs Hermes Agent: a Tailscale-joined
+# dev/build server whose job is executing AI agents, not being sat in front of.
+# Machine-role layer: pick this or mac-client for a given box.
 #
 # Also the machine role the home-network overlay is normally composed with.
+#
+# What belongs here is what this box's role needs and a workstation does not:
+# Hermes' own runtime dependencies, plus the engines the work that runs on this
+# box is built with. The shared agent tooling every machine gets (agent-browser,
+# googleworkspace-cli, tmux, ripgrep, jq, uv) is in the baseline Brewfile, and
+# the language runtimes come from config/mise/config.toml, so this layer stays
+# small on purpose. Node is one of those runtimes: Hermes names it as a required
+# dependency, but nothing declares it as a package on either side.
 #
 # Install with: ./setup/layer.zsh hermes-server   (after setup/install.zsh)
 
 # Joins the tailnet this box serves from.
 brew 'tailscale'
 
+# Media runtime for Hermes' voice path. hermes_cli/dep_ensure.py names ffmpeg as
+# one of four non-Python runtime dependencies ("ffmpeg (TTS voice messages)"),
+# and Hermes' own scripts/install.sh brew-installs it on macOS. Every voice
+# feature this box has configured goes through it: Edge TTS output, local
+# Whisper STT (tools/transcription_audio.py), and Discord/Telegram voice bubbles
+# (gateway/platforms/base.py transcode_to_ogg_opus). `ffprobe` ships with it.
+brew 'ffmpeg'
+
 # Reverse engineering — headless/batch analysis (analyzeHeadless). Pairs
 # with the interactive `cask 'ghidra'` GUI app in the mac-client layer.
 brew 'ghidra', link: false
+
+# Game engine. Game development is a standing use of this box, and the engine is
+# the machine-role tool that use is built on. The cask ships a binary that runs
+# without a display (`godot --headless`), which is what a box nobody sits in
+# front of needs for project export, script execution and batch/CI runs.
+cask 'godot'
+
+# ------------------------------
+# Optional Hermes voice runtimes — deliberately NOT installed
+# ------------------------------
+# Declared here as documentation, not as packages, because the live
+# configuration does not reach either code path:
+#
+# - espeak-ng. Phonemizer backend for the local NeuTTS provider and for
+#   non-English Kokoro voices in the hyperframes skill. This box runs
+#   `tts.provider: edge`, so nothing calls it. Add `brew 'espeak-ng'` here if
+#   the provider is ever switched to NeuTTS.
+# - portaudio. Hermes skips PortAudio output on macOS outright
+#   (tools/voice_mode.py `_sounddevice_output_allowed`, tts_tool_speaker.py
+#   `_open_output_stream`): CoreAudio init would trigger a
+#   kTCCServiceMediaLibrary prompt, so playback goes through `afplay` instead.
+#   A brew portaudio is unused on this platform.

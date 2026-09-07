@@ -1,18 +1,27 @@
 # ------------------------------
 # mac-client layer (machine role)
 # ------------------------------
-# The personal Mac workstation: GUI apps, fonts, App Store apps and mobile
-# SDKs. Machine-role layer: pick this or hermes-server for a given box.
+# The personal Mac workstation: GUI apps, fonts, App Store apps, and the mobile
+# build tooling the work on this box needs.
+# Machine-role layer: pick this or hermes-server for a given box.
+#
+# The Flutter and Dart SDKs are not here. `config/mise/config.toml` pins
+# `flutter`, which is the same reason FVM is gone: two version managers for one
+# runtime means the version that wins is whichever shim PATH reaches first.
+# What stays is the build tooling that sits on top of the SDK.
+#
+# This is a curated list, not a snapshot of one machine. An app earns a line
+# here when the tracked configuration in this repo needs it or the setup would
+# be wrong without it. Software installed by hand for a one-off, a client, or a
+# hobby stays out, so `brew bundle` never becomes a way to reinstall everything
+# that ever landed in /Applications.
 #
 # Install with: ./setup/layer.zsh mac-client   (after setup/install.zsh)
-
-tap 'leoafarias/fvm'
 
 # Mobile Development
 brew 'cocoapods'
 brew 'fastlane'
 brew 'firebase-cli'
-brew 'leoafarias/fvm/fvm'
 
 # Mac App Store CLI (used by the `mas` block below)
 brew 'mas'
@@ -31,7 +40,6 @@ cask 'dbeaver-community'
 cask 'discord'
 cask 'docker-desktop'
 cask 'firefox'
-cask 'flutter'
 cask 'google-chrome'
 cask 'jordanbaird-ice'
 cask 'karabiner-elements'
@@ -40,13 +48,19 @@ cask 'licecap'
 cask 'netron'
 cask 'ngrok'
 cask 'notion-calendar'
+# The vault `zshenv` pins as OBSIDIAN_VAULT_PATH is read and written by Hermes'
+# note-taking and llm-wiki skills. This is the app the human edits it in.
+cask 'obsidian'
 cask 'orbstack'
 cask 'raycast'
 cask 'slack'
 cask 'ghostty'
 
 # Fonts
+# Both families are named by config/ghostty/config: Monaspace Neon is the
+# primary face, HackGen covers the Japanese codepoint ranges it maps out.
 cask 'font-hack-nerd-font'
+cask 'font-hackgen'
 cask 'font-monaspace'
 
 # Mas

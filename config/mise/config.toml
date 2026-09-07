@@ -1,3 +1,12 @@
+# The single registry for global language runtimes on every machine this repo
+# sets up. A runtime belongs here, not in a Brewfile: Homebrew installs one
+# version per formula, and a second declaration turns "which one is on PATH"
+# into an accident of PATH order. Brewfiles keep compilers, libraries, package
+# managers and applications.
+#
+# setup/install/00_mise.zsh installs these during bootstrap and puts the shims
+# on PATH for the rest of that run; ~/.zshenv does the same for every shell
+# afterwards.
 [tools]
 java = "17"
 node = "24"
@@ -8,6 +17,8 @@ flutter = "3.38"
 go = "1.25"
 shellcheck = "0.11"
 deno = "latest"
+lua = "latest"
+bun = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby", "python", "go", "node"]

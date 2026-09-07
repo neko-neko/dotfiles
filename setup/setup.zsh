@@ -11,14 +11,22 @@ fi
 # move dotfiles dir
 cd ${HOME}/.dotfiles
 
+# Top-level entries that are NOT deployed as ~/.<name>. `hermes` is on the list
+# for a safety reason, not a stylistic one: linking it would put this repo on
+# top of $HERMES_HOME (~/.hermes), the live runtime tree that holds secrets,
+# auth, sessions and gateway state. hermes/configure.zsh applies the tracked
+# desired state into that tree instead; it never becomes that tree.
+not_deployed=(setup config claude README.md hermes)
+
 # deploy dotfiles
 for name in *; do
-  if [[ ${name} != 'setup' ]] && [[ ${name} != 'config' ]] && [[ ${name} != 'claude' ]] && [[ ${name} != 'README.md' ]]; then
-    if [[ -L ${HOME}/.${name} ]]; then
-      unlink ${HOME}/.${name}
-    fi
-    ln -sfv ${PWD}/${name} ${HOME}/.${name}
+  if (( ${not_deployed[(I)${name}]} )); then
+    continue
   fi
+  if [[ -L ${HOME}/.${name} ]]; then
+    unlink ${HOME}/.${name}
+  fi
+  ln -sfv ${PWD}/${name} ${HOME}/.${name}
 done
 
 # deploy config

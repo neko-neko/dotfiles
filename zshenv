@@ -55,6 +55,8 @@ export LISTMAX=100
 # ------------------------------
 # mise Settings
 # ------------------------------
+# The only PATH entry that provides a global language runtime. config/mise/config.toml
+# is the registry; nothing below adds a second copy of node, bun, lua or flutter.
 eval "$(mise activate zsh --shims)"
 
 # ------------------------------
@@ -83,12 +85,6 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-
-# ------------------------------
-# bun
-# ------------------------------
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
 # ------------------------------
 # Browser-Use

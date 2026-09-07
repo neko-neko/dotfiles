@@ -10,6 +10,16 @@
 # scope signal: `codex`, `gcloud-cli` and `1password-cli` ship as casks but are
 # baseline CLIs, so they live here.
 #
+# The other thing that makes a package baseline is being reachable from
+# something bootstrap deploys everywhere: a script under `bin/`, a file under
+# `config/`, or a step in `setup/install/`. Those land on every machine before a
+# layer is chosen, so the commands they invoke have to be declared here.
+#
+# Language runtimes are the one exception, and they are not declared in any
+# Brewfile. `config/mise/config.toml` is their single registry, and
+# `setup/install/00_mise.zsh` makes them available early enough for the rest of
+# bootstrap to use them.
+#
 # Layers are installed afterwards with `./setup/layer.zsh <layer>...`; see
 # README.md "Layer composition" for the supported compositions.
 
@@ -20,7 +30,6 @@ tap 'hashicorp/tap'
 tap 'jesseduffield/lazydocker'
 tap 'johanhaleby/kubetail'
 tap 'ktr0731/evans'
-tap 'oven-sh/bun'
 tap 'schpet/tap'
 tap 'rjyo/moshi'
 
@@ -33,7 +42,6 @@ brew 'hashicorp/tap/terraform-ls'
 brew 'jesseduffield/lazydocker/lazydocker'
 brew 'johanhaleby/kubetail/kubetail'
 brew 'ktr0731/evans/evans'
-brew 'oven-sh/bun/bun'
 brew 'schpet/tap/linear'
 brew 'gum'
 
@@ -87,6 +95,10 @@ brew 'herdr'
 brew 'hunk'
 brew 'rjyo/moshi/moshi-hook'
 brew 'mosh'
+# `bin/tmux-session-name` and `config/sesh/sesh.toml` are deployed on every
+# machine, and hermes/SOUL.md dispatches coding agents through tmux sessions.
+brew 'tmux'
+brew 'sesh'
 
 # Editors
 brew 'neovim'
@@ -120,8 +132,12 @@ brew 'sops'
 brew 'tflint'
 cask 'gcloud-cli'
 
-# Languages & Runtimes
-brew 'lua'
+# Toolchain
+# Language runtimes are NOT declared here. `config/mise/config.toml` is their
+# single registry, and `setup/install/00_mise.zsh` installs them and puts the
+# shims on PATH before the rest of bootstrap runs. What stays is the version
+# manager itself plus the package managers, schema compilers and client
+# libraries that are not a runtime anyone switches versions of.
 brew 'mise'
 brew 'mysql-client'
 brew 'protobuf'
@@ -130,6 +146,13 @@ brew 'uv'
 # AI Tools
 brew 'gemini-cli'
 cask 'codex' # OpenAI Codex CLI agent (terminal tool, not a GUI app)
+# Runtimes for the agent skills `setup/install/15_agent_skills.zsh` installs on
+# every machine: `agent-browser` backs the vercel-labs browser skill (and is the
+# `browser` dependency Hermes' hermes_cli/dep_ensure.py probes for), and
+# `googleworkspace-cli` provides the `gws` binary the five gws-* skills declare
+# under `requires.bins`.
+brew 'agent-browser'
+brew 'googleworkspace-cli'
 
 # LSPs
 brew 'bash-language-server'
@@ -147,6 +170,11 @@ brew 'tldr' # man
 
 # 1Password
 cask '1password-cli'
+
+# Testing
+# This repo's own test runner. `.shellspec` and `spec/` are useless without it,
+# and CI had to `brew install shellspec` by hand because it was declared nowhere.
+brew 'shellspec'
 
 # Other
 brew 'grip'

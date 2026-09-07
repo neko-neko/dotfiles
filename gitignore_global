@@ -33,3 +33,5 @@ config/herdr/*
 !config/herdr/plugins.json
 !config/herdr/plugins
 
+
+**/.claude/settings.local.json

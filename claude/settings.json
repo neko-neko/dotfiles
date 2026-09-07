@@ -59,8 +59,6 @@
       "Bash(wget:*)",
       "Bash(go:*)",
       "Bash(dart:*)",
-      "Bash(fvm flutter:*)",
-      "Bash(fvm flutter test:*)",
       "Bash(node:*)",
       "Bash(npm:*)",
       "Bash(npx:*)",

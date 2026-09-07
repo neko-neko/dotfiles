@@ -13,6 +13,11 @@ local layers_dir="${0:A:h}/layers"
 # Captured here because $0 becomes the function name inside layer::usage.
 local self="${0:t}"
 
+# Resolved once to an absolute path, and overridable. A bare `brew` resolved at
+# call time is not trustworthy: ~/.zshenv reorders PATH, so the binary a caller
+# or a test believes it pinned is not necessarily the one that runs.
+local brew_bin="${BREW_BIN:-$(command -v brew)}"
+
 # name:kind:description. kind is `role` (what the machine is; pick one) or
 # `overlay` (services it additionally hosts, layered on a role).
 local -a registry=(
@@ -41,6 +46,11 @@ if (( $# == 0 )); then
   exit 1
 fi
 
+if [[ -z ${brew_bin} || ${brew_bin} != /* || ! -x ${brew_bin} ]]; then
+  util::error "brew not found; set BREW_BIN to its absolute path"
+  exit 1
+fi
+
 local -a known=(${registry[@]%%:*})
 local requested
 for requested in "$@"; do
@@ -51,7 +61,7 @@ for requested in "$@"; do
   fi
 done
 
-local entry name
+local entry name configure
 for entry in ${registry[@]}; do
   name=${entry%%:*}
   (( ${@[(I)${name}]} )) || continue
@@ -59,7 +69,19 @@ for entry in ${registry[@]}; do
   util::info "=== ${name} layer setup ==="
   util::confirm "install ${name} Brewfile?"
   if [[ $? = 0 ]]; then
-    brew bundle --file "${layers_dir}/${name}/Brewfile" || util::error "${name} Brewfile failed"
+    "${brew_bin}" bundle --file "${layers_dir}/${name}/Brewfile" || util::error "${name} Brewfile failed"
   fi
+
+  # A layer that ships configure.zsh also has declarative state to apply. It is
+  # confirmed separately from the packages, because applying settings to a
+  # service is a different decision from installing its binaries.
+  configure="${layers_dir}/${name}/configure.zsh"
+  if [[ -f ${configure} ]]; then
+    util::confirm "apply ${name} declarative configuration?"
+    if [[ $? = 0 ]]; then
+      zsh "${configure}" || util::error "${name} configure.zsh failed"
+    fi
+  fi
+
   util::info "=== ${name} layer setup complete ==="
 done

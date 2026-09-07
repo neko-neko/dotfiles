@@ -1,7 +1,5 @@
 .worktrees
 .agents
-# Helix editor
-config/helix/runtime
 
 # home-network layer local overrides
 setup/layers/*/config.local.zsh

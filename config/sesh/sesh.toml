@@ -11,4 +11,4 @@ startup_command = ""
 [[session]]
 name = "dotfiles"
 path = "~/.dotfiles"
-startup_command = "hx ."
+startup_command = "nvim ."
