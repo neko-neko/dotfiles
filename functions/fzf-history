@@ -1,4 +1,3 @@
-tac
 if which tac > /dev/null; then
   tac="tac"
 else

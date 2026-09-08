@@ -88,8 +88,7 @@ eval "$(mise activate zsh)"
 # ------------------------------
 # GCP Settings
 # ------------------------------
-source ${HOMEBREW_PREFIX}/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
-source ${HOMEBREW_PREFIX}/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+export PATH=${HOMEBREW_PREFIX}/share/google-cloud-sdk/bin:${PATH}
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # ------------------------------

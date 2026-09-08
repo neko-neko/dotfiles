@@ -3,3 +3,12 @@
 
 # home-network layer local overrides
 setup/layers/*/config.local.zsh
+
+# Herdr generated state. What this repo declares is config.toml plus the local
+# drop-upload plugin; setup/herdr.zsh is the manifest for everything else.
+# plugins.json is herdr's own registry of what it installed, with absolute paths
+# from whichever machine wrote it, and plugins/github/ holds the checkouts it
+# made. Both were tracked once and neither survived contact with a second
+# machine.
+config/herdr/plugins.json
+config/herdr/plugins/github/

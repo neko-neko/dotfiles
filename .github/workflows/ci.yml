@@ -12,7 +12,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Install dotfiles
-        run: CI=true ./setup/setup.zsh
+        # DOTFILES_DIR plus DOTFILES_NO_UPDATE are what make this job test the
+        # commit that was just checked out. Without them setup.zsh cloned master
+        # from GitHub into ~/.dotfiles and installed from that, so a green run
+        # said nothing about the push that triggered it.
+        #
+        # FORCE is set here rather than inside setup.zsh: this is the caller who
+        # actually has nobody to answer the prompts.
+        #
+        # HOME is a directory this step creates. The runner image ships its own
+        # dotfiles, and the deployer refuses to replace a real file it did not
+        # put there, so a run against the runner's own $HOME failed on the
+        # runner's ~/.gitconfig rather than on anything this repo did. A fresh
+        # tree makes every conflict a real one.
+        env:
+          DOTFILES_DIR: ${{ github.workspace }}
+          DOTFILES_NO_UPDATE: 1
+          FORCE: 1
+          CI: true
+          HOME: ${{ runner.temp }}/ci-home
+          XDG_CONFIG_HOME: ${{ runner.temp }}/ci-home/.config
+        run: |
+          mkdir -p "$HOME" "$XDG_CONFIG_HOME"
+          ./setup/setup.zsh
 
   shellspec:
     name: ShellSpec tests
@@ -21,6 +43,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+      # This job never runs bootstrap, so nothing else puts the runner on
+      # shellspec. The baseline Brewfile declares it for a real machine; here
+      # the test runner has to exist before there is anything to run.
       - name: Install ShellSpec
         run: brew install shellspec
       - name: Run tests

@@ -1,10 +1,14 @@
 #!/bin/zsh
 # setup util functions.
 
+# stderr, because it is an error. On stdout it was invisible to any caller that
+# redirected output, and indistinguishable from progress to one that did not:
+# `setup.zsh > log` produced a file in which the reason a run failed sat between
+# two green "linked" lines.
 util::error() {
   local message="$1"
 
-  echo -e "\e[31m${message}\e[m"
+  echo -e "\e[31m${message}\e[m" >&2
 }
 
 util::warning() {

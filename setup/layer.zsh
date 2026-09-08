@@ -67,9 +67,16 @@ for entry in ${registry[@]}; do
   (( ${@[(I)${name}]} )) || continue
 
   util::info "=== ${name} layer setup ==="
+
+  # A failure stops the whole run. Reporting it and carrying on printed
+  # "layer setup complete" over a layer that had installed nothing, and then
+  # went on to the next layer the caller had asked for.
   util::confirm "install ${name} Brewfile?"
   if [[ $? = 0 ]]; then
-    "${brew_bin}" bundle --file "${layers_dir}/${name}/Brewfile" || util::error "${name} Brewfile failed"
+    if ! "${brew_bin}" bundle --file "${layers_dir}/${name}/Brewfile"; then
+      util::error "${name} Brewfile failed"
+      exit 1
+    fi
   fi
 
   # A layer that ships configure.zsh also has declarative state to apply. It is
@@ -79,7 +86,10 @@ for entry in ${registry[@]}; do
   if [[ -f ${configure} ]]; then
     util::confirm "apply ${name} declarative configuration?"
     if [[ $? = 0 ]]; then
-      zsh "${configure}" || util::error "${name} configure.zsh failed"
+      if ! zsh "${configure}"; then
+        util::error "${name} configure.zsh failed"
+        exit 1
+      fi
     fi
   fi
 

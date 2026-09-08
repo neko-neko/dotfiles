@@ -55,6 +55,12 @@ cask 'orbstack'
 cask 'raycast'
 cask 'slack'
 cask 'ghostty'
+# Declared here rather than installed by a `brew install --cask` line in a setup
+# step, which is where it lived (`setup/install/99_toy.zsh`). A package no
+# manifest names is a package `brew bundle` cannot reproduce and this repo
+# cannot audit. Packet capture is a workstation activity; the headless server
+# has no display to run the GUI on.
+cask 'wireshark'
 
 # Fonts
 # Both families are named by config/ghostty/config: Monaspace Neon is the

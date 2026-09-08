@@ -1,5 +1,13 @@
 #!/bin/zsh
-source ${HOME}/.dotfiles/setup/util.zsh
+# Resolved from this file rather than ${HOME}/.dotfiles, like every other step.
+# A hard-coded ${HOME}/.dotfiles reads the checkout that happens to live there,
+# which in CI is not the checkout under test and on a machine using the
+# DOTFILES_DIR seam is not the checkout being installed either.
+#
+# This step downloads a release binary rather than installing a package. It is
+# the one exception to "packages live in a manifest": slackcli publishes no
+# formula and no cask, so there is nothing for a Brewfile to declare.
+source "${0:A:h}/../util.zsh"
 
 util::info 'install slackcli...'
 
