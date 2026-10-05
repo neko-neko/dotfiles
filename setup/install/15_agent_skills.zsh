@@ -56,8 +56,9 @@ external_skills=(
   "https://github.com/googleworkspace/cli/tree/main/skills/gws-drive"
   "https://github.com/googleworkspace/cli/tree/main/skills/gws-gmail"
   "https://github.com/googleworkspace/cli/tree/main/skills/gws-sheets"
-  "vercel-labs/agent-browser --skill agent-browser --skill dogfood"
-  "vercel-labs/agent-skills --skill react-best-practices --skill composition-patterns --skill web-design-guidelines"
+  "vercel-labs/agent-browser --skill agent-browser"
+  "vercel-labs/agent-skills --skill web-design-guidelines"
+  "nanaism/yomiyasu"
 )
 
 # The one operation here that may fail without stopping the run. `skills update`
