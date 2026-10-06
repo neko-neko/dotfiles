@@ -8,12 +8,13 @@
 
 # 開発タスクの既定ワークフロー（pstack / poteto-mode）
 
-コード変更・バグ修正・リファクタリング・設計・コードベース調査は、既定で `poteto-default` スキルを起点にする。同スキルが pstack の `poteto-mode` 本体（`~/.agents/skills/poteto-mode/SKILL.md`）と playbook 群を読み込む。雑談・単発の質問・非開発タスクでは使わない。ユーザーが明示的に別の進め方を指示したら従う。
+コード変更・バグ修正・リファクタリング・設計・コードベース調査は、既定で APM 管理の `poteto-mode` 本体（`~/.apm/apm_modules/cursor/plugins/pstack/skills/poteto-mode/SKILL.md`）を直接読んで起点にする。そこから参照される playbook・leaf skill は、モデル側のスキル起動が無効なら実ファイルを読んで辿る。雑談・単発の質問・非開発タスクでは使わない。ユーザーが明示的に別の進め方を指示したら従う。
 
 pstack は上位ルールに従属する。矛盾したら以下が勝つ:
 
-- 上記「副作用ゲート」は poteto-mode の **Autonomy**（`Just do it` / 外部アクションを無確認で実行）に優先する。`principle-never-block-on-the-human` はローカルの可逆作業に限って適用し、外部副作用を正当化しない
+- 上記「副作用ゲート」は poteto-mode の **Autonomy**（`Just do it` / 外部アクションを無確認で実行）に常に優先する。`principle-never-block-on-the-human` はローカルの可逆作業に限って適用し、外部副作用を正当化しない。「run until done」のような広い続行指示は外部操作の承認ではない
 - 「マルチエージェント」の model 方針は poteto-mode の model 指定に優先する。poteto-mode が挙げる Cursor 専用スラッグ（`grok-4.6-fast-xhigh` 等）は本機では未検証のため使わず、`model` を省略して親モデルを継承する
+- `/setup-pstack` は実行しない
 
 # 実装中
 

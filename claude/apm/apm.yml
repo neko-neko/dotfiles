@@ -1,0 +1,22 @@
+# User-scope APM manifest, symlinked to ~/.apm/apm.yml by
+# setup/install/19_apm_agents.zsh. pstack is installed straight from upstream
+# and used unchanged: 2 subagents into ~/.claude/agents/ and 51 skills into
+# ~/.claude/skills/ and ~/.hermes/skills/.
+#
+# The pin is a commit SHA because cursor/plugins publishes no tags or releases.
+# 4e5b1cf2 is pstack 0.15.10. `apm.lock.yaml` beside this file in ~/.apm records
+# the resolved commit and every deployed path's sha256.
+#
+# `targets:` is what keeps a bare `apm install -g` off every other harness on
+# the machine: without it APM auto-detects, and writes into Codex, Cursor and
+# the rest. Named harnesses, never roles or profiles.
+name: dotfiles-agents
+version: 1.0.0
+description: User-scope APM manifest deployed by ~/.dotfiles
+targets:
+  - claude
+  - hermes
+dependencies:
+  apm:
+    - cursor/plugins/pstack#4e5b1cf2ccb0ea3716f08c8ee0a5856b5ab93536
+  mcp: []

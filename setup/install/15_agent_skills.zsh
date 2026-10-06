@@ -25,14 +25,6 @@ for skill in ${skills_dir}/*/SKILL.md(N); do
   links::link "${skills_dir}/${name}" "${HOME}/.claude/skills/${name}" || link_failed=1
 done
 
-# dotfiles-local skills that Hermes Agent loads as well as Claude Code.
-shared_skills=(
-  poteto-default
-)
-for name in "${shared_skills[@]}"; do
-  links::link "${skills_dir}/${name}" "${HOME}/.hermes/skills/${name}" || link_failed=1
-done
-
 # dotfiles-local subagents. An entry already materialised as a real file is the
 # human's own copy and stays: this is the one place where a conflict is the
 # expected state rather than something to report.
@@ -76,9 +68,9 @@ for skill in "${external_skills[@]}"; do
   fi
 done
 
-# mattpocock/skills is installed skill-by-skill rather than wholesale. `tdd` now comes
-# from pstack (see pstack_skills below), and a bare `mattpocock/skills` add would
-# reclaim that name on the next setup run.
+# mattpocock/skills is installed skill-by-skill rather than wholesale. `tdd` comes
+# from pstack, which APM owns (setup/install/19_apm_agents.zsh), and a bare
+# `mattpocock/skills` add would reclaim that name on the next setup run.
 mattpocock_skills=(
   code-review
   codebase-design
@@ -102,62 +94,13 @@ if ! npx skills add mattpocock/skills -g -y "${mattpocock_args[@]}"; then
   return 1
 fi
 
-# pstack (cursor/plugins) v0.14.8. Skill names come from each SKILL.md `name:` field,
-# so two of them contain spaces and cannot survive the ${=skill} word splitting above.
-# `tdd` is pstack's here: mattpocock/skills is pinned to a list that excludes it.
-# The Benny automation pack and the other plugins in the monorepo are not selected.
-pstack_skills=(
-  "Poteto Mode"
-  "Make Bot UI"
-  architect
-  arena
-  automate-me
-  blast-radius
-  bro
-  create-verification-skill
-  figure-it-out
-  how
-  interrogate
-  maintain-verification-skill
-  no-comments
-  principle-boundary-discipline
-  principle-build-the-lever
-  principle-encode-lessons-in-structure
-  principle-exhaust-the-design-space
-  principle-experience-first
-  principle-fix-root-causes
-  principle-foundational-thinking
-  principle-guard-the-context-window
-  principle-laziness-protocol
-  principle-make-operations-idempotent
-  principle-migrate-callers-then-delete-legacy-apis
-  principle-minimize-reader-load
-  principle-model-the-domain
-  principle-never-block-on-the-human
-  principle-outcome-oriented-execution
-  principle-prove-it-works
-  principle-redesign-from-first-principles
-  principle-separate-before-serializing-shared-state
-  principle-sequence-verifiable-units
-  principle-subtract-before-you-add
-  principle-type-system-discipline
-  recall
-  reflect
-  setup-pstack
-  show-me-your-work
-  swarm
-  tdd
-  teach
-  technical-writing
-  typescript-best-practices
-  unslop
-  why
-)
-pstack_args=()
-for name in "${pstack_skills[@]}"; do
-  pstack_args+=(--skill "${name}")
-done
-if ! npx skills add cursor/plugins -g -y -a claude-code -a hermes-agent "${pstack_args[@]}"; then
-  util::error 'npx skills add cursor/plugins failed'
+# consulting-pptx-skill. Named with --skill so the add stays pinned to that one
+# skill if the upstream repo ever grows a second, and deployed to both hosts
+# explicitly: without -a, the add falls back to whatever
+# `lastSelectedAgents` happens to hold in ~/.agents/.skill-lock.json, which is
+# machine state rather than something this repo declares. The skill name is the
+# `name:` field of its SKILL.md and matches the repo name here.
+if ! npx skills add carnot-tech/consulting-pptx-skill -g -y -a claude-code -a hermes-agent --skill consulting-pptx-skill; then
+  util::error 'npx skills add carnot-tech/consulting-pptx-skill failed'
   return 1
 fi

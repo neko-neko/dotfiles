@@ -146,6 +146,9 @@ brew 'uv'
 # AI Tools
 brew 'gemini-cli'
 cask 'codex' # OpenAI Codex CLI agent (terminal tool, not a GUI app)
+# Microsoft's Agent Package Manager. Baseline because
+# `setup/install/19_apm_agents.zsh` calls it on every machine.
+brew 'apm'
 # Runtimes for the agent skills `setup/install/15_agent_skills.zsh` installs on
 # every machine: `agent-browser` backs the vercel-labs browser skill (and is the
 # `browser` dependency Hermes' hermes_cli/dep_ensure.py probes for), and
