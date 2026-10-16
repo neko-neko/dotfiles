@@ -8,7 +8,7 @@
 
 # 開発タスクの既定ワークフロー（pstack / poteto-mode）
 
-コード変更・バグ修正・リファクタリング・設計・コードベース調査は、既定で APM 管理の `poteto-mode` 本体（`~/.apm/apm_modules/cursor/plugins/pstack/skills/poteto-mode/SKILL.md`）を直接読んで起点にする。そこから参照される playbook・leaf skill は、モデル側のスキル起動が無効なら実ファイルを読んで辿る。雑談・単発の質問・非開発タスクでは使わない。ユーザーが明示的に別の進め方を指示したら従う。
+コード変更・バグ修正・リファクタリング・設計・コードベース調査は、既定で Git 管理の `poteto-mode` 本体（`~/.local/share/pstack/checkout/pstack/skills/poteto-mode/SKILL.md`）を直接読んで起点にする。そこから参照される playbook・leaf skill は、モデル側のスキル起動が無効なら実ファイルを読んで辿る。雑談・単発の質問・非開発タスクでは使わない。ユーザーが明示的に別の進め方を指示したら従う。
 
 pstack は上位ルールに従属する。矛盾したら以下が勝つ:
 

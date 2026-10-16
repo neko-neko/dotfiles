@@ -25,6 +25,30 @@ for skill in ${skills_dir}/*/SKILL.md(N); do
   links::link "${skills_dir}/${name}" "${HOME}/.claude/skills/${name}" || link_failed=1
 done
 
+# dotfiles-local skills the Hermes host runs as well. The loop above deploys every
+# local skill to ~/.claude/skills; ~/.hermes/skills is not a mirror of that directory
+# -- most of what lives there was put there by `npx skills add -a hermes-agent` -- so
+# the skills both hosts need are named here one at a time. Mirroring the whole
+# directory instead would change the layout of a host this repo does not otherwise own.
+#
+# links::link applies its usual ownership rule here too: an absent target, or one
+# already pointing into this repo, is ours; anything else is preserved with an
+# actionable message rather than silently overwritten.
+hermes_shared_skills=(
+  batched-evidence-qa
+)
+
+for name in "${hermes_shared_skills[@]}"; do
+  # Named rather than globbed, so a skill that was renamed or removed is reported
+  # instead of quietly dropping out of the Hermes host on the next run.
+  if [[ ! -f ${skills_dir}/${name}/SKILL.md ]]; then
+    util::error "hermes shared skill ${name} is missing ${skills_dir}/${name}/SKILL.md"
+    link_failed=1
+    continue
+  fi
+  links::link "${skills_dir}/${name}" "${HOME}/.hermes/skills/${name}" || link_failed=1
+done
+
 # dotfiles-local subagents. An entry already materialised as a real file is the
 # human's own copy and stays: this is the one place where a conflict is the
 # expected state rather than something to report.
@@ -69,8 +93,8 @@ for skill in "${external_skills[@]}"; do
 done
 
 # mattpocock/skills is installed skill-by-skill rather than wholesale. `tdd` comes
-# from pstack, which APM owns (setup/install/19_apm_agents.zsh), and a bare
-# `mattpocock/skills` add would reclaim that name on the next setup run.
+# from pstack, which the upstream Git checkout owns (setup/install/19_pstack.zsh),
+# and a bare `mattpocock/skills` add would reclaim that name on the next setup run.
 mattpocock_skills=(
   code-review
   codebase-design
